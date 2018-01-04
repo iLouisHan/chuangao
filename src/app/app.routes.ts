@@ -3,14 +3,15 @@ import { Routes } from '@angular/router';
 export const AppRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'login'
+    redirectTo: '/login',
+    pathMatch: 'full'
   },
   {
     path: 'login',
-    loadChildren: './login/login.module.ts#LoginModule'
+    loadChildren: './login/login.module#LoginModule'
   },
   {
     path: 'main',
-    loadChildren: './main/main.module.ts#MainModule'
+    loadChildren: './main/main.module#MainModule'
   }
 ];
