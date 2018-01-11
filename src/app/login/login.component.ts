@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
+import { HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
 @Component({
@@ -19,17 +20,26 @@ export class LoginComponent implements OnInit {
   ) { }
 
   onSubmit() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'multipart/form-data');
-    const formData = new FormData();
-    formData.append('username', this.login.value.username);
-    formData.append('password', this.login.value.password);
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Login', formData, {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        console.log(res);
-      });
+    // const myHeaders: Headers = new Headers();
+    // myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+    // const formData = new FormData();
+    // const _body = `username=${this.login.value.username}&password=${this.login.value.password}`;
+    // const data = new URLSearchParams();
+    // data.append('username', this.login.value.username);
+    // data.append('password', this.login.value.password);
+    // console.log(_body);
+    // formData.append('body', _body);
+    // this.http.post('http://119.29.144.125:8080/cgfeesys/Login', data, {
+    //   headers: myHeaders
+    // }).map(res => res.json())
+    //   .subscribe(res => {
+    //     console.log(res);
+    //   });
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Login?username=${this.login.value.username}&password=${this.login.value.password}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              console.log(res);
+            });
   }
 
   ngOnInit() {
