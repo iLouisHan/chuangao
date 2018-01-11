@@ -1,0 +1,71 @@
+.bg-container{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #6c9cff url('../../assets/images/bg-img.png') no-repeat 10% center;
+  background-size: 50%;
+
+  .log-in__container{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 10%;
+    margin: auto;
+    width: 560px;
+    box-shadow: #0041c6 0 10px 10px;
+    background: #f1f5ff;
+    border-radius: 10px;
+    height: 560px;
+
+    h1{
+      font-size: 40px;
+      text-align: center;
+      line-height: 120px;
+      background: #6c9cff;
+      color: #fff;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .log-in__form{
+      padding: 60px;
+
+      div{
+        margin-bottom: 50px;
+
+        span{
+          font-size: 24px;
+          line-height: 60px;
+          margin-right: 20px;
+        }
+
+        input{
+          width: 280px;
+          padding: 0 40px;
+          height: 60px;
+          border: 1px solid transparent;
+          font-size: 24px;
+          border-radius: 5px;
+          outline: none !important;
+
+          &.ng-invalid.ng-dirty{
+            border-color: #f00;
+          }
+        }
+      }
+
+      button{
+        float: right;
+        width: 185px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        font-size: 24px;
+        border: none;
+        border-radius: 10px;
+        background: #6c9cff;
+        color: #fff;
+        outline: none !important;
+      }
+    }
+  }
+}
