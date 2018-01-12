@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
-import { HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
+import * as Actions from '../store/cacheStore.actions';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +18,10 @@ export class LoginComponent implements OnInit {
   });
 
   constructor(
-    private http: Http
-  ) { }
+    private http: Http,
+    private store: Store<any>,
+    private router: Router
+  ) {}
 
   onSubmit() {
     const myHeaders: Headers = new Headers();
@@ -30,10 +34,15 @@ export class LoginComponent implements OnInit {
       headers: myHeaders
     }).map(res => res.json())
       .subscribe(res => {
-        // if (res.code === 1) {
-
-        // }
-        console.log(res);
+        if (res.code) {
+          this.store.dispatch(new Actions.SaveLogin(res.data));
+          const __this = this;
+          setTimeout(function(){
+            __this.router.navigate(['/main']);
+          }, 0);
+        }else {
+          alert(res.message);
+        }
       });
   }
 

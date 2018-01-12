@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
+import { StoreModule } from '@ngrx/store';
+import { LoginReducer } from './store/cacheStore.reducer';
 
 import { AppRoutes } from './app.routes';
 
@@ -13,7 +15,10 @@ import { AppRoutes } from './app.routes';
   imports: [
     BrowserAnimationsModule,
     RouterModule.forRoot(AppRoutes),
-    HttpModule
+    HttpModule,
+    StoreModule.forRoot({
+      login: LoginReducer
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

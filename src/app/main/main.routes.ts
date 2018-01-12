@@ -14,15 +14,18 @@ export const MainRoutes: Routes = [
       {
         path: '',
         redirectTo: 'roadCompany',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        canActivate: [HasLoginGuard]
       },
       {
         path: 'roadCompany',
-        component: RoadCompanyComponent
+        component: RoadCompanyComponent,
+        canActivate: [HasLoginGuard]
       },
       {
         path: 'tollStation',
-        component: TollStationComponent
+        component: TollStationComponent,
+        canActivate: [HasLoginGuard]
       }
     ]
   }

@@ -20,7 +20,7 @@ import { TollStationComponent } from './toll-station/toll-station.component';
     CommonModule,
     RouterModule.forChild(MainRoutes),
     SharedModule,
-    CalendarModule
+    CalendarModule,
   ],
   declarations: [
     SidebarComponent,

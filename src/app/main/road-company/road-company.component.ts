@@ -23,7 +23,6 @@ export class RoadCompanyComponent implements OnInit {
               }else {
                 alert(res.message);
               }
-              console.log(this.data);
             });
   }
 
