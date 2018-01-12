@@ -1,0 +1,89 @@
+.page-title{
+  font-size: 16px;
+  color: #333;
+  font-weight: 300;
+  line-height: 16px;
+  padding: 10px 20px;
+  position: relative;
+
+  .page-title-icon{
+    width: 0;
+    height: 0;
+    border-left: 11px solid #6c9cff;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-right: 0;
+    position: absolute;
+    left: 0;
+    top: 9px;
+  }
+}
+
+.part-container{
+  background: #eef4ff;
+
+  .part-title{
+    color: #6c9cff;
+    font-size: 16px;
+    border-left: 4px solid #ffc382;
+    height: 16px;
+    line-height: 16px;
+    padding-left: 8px;
+    font-weight: 300;
+    margin: 20px;
+  }
+
+  .part-content{
+    margin: 20px;
+    background: #fff;
+    padding: 25px 15px;
+  }
+}
+
+.basic-container{
+  display: flex;
+  justify-content: space-between;
+
+  .company-des{
+    width: calc(100% - 570px);
+
+    .company-briefIntro{
+      min-height: calc(100% - 120px);
+      display: flex;
+      justify-content: space-between;
+
+      p{
+        width: calc(100% - 390px);
+      }
+
+      .company-img{
+        width: 370px;
+        height: 300px;
+        background: #333;
+      }
+    }
+  }
+  .basic-info{
+    width: 550px;
+
+    .basic-items{
+      min-height: calc(100% - 120px);
+
+      ul{
+        .basic-info-item{
+          float: left;
+          min-width: calc(50% - 30px);
+          padding-left: 30px;
+          font-size: 16px;
+          color: #999;
+          margin-bottom: 20px;
+
+          span{
+            color: #333;
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+}

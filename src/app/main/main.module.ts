@@ -11,6 +11,9 @@ import { MainComponent } from './main.component';
 
 import { CalendarModule } from 'primeng/primeng';
 
+import { RoadCompanyComponent } from './road-company/road-company.component';
+import { HomeComponent } from './home/home.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -18,7 +21,13 @@ import { CalendarModule } from 'primeng/primeng';
     SharedModule,
     CalendarModule
   ],
-  declarations: [SidebarComponent, NavbarComponent, MainComponent],
+  declarations: [
+    SidebarComponent,
+    NavbarComponent,
+    MainComponent,
+    RoadCompanyComponent,
+    HomeComponent
+  ],
   providers: [
     HasLoginGuard
   ]

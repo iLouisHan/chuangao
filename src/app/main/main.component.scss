@@ -1,0 +1,16 @@
+.main-container{
+  height: 100%;
+  width: calc(100% - 120px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 61px;
+  padding-left: 120px;
+  z-index: 9;
+
+  .main{
+    padding: 0 30px;
+    height: 100%;
+    background: #dce8ff;
+  }
+}
