@@ -14,3 +14,46 @@ p{word-wrap:break-word}
   content: "";
   clear: both;
 }
+
+
+.page-title{
+  font-size: 16px;
+  color: #333;
+  font-weight: 300;
+  line-height: 16px;
+  padding: 10px 20px;
+  position: relative;
+
+  .page-title-icon{
+    width: 0;
+    height: 0;
+    border-left: 11px solid #6c9cff;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-right: 0;
+    position: absolute;
+    left: 0;
+    top: 9px;
+  }
+}
+.part-container{
+  background: #eef4ff;
+  padding: 1px 0;
+
+  .part-title{
+    color: #6c9cff;
+    font-size: 16px;
+    border-left: 4px solid #ffc382;
+    height: 16px;
+    line-height: 16px;
+    padding-left: 8px;
+    font-weight: 300;
+    margin: 20px;
+  }
+
+  .part-content{
+    margin: 20px;
+    background: #fff;
+    padding: 25px 15px;
+  }
+}

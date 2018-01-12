@@ -1,0 +1,119 @@
+<h1 class="page-title"><div class="page-title-icon"></div>收费站信息</h1>
+<div class="basic-container">
+  <div class="company-des part-container">
+    <h1 class="part-title">收费站简介</h1>
+    <div class="part-content company-briefIntro clearfix">
+      <p>
+        <img class="company-img" src="/assets/images/toll-station.png" alt="">
+        {{data.stationIntroduce}}
+      </p>
+    </div>
+  </div>
+  <div class="basic-info part-container">
+    <h1 class="part-title">基本信息</h1>
+    <div class="basic-items part-content">
+      <ul class="clearfix">
+        <li class="basic-info-item shortname"><span>名称</span>{{data.stationName}}</li>
+        <li class="basic-info-item"><span>编号</span>{{data.stationCode}}</li>
+        <li class="basic-info-item"><span>所属行政区域</span>{{data.belongToRegion}}</li>
+        <li class="basic-info-item"><span>方向</span>{{data.stationDirection}}</li>
+        <li class="basic-info-item"><span>类型</span>{{data.stationType}}</li>
+        <li class="basic-info-item"><span>曾用名</span>{{data.stationUsedName}}</li>
+        <li class="basic-info-item"><span>省界站标志</span>{{data.companyCode}}</li>
+        <li class="basic-info-item"><span>监控室面积(平方米)</span>{{data.monitoringRoomArea}}</li>
+        <li class="basic-info-item"><span>纬度</span>{{data.latitude}}</li>
+        <li class="basic-info-item"><span>桩号</span>{{data.stationPileNumber}}</li>
+        <li class="basic-info-item"><span>占地面积(平方米)</span>{{data.areaCovere}}</li>
+        <li class="basic-info-item"><span>经度</span>{{data.longitude}}</li>
+        <li class="basic-info-item"><span>类别（一、二、三）</span>{{data.stationClass}}</li>
+        <li class="basic-info-item"><span>收费站人数</span>{{data.staffNumber}}</li>
+        <li class="basic-info-item"><span>建筑面积（平方米）</span>{{data.floorArea}}</li>
+        <li class="basic-info-item"><span>绿通检测设备数量</span>{{data.agriculTuralCheckCount}}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="flex-container-between">
+  <div class="station-connect part-container">
+    <h1 class="part-title">联系电话</h1>
+    <div class="flex-container-between station-contact">
+      <div class="inner-contact">
+        <div class="part-content2">
+          <p class="station-content-title">对内联系</p>
+          <ul>
+            <li>
+              <span>吴彦祖</span><span>(站长)</span>18599663036
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="outter-contact">
+        <div class="part-content2">
+          <p class="station-content-title">对外联系</p>
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="station-lines part-container">
+    <h1 class="part-title">车道信息</h1>
+    <div class="flex-container-between">
+      <div class="station-line">
+        <div class="part-content2">
+          <p class="station-content-title">入口车道信息</p>
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+      <div class="station-line">
+        <div class="part-content2">
+          <p class="station-content-title">出口车道信息</p>
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+      <div class="station-line">
+        <div class="part-content2">
+          <p class="station-content-title">其他信息</p>
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="flex-container-between">
+  <div class="history part-container">
+    <h1 class="part-title">收费站历史荣誉</h1>
+    <div class="part-content company-briefIntro clearfix">
+      <p>
+        <img class="company-img" src="/assets/images/history.png" alt="">
+        {{data.stationHorstoryHonor}}
+      </p>
+    </div>
+  </div>
+  <div class="bignews part-container">
+    <h1 class="part-title">收费站大事记</h1>
+    <div class="part-content company-briefIntro clearfix">
+      <p>
+        <img class="company-img" src="/assets/images/bignews.png" alt="">
+        {{data.stationEventHistory}}
+      </p>
+    </div>
+  </div>
+</div>
+<div class="staff-container part-container">
+    <h1 class="part-title">员工信息墙</h1>
+    <ul class="part-content clearfix">
+      <li class="staff-item" *ngFor="let staff of data.staffList">
+        <img src="/assets/images/photo.png" alt="">
+        <p>{{staff.userName}}</p>
+        <span>收费站站长</span>
+      </li>
+    </ul>
+  </div>

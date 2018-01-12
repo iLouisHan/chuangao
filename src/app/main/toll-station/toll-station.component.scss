@@ -1,0 +1,171 @@
+.basic-container{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  .company-des{
+    max-width: calc(100% - 570px);
+    width: calc(55% - 20px);
+
+    .company-briefIntro{
+      min-height: calc(100% - 120px);
+
+      p{
+        line-height: 24px;
+        text-indent: 2em;
+      }
+
+      .company-img{
+        width: 370px;
+        float: right;
+      }
+    }
+  }
+  .basic-info{
+    min-width: 550px;
+    width: 45%;
+
+    .basic-items{
+      min-height: calc(100% - 120px);
+
+      ul{
+        .basic-info-item{
+          float: left;
+          min-width: calc(50% - 30px);
+          padding-left: 20px;
+          font-size: 16px;
+          color: #999;
+          margin-bottom: 20px;
+
+          span{
+            color: #333;
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+.flex-container-between{
+  display: flex;
+  justify-content: space-between;
+
+  .station-content-title{
+    padding: 0 8px 0 35px;
+    border-radius: 5px;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    display: inline-block;
+  }
+
+  .station-connect{
+    width: calc(45% - 20px);
+    padding-bottom: 20px;
+
+    .station-contact{
+      padding: 0 20px;
+
+      .inner-contact{
+        width: 33%;
+
+        .station-content-title{
+          background: #ff966d;
+        }
+      }
+
+      .outter-contact{
+        width: calc(67% - 10px);
+
+        .station-content-title{
+          background: #61b3f2;
+        }
+      }
+    }
+  }
+
+  .station-lines{
+    width: 55%;
+
+    >div{
+      padding: 0 20px;
+
+      .station-line{
+        width: calc((100% - 20px)/3);
+      }
+    }
+  }
+
+
+  .part-content2{
+    padding: 30px 20px;
+    background: #fff;
+  }
+}
+
+.history{
+  margin-top: 20px;
+  width: calc(50% - 10px);
+
+  .company-briefIntro{
+    min-height: calc(100% - 120px);
+  }
+
+  p{
+    text-indent: 2em;
+  }
+  img{
+    float: right;
+    width: 270px;
+  }
+}
+
+.bignews{
+  margin-top: 20px;
+  width: calc(50% - 10px);
+
+  .company-briefIntro{
+    min-height: calc(100% - 120px);
+  }
+
+  p{
+    text-indent: 2em;
+  }
+  img{
+    float: right;
+    width: 270px;
+  }
+}
+
+.staff-container{
+  margin-top: 20px;
+
+  .staff-item{
+    float: left;
+    width: 120px;
+    text-align: center;
+    cursor: pointer;
+    margin-right: 20px;
+    margin-bottom: 40px;
+    padding: 10px;
+
+    &:hover{
+      box-shadow: #333 0 0 5px;
+    }
+
+    img{
+      width: 120px;
+      height: 140px;
+    }
+    p{
+      font-size: 16px;
+      color: #333;
+      margin-top: 8px;
+    }
+    span{
+      font-size: 16px;
+      color: #999;
+      margin-top: 8px;
+    }
+  }
+}
