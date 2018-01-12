@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      console.log(res);
+      // console.log(res);
     });
     this.store.dispatch(new Actions.SaveLogin({a: 123}));
   }

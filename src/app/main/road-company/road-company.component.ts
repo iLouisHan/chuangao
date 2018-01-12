@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./road-company.component.scss']
 })
 export class RoadCompanyComponent implements OnInit {
-  data: Object = {};
+  data: any = {};
 
   constructor(
     private http: Http

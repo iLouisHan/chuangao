@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./toll-station.component.scss']
 })
 export class TollStationComponent implements OnInit {
-  data: Object = {};
+  data: any = {};
 
   constructor(
     private http: Http
@@ -23,7 +23,6 @@ export class TollStationComponent implements OnInit {
               }else {
                 alert(res.message);
               }
-              console.log(this.data);
             });
   }
 

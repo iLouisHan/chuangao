@@ -21,7 +21,6 @@ export class HasLoginGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     this.login.subscribe(res => {
-      console.log(res);
       if (res) {
         this.hasLogin = true;
       }
