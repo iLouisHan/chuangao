@@ -21,6 +21,7 @@
 
 .part-container{
   background: #eef4ff;
+  padding: 1px 0;
 
   .part-title{
     color: #6c9cff;
@@ -81,6 +82,110 @@
           span{
             color: #333;
             margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.collection-container{
+  margin-top: 20px;
+
+  .collection-info{
+    margin-bottom: 10px;
+
+    .collection-item{
+      float: left;
+      width: 16.6%;
+
+      .collection-item-title{
+        font-size: 16px;
+        color: #333;
+        padding-left: 40px;
+        height: 30px;
+        line-height: 30px;
+        margin-bottom: 10px;
+      }
+
+      > span {
+        color: #999;
+        font-size: 14px;
+
+        span{
+          color: #666;
+        }
+
+        span:last-child{
+          margin-left: 40px;
+        }
+      }
+    }
+  }
+}
+
+.children-container{
+  display: flex;
+  justify-content: space-between;
+  margin: 0 20px;
+  padding-bottom: 20px;
+
+  .child-item{
+    width: calc(50% - 35px);
+    margin: 0;
+
+    .child-item-content1{
+      width: 30%;
+      border-right: 1px solid #ececec;
+      float: left;
+      text-align: center;
+      margin-top: 5px;
+
+      img{
+        width: 70%;
+      }
+
+      p{
+        margin-top: 10px;
+        font-size: 18px;
+        color: #333;
+      }
+
+      span{
+        font-size: 16px;
+        color: #666;
+        margin-top: 15px;
+        display: block;
+      }
+    }
+
+    .child-item-content2{
+      width: 60%;
+      float: right;
+
+      ul{
+        li{
+          width: 50%;
+          float: left;
+          margin-bottom: 20px;
+
+          p{
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+          }
+
+          >span{
+            color: #999;
+            font-size: 14px;
+
+            span{
+              color: #666;
+            }
+
+            span:last-child{
+              margin-left: 40px;
+            }
           }
         }
       }

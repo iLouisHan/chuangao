@@ -25,3 +25,72 @@
     </div>
   </div>
 </div>
+<div class="collection-container part-container">
+  <h1 class="part-title">汇总信息</h1>
+  <div class="part-content collection-info">
+    <ul class="clearfix">
+      <li class="collection-item">
+        <p class="collection-item-title">人员数量</p>
+        <span><span class="collection-item-key">管理：</span>{{data.collectionInfoBean?.managerNum}}<span class="collection-item-key">收费：</span>{{data.collectionInfoBean?.tollCollectorNum}}</span>
+      </li>
+      <li class="collection-item">
+        <p class="collection-item-title">实际车道</p>
+        <span><span class="collection-item-key">出口：</span>{{data.collectionInfoBean?.exlaneFactCount}}<span class="collection-item-key">入口：</span>{{data.collectionInfoBean?.enlaneFactCount}}</span>
+      </li>
+      <li class="collection-item">
+        <p class="collection-item-title">治超设备</p>
+        <span><span class="collection-item-key">出口：</span>{{data.collectionInfoBean?.exlaneWeightCount}}<span class="collection-item-key">入口：</span>{{data.collectionInfoBean?.enlaneWeightCount}}</span>
+      </li>
+      <li class="collection-item">
+        <p class="collection-item-title">设计车道</p>
+        <span><span class="collection-item-key">出口：</span>{{data.collectionInfoBean?.exlaneDesignCount}}<span class="collection-item-key">入口：</span>{{data.collectionInfoBean?.enlaneDesignCount}}</span>
+      </li>
+      <li class="collection-item">
+        <p class="collection-item-title">ETC车道</p>
+        <span><span class="collection-item-key">出口：</span>{{data.collectionInfoBean?.exlaneEtcCount}}<span class="collection-item-key">入口：</span>{{data.collectionInfoBean?.enlaneEtcCount}}</span>
+      </li>
+      <li class="collection-item">
+        <p class="collection-item-title">发卡设备</p>
+        <span><span class="collection-item-key">出口：</span>无<span class="collection-item-key">入口：</span>{{data.collectionInfoBean?.enlaneAutoCount}}</span>
+      </li>
+    </ul>
+  </div>
+  <div class="children-container">
+    <div class="part-content child-item clearfix" *ngFor="let item of data.divisionCardBeanList">
+      <div class="child-item-content1">
+        <img src="/assets/images/zigongguanlichu.png" alt="">
+        <p>{{item.divisionName}}</p>
+        <span>{{item.orgCode}}</span>
+        <span>{{item.contactName}}：{{item.contactPhone}}</span>
+      </div>
+      <div class="child-item-content2">
+        <ul class="clearfix">
+          <li>
+            <p>人员数量</p>
+            <span><span>管理：</span>{{item.managerNum}}<span>收费：</span>{{item.tollCollectorNum}}</span>
+          </li>
+          <li>
+            <p>实际车道</p>
+            <span><span>出口：</span>{{item.exlaneFactCount}}<span>入口：</span>{{item.enlaneFactCount}}</span>
+          </li>
+          <li>
+            <p>治超设备</p>
+            <span><span>出口：</span>{{item.exlaneWeightCount}}<span>入口：</span>{{item.enlaneWeightCount}}</span>
+          </li>
+          <li>
+            <p>ETC车道</p>
+            <span><span>出口：</span>{{item.exlaneEtcCount}}<span>入口：</span>{{item.enlaneEtcCount}}</span>
+          </li>
+          <li>
+            <p>设计车道</p>
+            <span><span>出口：</span>{{item.exlaneDesignCount}}<span>入口：</span>{{item.enlaneDesignCount}}</span>
+          </li>
+          <li>
+            <p>发卡设备</p>
+            <span><span>出口：</span>无<span>入口：</span>{{item.enlaneAutoCount}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
