@@ -20,26 +20,21 @@ export class LoginComponent implements OnInit {
   ) { }
 
   onSubmit() {
-    // const myHeaders: Headers = new Headers();
-    // myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
-    // const formData = new FormData();
-    // const _body = `username=${this.login.value.username}&password=${this.login.value.password}`;
-    // const data = new URLSearchParams();
-    // data.append('username', this.login.value.username);
-    // data.append('password', this.login.value.password);
-    // console.log(_body);
-    // formData.append('body', _body);
-    // this.http.post('http://119.29.144.125:8080/cgfeesys/Login', data, {
-    //   headers: myHeaders
-    // }).map(res => res.json())
-    //   .subscribe(res => {
-    //     console.log(res);
-    //   });
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Login?username=${this.login.value.username}&password=${this.login.value.password}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              console.log(res);
-            });
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Login',
+      JSON.stringify({
+        username: this.login.value.username,
+        password: this.login.value.password
+      }), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        // if (res.code === 1) {
+
+        // }
+        console.log(res);
+      });
   }
 
   ngOnInit() {
