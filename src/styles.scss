@@ -57,3 +57,8 @@ p{word-wrap:break-word}
     padding: 25px 15px;
   }
 }
+
+.flex-between{
+  display: flex;
+  justify-content: space-between;
+}

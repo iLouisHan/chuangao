@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { LoginReducer } from './store/cacheStore.reducer';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { AppRoutes } from './app.routes';
 
@@ -20,7 +21,12 @@ import { AppRoutes } from './app.routes';
       login: LoginReducer
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
