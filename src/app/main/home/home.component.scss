@@ -1,0 +1,120 @@
+.top-data-container{
+  padding: 20px;
+  margin-bottom: 20px;
+
+  .top-data{
+    width: calc((100% - 60px)/4);
+    border: 1px solid #acc8ff;
+    height: 88px;
+
+    .top-data-left{
+      width: 60%;
+      float: left;
+      background: #c4d8ff;
+      height: 100%;
+
+      .top-data-item{
+        padding: 14px;
+
+        p{
+          line-height: 30px;
+
+          &.top-data-number{
+            font-size: 16px;
+            color: #333;
+          }
+
+          &.top-data-string{
+            font-size: 14px;
+            color: #2d75ff;
+          }
+        }
+      }
+    }
+
+    .top-data-right{
+      width: 40%;
+      float: right;
+      height: 100%;
+      text-align: center;
+
+      .top-data-item{
+        padding-top: 58px;
+        line-height: 30px;
+
+        p{
+          font-size: 14px;
+          color: #ffa94c;
+        }
+      }
+    }
+  }
+}
+
+.chart-container{
+  margin-bottom: 20px;
+
+  .income-container{
+    width: calc(60% - 20px);
+
+    div{
+      padding: 20px;
+      padding-top: 0;
+      min-height: calc(100% - 120px);
+
+      img{
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .complete-container{
+    width: 40%;
+
+    div{
+      padding: 20px;
+      padding-top: 0;
+      min-height: calc(100% - 120px);
+
+      img{
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .history-income-container{
+    width: calc(40% - 20px);
+
+    div{
+      padding: 20px;
+      padding-top: 0;
+      min-height: calc(100% - 120px);
+
+      img{
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .thisyear-income-container{
+    width: 60%;
+
+    div{
+      padding: 20px;
+      padding-top: 0;
+      min-height: calc(100% - 120px);
+
+      img{
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+.part-content2{
+  background: #fff;
+}
