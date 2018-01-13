@@ -17,6 +17,14 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
+  getCookie(): void {
+    const cookie = document.cookie.split(';');
+    if (cookie[1]) {
+      this.store.dispatch(new Actions.SaveLogin(JSON.parse(cookie[1].split('=')[1])));
+      this.router.navigate(['/main']);
+    }
+  }
+
   constructor(
     private http: Http,
     private store: Store<any>,
@@ -36,10 +44,8 @@ export class LoginComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           this.store.dispatch(new Actions.SaveLogin(res.data));
-          const __this = this;
-          setTimeout(function(){
-            __this.router.navigate(['/main']);
-          }, 0);
+          this.router.navigate(['/main']);
+          document.cookie = `login=${JSON.stringify(res.data)}`;
         }else {
           alert(res.message);
         }
@@ -47,7 +53,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(new Actions.SaveLogin(''));
+    this.getCookie();
   }
 
 }
