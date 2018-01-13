@@ -23,6 +23,8 @@ export class HasLoginGuard implements CanActivate {
     this.login.subscribe(res => {
       if (res) {
         this.hasLogin = true;
+      }else {
+        this.hasLogin = false;
       }
     });
     if (state.url !== '/login') {
