@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 
 import { LoginRoutes } from './login.routes';
 import { LoginReducer } from '../store/cacheStore.reducer';
+import { HasLoginGuard } from '../guard/has-login.guard';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { LoginReducer } from '../store/cacheStore.reducer';
     RouterModule.forChild(LoginRoutes),
     ReactiveFormsModule
   ],
-  declarations: [LoginComponent]
+  declarations: [LoginComponent],
+  providers: [
+    HasLoginGuard
+  ]
 })
 export class LoginModule { }

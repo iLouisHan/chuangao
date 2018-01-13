@@ -25,11 +25,20 @@ export class HasLoginGuard implements CanActivate {
         this.hasLogin = true;
       }
     });
-    if (this.hasLogin) {
-      return true;
+    if (state.url !== '/login') {
+      if (this.hasLogin) {
+        return true;
+      }else {
+        this.router.navigate(['/login']);
+        return false;
+      }
     }else {
-      this.router.navigate(['/login']);
-      return false;
+      if (this.hasLogin) {
+        this.router.navigate(['/main']);
+        return false;
+      }else {
+        return true;
+      }
     }
   }
 }
