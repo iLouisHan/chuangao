@@ -19,8 +19,9 @@ export class LoginComponent implements OnInit {
 
   getCookie(): void {
     const cookie = document.cookie.split(';');
-    if (cookie[1] && cookie[1].split('=')[1]) {
-      this.store.dispatch(new Actions.SaveLogin(JSON.parse(cookie[1].split('=')[1])));
+    const res = cookie.filter(el => el.trim().length > 0).map(el => el.trim().split('=')).filter(el => el[0] === 'login')[0];
+    if (res[1]) {
+      this.store.dispatch(new Actions.SaveLogin(JSON.parse(res[1])));
       this.router.navigate(['/main']);
     }
   }
