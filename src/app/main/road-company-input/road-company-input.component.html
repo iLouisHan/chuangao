@@ -1,4 +1,22 @@
 <h1 class="page-title"><div class="page-title-icon"></div>路公司信息录入</h1>
 <div class="part-container">
   <h1 class="part-title">路公司信息填报</h1>
+  <div class="part-content">
+    <div class="part-nav">
+      <ul>
+        <li class="active">
+          <div>
+            <a routerLink="basic">基本信息</a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a routerLink="images">图片信息</a>
+          </div>
+        </li>
+      </ul>
+      <button class="upload">Excel导入</button>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
 </div>

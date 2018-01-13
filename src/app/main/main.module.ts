@@ -14,7 +14,6 @@ import { CalendarModule } from 'primeng/primeng';
 import { RoadCompanyComponent } from './road-company/road-company.component';
 import { HomeComponent } from './home/home.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
-import { RoadCompanyInputComponent } from './road-company-input/road-company-input.component';
 
 @NgModule({
   imports: [
@@ -30,7 +29,6 @@ import { RoadCompanyInputComponent } from './road-company-input/road-company-inp
     RoadCompanyComponent,
     HomeComponent,
     TollStationComponent,
-    RoadCompanyInputComponent
   ],
   providers: [
     HasLoginGuard

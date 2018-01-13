@@ -1,0 +1,62 @@
+<form [formGroup]="form">
+  <div class="form-item">
+    <p>公司编码<span class="form-required">*</span></p>
+    <input disabled="disabled" type="text" formControlName="companyCode">
+  </div>
+  <div class="form-item">
+    <p>公司名称<span class="form-required">*</span></p>
+    <input disabled="disabled" type="text" formControlName="companyName">
+  </div>
+  <div class="form-item">
+    <p>组织机构代码<span class="form-required">*</span></p>
+    <input type="text" formControlName="organizationCode">
+  </div>
+  <div class="form-item">
+    <p>简称<span class="form-required">*</span></p>
+    <input type="text" formControlName="shortName">
+  </div>
+  <div class="form-item">
+    <p>公司级别<span class="form-required">*</span></p>
+    <select formControlName="level">
+      <option value="1">1级公司</option>
+      <option value="2">2级公司</option>
+      <option value="3">3级公司</option>
+    </select>
+  </div>
+  <div class="form-item">
+    <p>所辖路段里程（单位：公里）<span class="form-required">*</span></p>
+    <input type="text" formControlName="totalMileage">
+  </div>
+  <div class="form-item">
+    <p>地址<span class="form-required">*</span></p>
+    <input type="text" formControlName="address">
+  </div>
+  <div class="form-item">
+    <p>联系人<span class="form-required">*</span></p>
+    <input type="text" formControlName="contacts">
+  </div>
+  <div class="form-item">
+    <p>联系电话<span class="form-required">*</span></p>
+    <input type="text" formControlName="phoneNo">
+  </div>
+  <div class="form-item">
+    <p>经度<span class="form-required">*</span></p>
+    <input type="text" formControlName="longitude">
+  </div>
+  <div class="form-item">
+    <p>纬度<span class="form-required">*</span></p>
+    <input type="text" formControlName="latitude">
+  </div>
+  <div class="form-item form-textarea">
+    <p>公司简介<span class="form-required">*</span></p>
+    <textarea type="text" formControlName="briefIntro"></textarea>
+  </div>
+  <div class="form-checkbox">
+    <p>启用状态：</p>
+    <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>启用</span></label>
+    <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>不启用</span></label>
+  </div>
+  <div class="form-item">
+    <button (click)="submit()" class="form-btn">保存</button>
+  </div>
+</form>

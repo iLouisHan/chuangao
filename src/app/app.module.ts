@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
-import { LoginReducer } from './store/cacheStore.reducer';
+import { LoginReducer, OrgInfoReducer } from './store/cacheStore.reducer';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { AppRoutes } from './app.routes';
@@ -18,7 +18,8 @@ import { AppRoutes } from './app.routes';
     RouterModule.forRoot(AppRoutes),
     HttpModule,
     StoreModule.forRoot({
-      login: LoginReducer
+      login: LoginReducer,
+      org: OrgInfoReducer
     })
   ],
   providers: [

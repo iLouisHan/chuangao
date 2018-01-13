@@ -5,7 +5,6 @@ import { HasLoginGuard } from '../guard/has-login.guard';
 import { RoadCompanyComponent } from './road-company/road-company.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
 import { HomeComponent } from './home/home.component';
-import { RoadCompanyInputComponent } from './road-company-input/road-company-input.component';
 
 export const MainRoutes: Routes = [
   {
@@ -36,8 +35,7 @@ export const MainRoutes: Routes = [
       },
       {
         path: 'roadCompanyInput',
-        component: RoadCompanyInputComponent,
-        canActivate: [HasLoginGuard]
+        loadChildren: './road-company-input/road-company-input.module#RoadCompanyInputModule'
       }
     ]
   }

@@ -15,3 +15,18 @@ export function LoginReducer(
     }
   }
 }
+
+export function OrgInfoReducer(
+  state: any,
+  action: collection.Actions
+) {
+  switch (action.type) {
+    case collection.SAVEORGINFO: {
+      state = action.payload;
+      return state;
+    }
+    default: {
+      return state;
+    }
+  }
+}
