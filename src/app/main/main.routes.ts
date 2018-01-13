@@ -4,6 +4,7 @@ import { HasLoginGuard } from '../guard/has-login.guard';
 
 import { RoadCompanyComponent } from './road-company/road-company.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
+import { HomeComponent } from './home/home.component';
 
 export const MainRoutes: Routes = [
   {
@@ -13,7 +14,7 @@ export const MainRoutes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'roadCompany',
+        redirectTo: 'home',
         pathMatch: 'full',
         canActivate: [HasLoginGuard]
       },
@@ -25,6 +26,11 @@ export const MainRoutes: Routes = [
       {
         path: 'tollStation',
         component: TollStationComponent,
+        canActivate: [HasLoginGuard]
+      },
+      {
+        path: 'home',
+        component: HomeComponent,
         canActivate: [HasLoginGuard]
       }
     ]

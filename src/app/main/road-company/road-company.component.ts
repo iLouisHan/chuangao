@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-road-company',
@@ -9,13 +11,17 @@ import 'rxjs/add/operator/map';
 })
 export class RoadCompanyComponent implements OnInit {
   data: any = {};
+  login: Observable<any>;
 
   constructor(
-    private http: Http
-  ) { }
+    private http: Http,
+    private store: Store<any>
+  ) {
+    this.login = store.select('login');
+  }
 
-  getInfo() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getCompanyInfo?companyCode=10004`)
+  getInfo(orgCode) {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getCompanyInfo?companyCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
@@ -27,7 +33,11 @@ export class RoadCompanyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getInfo();
+    this.login.subscribe(res => {
+      if (res) {
+        this.getInfo(res.orgCode);
+      }
+    });
   }
 
 }

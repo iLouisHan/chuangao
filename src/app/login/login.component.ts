@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.store.dispatch(new Actions.SaveLogin(''));
   }
 
 }

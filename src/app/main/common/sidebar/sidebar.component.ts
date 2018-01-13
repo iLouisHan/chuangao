@@ -10,6 +10,10 @@ import * as Actions from '../../../store/cacheStore.actions';
 })
 export class SidebarComponent implements OnInit {
   login: Observable<any>;
+  orgType = '';
+  orgLink = '';
+  orgLevel = ['路公司', '管理处', '收费站'];
+  orgLinks = ['roadCompany', '#', 'tollStation'];
 
   constructor(
     private store: Store<any>
@@ -19,9 +23,9 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      // console.log(res);
+      this.orgType = this.orgLevel[res.orgType - 1];
+      this.orgLink = this.orgLinks[res.orgType - 1];
     });
-    this.store.dispatch(new Actions.SaveLogin({a: 123}));
   }
 
 }
