@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -32,14 +32,11 @@ export class RoadCompanyImagesControlComponent implements OnInit {
   }
 
   upload($event) {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'multipart/form-data');
     const formdata = new FormData();
     formdata.append('file', $event.target.files[0]);
     formdata.append('orgCode', this.orgCode);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/baseInfo`, formdata, {
-      headers: myHeaders
-    }).map(res => res.json())
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/baseInfo`, formdata)
+      .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
@@ -51,7 +48,7 @@ export class RoadCompanyImagesControlComponent implements OnInit {
   }
 
   delete(id) {
-    this.http.get(`http://localhost:8080/cgfeesys/BaseInfo/deleteOrgPic?fileId=${id}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/deleteOrgPic?fileId=${id}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
