@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.store.dispatch(new Actions.SaveLogin(''));
-    document.cookie = `login=''`;
+    document.cookie = `login=`;
     this.router.navigate(['/login']);
   }
 

@@ -83,6 +83,7 @@
 
       &.home-item{
         background: url('/assets/images/home-item.png') no-repeat center 23px;
+        outline: none !important;
 
         &:hover, &.actived{
           background: #6c9cff url('/assets/images/home-item-hover.png') no-repeat center 23px;
