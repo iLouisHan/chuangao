@@ -34,7 +34,7 @@ export class RoadCompanyComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res) {
+      if (res && res.orgType === 1) {
         this.getInfo(res.orgCode);
       }
     });

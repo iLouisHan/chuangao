@@ -34,7 +34,7 @@ export class TollStationComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res) {
+      if (res && res.orgType === 3) {
         this.getInfo(res.orgCode);
       }
     });

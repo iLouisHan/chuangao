@@ -62,8 +62,10 @@ export class RoadCompanyImagesControlComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      this.orgCode = res.orgCode;
-      this.getImages(res.orgCode);
+      if (res && res.orgType === 1) {
+        this.orgCode = res.orgCode;
+        this.getImages(res.orgCode);
+      }
     });
   }
 
