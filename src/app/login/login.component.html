@@ -8,7 +8,7 @@
       <div>
         <span>密&nbsp;码</span><input type="password" formControlName="password" placeholder="请输入密码">
       </div>
-      <button type="submit">登&nbsp;录</button>
+      <button (keydown.enter)="onSubmit()" type="submit">登&nbsp;录</button>
     </form>
   </div>
 </div>
