@@ -36,6 +36,10 @@ export const MainRoutes: Routes = [
       {
         path: 'roadCompanyInput',
         loadChildren: './road-company-input/road-company-input.module#RoadCompanyInputModule'
+      },
+      {
+        path: 'tollStationInput',
+        loadChildren: './toll-station-input/toll-station-input.module#TollStationInputModule'
       }
     ]
   }

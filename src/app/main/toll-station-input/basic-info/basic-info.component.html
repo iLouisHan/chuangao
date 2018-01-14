@@ -1,0 +1,96 @@
+<form [formGroup]="form">
+  <div class="flex-container">
+    <div class="form-item">
+      <p>收费站编码<span class="form-required">*</span></p>
+      <input disabled="disabled" type="text" formControlName="stationCode">
+    </div>
+    <div class="form-item">
+      <p>收费站名称<span class="form-required">*</span></p>
+      <input disabled="disabled" type="text" formControlName="stationName">
+    </div>
+    <div class="form-item">
+      <p>收费站方向<span class="form-required">*</span></p>
+      <select formControlName="stationDirection">
+        <option value="">请选择</option>
+        <option value="上行方向（桩号递增方向）">上行方向（桩号递增方向）</option>
+        <option value="下行方向（桩号递减方向）">下行方向（桩号递减方向）</option>
+        <option value="上下双向">上下双向</option>
+      </select>
+    </div>
+    <div class="form-item">
+      <p>收费站类型<span class="form-required">*</span></p>
+      <select formControlName="stationType">
+        <option value="">请选择</option>
+        <option value="高速公路主线收费站">高速公路主线收费站</option>
+        <option value="高速公路匝道收费站">高速公路匝道收费站</option>
+      </select>
+    </div>
+    <div class="form-item">
+      <p>行政区域<span class="form-required">*</span></p>
+      <input type="text" formControlName="belongToRegion">
+    </div>
+    <div class="form-item">
+      <p>收费站桩号<span class="form-required">*</span></p>
+      <input type="text" formControlName="stationPileNumber">
+    </div>
+    <div class="form-item">
+      <p>收费站曾用名<span class="form-required">*</span></p>
+      <input type="text" formControlName="stationUsedName">
+    </div>
+    <div class="form-item">
+      <p>收费站类别<span class="form-required">*</span></p>
+      <select formControlName="stationClass">
+        <option value="">请选择</option>
+        <option value="一类">一类</option>
+        <option value="二类">二类</option>
+        <option value="三类">三类</option>
+      </select>
+    </div>
+    <div class="form-item">
+      <p>占地面积（平方米）<span class="form-required">*</span></p>
+      <input type="text" formControlName="areaCovere">
+    </div>
+    <div class="form-item">
+      <p>建筑面积（平方米）<span class="form-required">*</span></p>
+      <input type="text" formControlName="floorArea">
+    </div>
+    <div class="form-item">
+      <p>监控室面积（平方米）<span class="form-required">*</span></p>
+      <input type="text" formControlName="monitoringRoomArea">
+    </div>
+    <div class="form-item">
+      <p>纬度<span class="form-required">*</span></p>
+      <input type="text" formControlName="latitude">
+    </div>
+    <!-- <div class="form-item">
+      <p>所属路线<span class="form-required">*</span></p>
+      <input type="text" formControlName="longitude">
+    </div> -->
+    <div class="form-item">
+      <p>经度<span class="form-required">*</span></p>
+      <input type="text" formControlName="longitude">
+    </div>
+    <!-- <div class="form-item">
+      <p>省界站标志<span class="form-required">*</span></p>
+      <select formControlName="stationType">
+        <option value="">请选择</option>
+        <option value="非省界站">非省界站</option>
+        <option value="省界站">省界站</option>
+      </select>
+    </div> -->
+    <div class="form-item">
+      <p>收费站人数（个）<span class="form-required">*</span></p>
+      <input type="text" formControlName="staffNumber">
+    </div>
+  </div>
+  <div class="flex-container">
+    <div class="form-checkbox">
+      <p>启用状态：</p>
+      <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>启用</span></label>
+      <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>不启用</span></label>
+    </div>
+    <div class="form-item">
+      <button (click)="submit()" class="form-btn">保存</button>
+    </div>
+  </div>
+</form>

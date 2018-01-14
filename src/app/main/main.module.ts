@@ -28,7 +28,7 @@ import { TollStationComponent } from './toll-station/toll-station.component';
     MainComponent,
     RoadCompanyComponent,
     HomeComponent,
-    TollStationComponent,
+    TollStationComponent
   ],
   providers: [
     HasLoginGuard

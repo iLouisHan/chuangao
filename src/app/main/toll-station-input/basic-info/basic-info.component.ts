@@ -16,6 +16,7 @@ export class BasicInfoComponent implements OnInit {
   form: FormGroup;
   checkItem: string;
   keys: Array<string>;
+  data: any;
   trans = {
     companyCode: '公司编码',
     companyName: '公司名称',
@@ -39,28 +40,30 @@ export class BasicInfoComponent implements OnInit {
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
-      companyCode: new FormControl('', Validators.nullValidator),
-      companyName: new FormControl('', Validators.nullValidator),
-      organizationCode: new FormControl('', Validators.nullValidator),
-      shortName: new FormControl('', Validators.nullValidator),
-      level: new FormControl('', Validators.nullValidator),
-      address: new FormControl('', Validators.nullValidator),
-      contacts: new FormControl('', Validators.nullValidator),
-      phoneNo: new FormControl('', Validators.nullValidator),
-      briefIntro: new FormControl('', Validators.nullValidator),
-      status: new FormControl('', Validators.nullValidator),
-      totalMileage: new FormControl('', Validators.nullValidator),
+      stationCode: new FormControl('', Validators.nullValidator),
+      stationName: new FormControl('', Validators.nullValidator),
+      stationDirection: new FormControl('', Validators.nullValidator),
+      stationType: new FormControl('', Validators.nullValidator),
+      belongToRegion: new FormControl('', Validators.nullValidator),
+      stationPileNumber: new FormControl('', Validators.nullValidator),
+      stationUsedName: new FormControl('', Validators.nullValidator),
+      stationClass: new FormControl('', Validators.nullValidator),
+      areaCovere: new FormControl('', Validators.nullValidator),
+      floorArea: new FormControl('', Validators.nullValidator),
+      monitoringRoomArea: new FormControl('', Validators.nullValidator),
       longitude: new FormControl('', Validators.nullValidator),
-      latitude: new FormControl('', Validators.nullValidator)
+      latitude: new FormControl('', Validators.nullValidator),
+      staffNumber: new FormControl('', Validators.nullValidator)
     });
     this.keys = Object.keys(this.form.value);
   }
 
   getInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getCompanyInfo?companyCode=${orgCode}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
+                this.data = res.data;
                 this.form.patchValue(res.data);
                 this.checkItem = res.data.status;
               }else {
@@ -71,22 +74,25 @@ export class BasicInfoComponent implements OnInit {
 
   submit() {
     this.form.value.status = +this.checkItem;
-    const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.trans[el]);
-    if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
-    }else {
-      this.form.value.totalMileage = +this.form.value.totalMileage;
-      this.form.value.longitude = +this.form.value.longitude;
-      this.form.value.latitude = +this.form.value.latitude;
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
-      this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultCompany', JSON.stringify(this.form.value), {
-        headers: myHeaders
-      }).map(res => res.json())
-        .subscribe(res => {
-          alert(res.message);
-        });
-    }
+    // const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.trans[el]);
+    // if (spaceArr.length > 0) {
+    //   alert(`${spaceArr.join(',')}为空`);
+    // }else {
+    this.form.value.longitude = +this.form.value.longitude;
+    this.form.value.latitude = +this.form.value.latitude;
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    const keys = Object.keys(this.form.value);
+    keys.forEach(el => {
+      this.data[el] = this.form.value[el];
+    });
+    this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        alert(res.message);
+      });
+    // }
   }
 
   check($event) {
@@ -99,7 +105,7 @@ export class BasicInfoComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.orgType === 1) {
+      if (res && res.orgType === 3) {
         this.getInfo(res.orgCode);
       }
     });
