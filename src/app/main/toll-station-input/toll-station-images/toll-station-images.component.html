@@ -1,3 +1,12 @@
-<p>
-  toll-station-images works!
-</p>
+<ul class="clearfix">
+  <li *ngFor="let item of imgArr">
+    <img src="{{item.filePath}}" alt="">
+    <div (click)="delete(item.fileId)" class="delete-btn">
+      <i class="fa fa-close"></i>
+    </div>
+    <p class="img-text">{{item.fileName}}</p>
+  </li>
+  <li (click)="addImage.click()" class="add-image">
+    <input #addImage (change)="upload($event)" type="file">
+  </li>
+</ul>
