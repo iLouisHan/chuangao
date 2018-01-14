@@ -101,8 +101,6 @@ export class BasicInfoComponent implements OnInit {
     this.login.subscribe(res => {
       if (res) {
         this.getInfo(res.orgCode);
-      }else {
-        // this.router.navigate(['/home']);
       }
     });
   }
