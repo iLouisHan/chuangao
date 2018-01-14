@@ -4,14 +4,14 @@
   <div class="part-content">
     <div class="part-nav">
       <ul>
-        <li class="active">
+        <li [class.active]="iftab(0)">
           <div>
-            <a routerLink="basic">基本信息</a>
+            <a (click)="tab(0)" routerLink="basic">基本信息</a>
           </div>
         </li>
-        <li>
+        <li [class.active]="iftab(1)">
           <div>
-            <a routerLink="images">图片信息</a>
+            <a (click)="tab(1)" routerLink="images">图片信息</a>
           </div>
         </li>
       </ul>

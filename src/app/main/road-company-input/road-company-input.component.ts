@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'app-road-company-input',
@@ -6,10 +7,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./road-company-input.component.scss']
 })
 export class RoadCompanyInputComponent implements OnInit {
+  activeIndex: number;
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
+
+  tab(val) {
+    this.activeIndex = val;
+  }
+
+  iftab(val) {
+    return this.activeIndex === val;
+  }
 
   ngOnInit() {
+    this.activeIndex = /images/.test(this.router.url) ? 1 : 0;
   }
 
 }

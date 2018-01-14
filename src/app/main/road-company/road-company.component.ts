@@ -38,6 +38,7 @@ export class RoadCompanyComponent implements OnInit {
         this.getInfo(res.orgCode);
       }
     });
+    window.scrollTo(0, 0);
   }
 
 }

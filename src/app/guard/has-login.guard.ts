@@ -22,7 +22,6 @@ export class HasLoginGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const cookie = document.cookie.split(';');
-    console.log(document.cookie);
     const result = cookie.filter(el => el.trim().length > 0).map(el => el.trim().split('=')).filter(el => el[0] === 'login');
     if (result.length > 0) {
       const res = result[0];
