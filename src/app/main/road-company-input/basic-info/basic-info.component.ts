@@ -16,21 +16,21 @@ export class BasicInfoComponent implements OnInit {
   form: FormGroup;
   checkItem: string;
   keys: Array<string>;
-  trans = {
-    companyCode: '公司编码',
-    companyName: '公司名称',
-    shortName: '简称',
-    organizationCode: '组织机构代码',
-    level: '公司级别',
-    address: '地址',
-    contacts: '联系人',
-    phoneNo: '联系电话',
-    briefIntro: '公司简介',
-    status: '启用状态',
-    totalMileage: '所辖路段里程（单位：公里）',
-    longitude: '经度',
-    latitude: '纬度'
-  };
+  // trans = {
+  //   companyCode: '公司编码',
+  //   companyName: '公司名称',
+  //   shortName: '简称',
+  //   organizationCode: '组织机构代码',
+  //   level: '公司级别',
+  //   address: '地址',
+  //   contacts: '联系人',
+  //   phoneNo: '联系电话',
+  //   briefIntro: '公司简介',
+  //   status: '启用状态',
+  //   totalMileage: '所辖路段里程（单位：公里）',
+  //   longitude: '经度',
+  //   latitude: '纬度'
+  // };
 
   constructor(
     private http: Http,
@@ -71,10 +71,10 @@ export class BasicInfoComponent implements OnInit {
 
   submit() {
     this.form.value.status = +this.checkItem;
-    const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.trans[el]);
-    if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
-    }else {
+    // const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.trans[el]);
+    // if (spaceArr.length > 0) {
+    //   alert(`${spaceArr.join(',')}为空`);
+    // }else {
       this.form.value.totalMileage = +this.form.value.totalMileage;
       this.form.value.longitude = +this.form.value.longitude;
       this.form.value.latitude = +this.form.value.latitude;
@@ -86,7 +86,7 @@ export class BasicInfoComponent implements OnInit {
         .subscribe(res => {
           alert(res.message);
         });
-    }
+    // }
   }
 
   check($event) {

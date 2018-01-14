@@ -16,21 +16,21 @@ export class ContactComponent implements OnInit {
   checkItem: string;
   keys: Array<string>;
   data: any;
-  trans = {
-    companyCode: '公司编码',
-    companyName: '公司名称',
-    shortName: '简称',
-    organizationCode: '组织机构代码',
-    level: '公司级别',
-    address: '地址',
-    contacts: '联系人',
-    phoneNo: '联系电话',
-    briefIntro: '公司简介',
-    status: '启用状态',
-    totalMileage: '所辖路段里程（单位：公里）',
-    longitude: '经度',
-    latitude: '纬度'
-  };
+  // trans = {
+  //   companyCode: '公司编码',
+  //   companyName: '公司名称',
+  //   shortName: '简称',
+  //   organizationCode: '组织机构代码',
+  //   level: '公司级别',
+  //   address: '地址',
+  //   contacts: '联系人',
+  //   phoneNo: '联系电话',
+  //   briefIntro: '公司简介',
+  //   status: '启用状态',
+  //   totalMileage: '所辖路段里程（单位：公里）',
+  //   longitude: '经度',
+  //   latitude: '纬度'
+  // };
 
   constructor(
     private http: Http,

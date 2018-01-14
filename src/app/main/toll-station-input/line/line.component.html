@@ -1,3 +1,89 @@
-<p>
-  line works!
-</p>
+<form [formGroup]="form">
+  <div class="flex-container form-div1">
+    <div class="form-item">
+      <p>入口设计车道数（个）</p>
+      <input type="number" formControlName="enlaneDesignCount">
+    </div>
+    <div class="form-item">
+      <p>入口mtc车道数（个）</p>
+      <input type="number" formControlName="enlaneMtcCount">
+    </div>
+    <div class="form-item">
+      <p>入口混合车道数（个）</p>
+      <input type="number" formControlName="enlaneBlendCount">
+    </div>
+    <div class="form-item">
+      <p>入口计重设备数（个）</p>
+      <input type="number" formControlName="enlaneWeightCount">
+    </div>
+    <div class="form-item">
+      <p>入口实际车道数（个）</p>
+      <input type="number" formControlName="enlaneFactCount">
+    </div>
+    <div class="form-item">
+      <p>入口etc车道数（个）</p>
+      <input type="number" formControlName="enlaneEtcCount">
+    </div>
+    <div class="form-item">
+      <p>入口超宽车道宽（个）</p>
+      <input type="number" formControlName="enlaneUlTraWideWidth">
+    </div>
+    <div class="form-item">
+      <p>入口自动发卡设备数（个）</p>
+      <input type="number" formControlName="enlaneAutoCount">
+    </div>
+  </div>
+  <div class="flex-container form-div1">
+    <div class="form-item">
+      <p>出口设计车道数（个）</p>
+      <input type="number" formControlName="exlaneDesignCount">
+    </div>
+    <div class="form-item">
+      <p>出口mtc车道数（个）</p>
+      <input type="number" formControlName="exlaneMtcCount">
+    </div>
+    <div class="form-item">
+      <p>出口混合车道数（个）</p>
+      <input type="number" formControlName="exlaneBlendCount">
+    </div>
+    <div class="form-item">
+      <p>出口计重设备数（个）</p>
+      <input type="number" formControlName="exlaneWeightCount">
+    </div>
+    <div class="form-item">
+      <p>出口实际道口数（个）</p>
+      <input type="number" formControlName="exlaneFactCount">
+    </div>
+    <div class="form-item">
+      <p>出口etc车道数（个）</p>
+      <input type="number" formControlName="exlaneEtcCount">
+    </div>
+    <div class="form-item">
+      <p>出口超宽车道宽（个）</p>
+      <input type="number" formControlName="exlaneUlTraWideWidth">
+    </div>
+  </div>
+  <div class="flex-container">
+    <div class="form-item">
+      <p>绿通检测设备数（个）</p>
+      <input type="number" formControlName="agriculTuralCheckCount">
+    </div>
+    <div class="form-item">
+      <p>复式车道道口数（个）</p>
+      <input type="number" formControlName="laneMultipleCount">
+    </div>
+    <div class="form-item">
+      <p>可变车道道口数（个）</p>
+      <input type="number" formControlName="laneVariableCount">
+    </div>
+    <div class="form-item">
+      <p>应急车道设备数（个）</p>
+      <input type="number" formControlName="laneEmergencyCount">
+    </div>
+  </div>
+  <div class="flex-container">
+    <div class="form-item">
+      <button (click)="submit()" class="form-btn">保存</button>
+    </div>
+  </div>
+</form>
