@@ -32,7 +32,7 @@
         .basic-info-item{
           float: left;
           min-width: calc(50% - 30px);
-          padding-left: 20px;
+          padding-left: 30px;
           font-size: 16px;
           color: #999;
           margin-bottom: 20px;
@@ -85,6 +85,7 @@
 .children-container{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   margin: 0 20px;
   padding-bottom: 20px;
 
@@ -181,5 +182,54 @@
       margin-top: 8px;
     }
   }
+}
+
+.shortName{
+  background: url('/assets/images/basic-shortName.png') no-repeat 0 center;
+}
+.address{
+  background: url('/assets/images/basic-address.png') no-repeat 0 center;
+}
+.companyName{
+  background: url('/assets/images/basic-companyName.png') no-repeat 0 center;
+}
+.contacts{
+  background: url('/assets/images/basic-contacts.png') no-repeat 0 center;
+}
+.latitude{
+  background: url('/assets/images/basic-latitude.png') no-repeat 0 center;
+}
+.longitude{
+  background: url('/assets/images/basic-longitude.png') no-repeat 0 center;
+}
+.organizationCode{
+  background: url('/assets/images/basic-organizationCode.png') no-repeat 0 center;
+}
+.phoneNo{
+  background: url('/assets/images/basic-phoneNo.png') no-repeat 0 center;
+}
+.totalMileage{
+  background: url('/assets/images/basic-totalMileage.png') no-repeat 0 center;
+}
+.companyCode{
+  background: url('/assets/images/basic-companyCode.png') no-repeat 0 center;
+}
+.collection-staff{
+  background: url('/assets/images/collection-staff.png') no-repeat 0 center;
+}
+.collection-line{
+  background: url('/assets/images/collection-line.png') no-repeat 0 center;
+}
+.collection-design{
+  background: url('/assets/images/collection-design.png') no-repeat 0 center;
+}
+.collection-etc{
+  background: url('/assets/images/collection-etc.png') no-repeat 0 center;
+}
+.collection-weight{
+  background: url('/assets/images/collection-weight.png') no-repeat 0 center;
+}
+.collection-card{
+  background: url('/assets/images/collection-card.png') no-repeat 0 center;
 }
 
