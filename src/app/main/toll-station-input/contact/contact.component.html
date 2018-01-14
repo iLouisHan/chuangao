@@ -1,3 +1,91 @@
-<p>
-  contact works!
-</p>
+<form [formGroup]="form">
+  <div class="flex-container form-div1">
+    <div class="form-item">
+      <p>站长姓名</p>
+      <input type="text" formControlName="masterName">
+    </div>
+    <div class="form-item">
+      <p>副站长姓名</p>
+      <input type="text" formControlName="viceMaster1Name">
+    </div>
+    <div class="form-item">
+      <p>副站长2姓名</p>
+      <input type="text" formControlName="viceMaster2Name">
+    </div>
+    <div class="form-item">
+      <p>副站长3姓名</p>
+      <input type="text" formControlName="viceMaster3Name">
+    </div>
+    <div class="form-item">
+      <p>站长电话</p>
+      <input type="text" formControlName="masterPhone">
+    </div>
+    <div class="form-item">
+      <p>副站长电话</p>
+      <input type="text" formControlName="viceMaster1Phone">
+    </div>
+    <div class="form-item">
+      <p>副站长2电话</p>
+      <input type="text" formControlName="viceMaster2Phone">
+    </div>
+    <div class="form-item">
+      <p>副站长3电话</p>
+      <input type="text" formControlName="viceMaster3Phone">
+    </div>
+  </div>
+  <div class="flex-container">
+    <div class="form-item">
+      <p>计量检定部门</p>
+      <input type="text" formControlName="appraisalDepartment">
+    </div>
+    <div class="form-item">
+      <p>交通执法部门</p>
+      <input type="text" formControlName="trafficPolice">
+    </div>
+    <div class="form-item">
+      <p>高速交警名称</p>
+      <input type="text" formControlName="trafficDepartment">
+    </div>
+    <div class="form-item">
+      <p>地方应急部</p>
+      <input type="text" formControlName="localUrgent">
+    </div>
+    <div class="form-item">
+      <p>计量部门电话</p>
+      <input type="text" formControlName="appraisalDepartmentPhone">
+    </div>
+    <div class="form-item">
+      <p>交通执法部门电话</p>
+      <input type="text" formControlName="trafficPolicePhone">
+    </div>
+    <div class="form-item">
+      <p>高速交警电话</p>
+      <input type="text" formControlName="trafficDepartmentPhone">
+    </div>
+    <div class="form-item">
+      <p>辖区派出所</p>
+      <input type="text" formControlName="regionPlice">
+    </div>
+    <div class="form-item">
+      <p>收款银行名称</p>
+      <input type="text" formControlName="bankName">
+    </div>
+    <div class="form-item">
+      <p>应急部电话</p>
+      <input type="text" formControlName="localUrgentPhone">
+    </div>
+    <div class="form-item">
+      <p>派出所电话</p>
+      <input type="text" formControlName="regionPolicePhone">
+    </div>
+    <div class="form-item">
+      <p>收款银行电话</p>
+      <input type="text" formControlName="bankPhone">
+    </div>
+  </div>
+  <div class="flex-container">
+    <div class="form-item">
+      <button (click)="submit()" class="form-btn">保存</button>
+    </div>
+  </div>
+</form>

@@ -4,7 +4,6 @@ import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-basic-info',
@@ -35,8 +34,7 @@ export class BasicInfoComponent implements OnInit {
 
   constructor(
     private http: Http,
-    private store: Store<any>,
-    private router: Router
+    private store: Store<any>
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
