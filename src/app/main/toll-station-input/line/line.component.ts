@@ -67,8 +67,7 @@ export class LineComponent implements OnInit {
     // }else {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
+    this.keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
     this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
