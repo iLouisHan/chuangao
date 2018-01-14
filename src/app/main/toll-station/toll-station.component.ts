@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { work_post } from '../../store/translate';
 
 @Component({
   selector: 'app-toll-station',
@@ -12,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 export class TollStationComponent implements OnInit {
   data: any = {};
   login: Observable<any>;
+  workTrans = work_post;
 
   constructor(
     private http: Http,

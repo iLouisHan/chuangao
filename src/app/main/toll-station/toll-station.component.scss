@@ -49,6 +49,7 @@
 .flex-container-between{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .station-content-title{
     padding: 0 8px 0 35px;
@@ -57,17 +58,34 @@
     line-height: 30px;
     color: #fff;
     display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .part-content2{
+    padding-bottom: 20px;
+  }
+
+  li{
+    color: #333;
+    margin-bottom: 20px;
+
+    .station-span1{
+      color: #6c9cff;
+      font-size: 14px;
+      margin-right: 20px;
+    }
   }
 
   .station-connect{
     width: calc(45% - 20px);
     padding-bottom: 20px;
+    min-height: calc(100% - 120px);
 
     .station-contact{
       padding: 0 20px;
 
       .inner-contact{
-        width: 33%;
+        width: 40%;
 
         .station-content-title{
           background: #ff966d;
@@ -75,10 +93,15 @@
       }
 
       .outter-contact{
-        width: calc(67% - 10px);
+        width: calc(60% - 20px);
 
         .station-content-title{
           background: #61b3f2;
+        }
+
+        li{
+          width: auto;
+          min-width: 40%;
         }
       }
     }
@@ -86,12 +109,38 @@
 
   .station-lines{
     width: 55%;
+    padding-bottom: 20px;
 
     >div{
       padding: 0 20px;
 
       .station-line{
         width: calc((100% - 20px)/3);
+
+        ul{
+          li{
+            min-width: 50%;
+            float: left;
+          }
+        }
+      }
+
+      .inner-line{
+        .station-content-title{
+          background: #61e1ac;
+        }
+      }
+
+      .outer-line{
+        .station-content-title{
+          background: #798af6;
+        }
+      }
+
+      .other-line{
+        .station-content-title{
+          background: #f3ab5d;
+        }
       }
     }
   }
@@ -100,6 +149,11 @@
   .part-content2{
     padding: 30px 20px;
     background: #fff;
+    min-height: calc(100% - 60px);
+  }
+
+  .flex-container-between{
+    min-height: calc(100% - 60px);
   }
 }
 
@@ -166,6 +220,43 @@
       font-size: 16px;
       color: #999;
       margin-top: 8px;
+    }
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .media-container{
+
+    .station-connect{
+      width: 100%;
+      margin-bottom: 20px;
+
+      .station-contact{
+        .inner-contact{
+          width: calc(40% - 10px);
+        }
+
+        .outter-contact{
+          width: calc(60% - 10px);
+        }
+      }
+
+      .part-content2{
+        min-height: calc(100% - 60px);
+
+        li{
+          width: 50%;
+          float: left;
+        }
+      }
+    }
+
+    .station-lines{
+      width: 100%;
+
+      .part-content2{
+        min-height: calc(100% - 60px);
+      }
     }
   }
 }

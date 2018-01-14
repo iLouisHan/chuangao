@@ -33,7 +33,7 @@
     </div>
   </div>
 </div>
-<div class="flex-container-between">
+<div class="flex-container-between media-container">
   <div class="station-connect part-container">
     <h1 class="part-title">联系电话</h1>
     <div class="flex-container-between station-contact">
@@ -41,8 +41,17 @@
         <div class="part-content2">
           <p class="station-content-title">对内联系</p>
           <ul>
-            <li>
-              <span>吴彦祖</span><span>(站长)</span>18599663036
+              <li *ngIf="data.masterName">
+              <span class="station-span1">{{data.masterName}}</span>{{data.masterPhone}}
+            </li>
+            <li *ngIf="data.viceMaster1Name">
+              <span class="station-span1">{{data.viceMaster1Name}}</span>{{data.viceMaster1Phone}}
+            </li>
+            <li *ngIf="data.viceMaster2Name">
+              <span class="station-span1">{{data.viceMaster2Name}}</span>{{data.viceMaster2Phone}}
+            </li>
+            <li *ngIf="data.viceMaster3Name">
+              <span class="station-span1">{{data.viceMaster3Name}}</span>{{data.viceMaster3Phone}}
             </li>
           </ul>
         </div>
@@ -51,7 +60,24 @@
         <div class="part-content2">
           <p class="station-content-title">对外联系</p>
           <ul>
-            <li></li>
+            <li *ngIf="data.regionPlice">
+              <span class="station-span1">{{data.regionPlice}}</span>{{data.regionPolicePhone}}
+            </li>
+            <li *ngIf="data.localUrgent">
+              <span class="station-span1">{{data.localUrgent}}</span>{{data.localUrgentPhone}}
+            </li>
+            <li *ngIf="data.bankName">
+              <span class="station-span1">{{data.bankName}}</span>{{data.bankPhone}}
+            </li>
+            <li *ngIf="data.trafficDepartment">
+              <span class="station-span1">{{data.trafficDepartment}}</span>{{data.trafficDepartmentPhone}}
+            </li>
+            <li *ngIf="data.trafficPolice">
+              <span class="station-span1">{{data.trafficPolice}}</span>{{data.trafficPolicePhone}}
+            </li>
+            <li *ngIf="data.appraisalDepartment">
+              <span class="station-span1">{{data.appraisalDepartment}}</span>{{data.appraisalDepartmentPhone}}
+            </li>
           </ul>
         </div>
       </div>
@@ -60,27 +86,81 @@
   <div class="station-lines part-container">
     <h1 class="part-title">车道信息</h1>
     <div class="flex-container-between">
-      <div class="station-line">
+      <div class="station-line inner-line">
         <div class="part-content2">
           <p class="station-content-title">入口车道信息</p>
           <ul>
-            <li></li>
+            <li *ngIf="data.enlaneDesignCount">
+              <span class="station-span1">设计道口数</span>{{data.enlaneDesignCount}}
+            </li>
+            <li *ngIf="data.enlaneUlTraWideWidth">
+              <span class="station-span1">超宽车道宽度</span>{{data.enlaneUlTraWideWidth}}
+            </li>
+            <li *ngIf="data.enlaneFactCount">
+              <span class="station-span1">实际道口数</span>{{data.enlaneFactCount}}
+            </li>
+            <li *ngIf="data.enlaneBlendCount">
+              <span class="station-span1">混合车道道口数</span>{{data.enlaneBlendCount}}
+            </li>
+            <li *ngIf="data.enlaneMtcCount">
+              <span class="station-span1">MTC道口数</span>{{data.enlaneMtcCount}}
+            </li>
+            <li *ngIf="data.enlaneWeightCount">
+              <span class="station-span1">治超设备数</span>{{data.enlaneWeightCount}}
+            </li>
+            <li *ngIf="data.enlaneEtcCount">
+              <span class="station-span1">ETC道口数</span>{{data.enlaneEtcCount}}
+            </li>
+            <li *ngIf="data.enlaneAutoCount">
+              <span class="station-span1">自动发卡设备数</span>{{data.enlaneAutoCount}}
+            </li>
           </ul>
         </div>
       </div>
-      <div class="station-line">
+      <div class="station-line outer-line">
         <div class="part-content2">
           <p class="station-content-title">出口车道信息</p>
           <ul>
-            <li></li>
+            <li *ngIf="data.exlaneDesignCount">
+              <span class="station-span1">设计道口数</span>{{data.exlaneDesignCount}}
+            </li>
+            <li *ngIf="data.exlaneUlTraWideWidth">
+              <span class="station-span1">超宽车道宽度</span>{{data.exlaneUlTraWideWidth}}
+            </li>
+            <li *ngIf="data.exlaneFactCount">
+              <span class="station-span1">实际道口数</span>{{data.exlaneFactCount}}
+            </li>
+            <li *ngIf="data.exlaneBlendCount">
+              <span class="station-span1">混合车道道口数</span>{{data.exlaneBlendCount}}
+            </li>
+            <li *ngIf="data.exlaneMtcCount">
+              <span class="station-span1">MTC道口数</span>{{data.exlaneMtcCount}}
+            </li>
+            <li *ngIf="data.exlaneWeightCount">
+              <span class="station-span1">治超设备数</span>{{data.exlaneWeightCount}}
+            </li>
+            <li *ngIf="data.exlaneEtcCount">
+              <span class="station-span1">ETC道口数</span>{{data.exlaneEtcCount}}
+            </li>
           </ul>
         </div>
       </div>
-      <div class="station-line">
+      <div class="station-line other-line">
         <div class="part-content2">
           <p class="station-content-title">其他信息</p>
           <ul>
-            <li></li>
+            <li *ngIf="data.agriculTuralCheckCount">
+              <span class="station-span1">绿通检测设备数</span>{{data.agriculTuralCheckCount}}
+            </li>
+            <li *ngIf="data.laneMultipleCount">
+              <span class="station-span1">复式车道道口数</span>{{data.laneMultipleCount}}
+            </li>
+            <li *ngIf="data.laneVariableCount">
+              <span class="station-span1">可变车道道口数</span>{{data.laneVariableCount}}
+            </li>
+            <li *ngIf="data.laneEmergencyCount">
+              <span class="station-span1">应急车道设备数</span>{{data.laneEmergencyCount}}
+            </li>
           </ul>
         </div>
       </div>
@@ -113,7 +193,7 @@
       <li class="staff-item" *ngFor="let staff of data.staffList">
         <img src="/assets/images/photo.png" alt="">
         <p>{{staff.userName}}</p>
-        <span>收费站站长</span>
+        <span>{{workTrans[staff.workPost]}}</span>
       </li>
     </ul>
   </div>
