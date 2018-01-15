@@ -1,11 +1,11 @@
 <div class="sidebar-container">
   <ul class="sidebar-items">
-    <li *ngIf="orgType !== '收费站'" routerLink="home" class="sidebar-item home-item">
+    <li *ngIf="orgType !== '收费站'" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
       <div class="sidebar-item-show">
         <p>系统首页</p>
       </div>
     </li>
-    <li class="sidebar-item basic-item">
+    <li class="sidebar-item basic-item" [class.actived]="testHash(orgLink)">
       <div class="sidebar-item-show">
         <p>基础数据</p>
       </div>

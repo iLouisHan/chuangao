@@ -2,7 +2,7 @@
   position: fixed;
   left: 0;
   top: 60px;
-  width: 120px;
+  width: 100px;
   height: calc(100% - 61px);
   padding-top: 30px;
   z-index: 99;
@@ -33,7 +33,7 @@
 
       .sidebar-item-hover{
         position: fixed;
-        left: 120px;
+        left: 100px;
         width: 445px;
         height: 75%;
         top: 89px;
@@ -117,7 +117,7 @@
         }
       }
 
-      &:hover, &.active{
+      &:hover, &.actived{
         .sidebar-item-show p{
           color: #fff;
         }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import * as Actions from '../../../store/cacheStore.actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,9 +19,14 @@ export class SidebarComponent implements OnInit {
   orgInputLinks = ['roadCompanyInput', 'divisionInput', 'tollStationInput'];
 
   constructor(
-    private store: Store<any>
+    private store: Store<any>,
+    private router: Router
   ) {
     this.login = store.select('login');
+  }
+
+  testHash(str): boolean {
+    return (new RegExp(str)).test(this.router.url);
   }
 
   ngOnInit() {

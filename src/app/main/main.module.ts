@@ -16,6 +16,7 @@ import { RoadCompanyComponent } from './road-company/road-company.component';
 import { HomeComponent } from './home/home.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
 import { DivisionComponent } from './division/division.component';
+import { StaffComponent } from './staff/staff.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { DivisionComponent } from './division/division.component';
     RoadCompanyComponent,
     HomeComponent,
     TollStationComponent,
-    DivisionComponent
+    DivisionComponent,
+    StaffComponent
   ],
   providers: [
     HasLoginGuard,
