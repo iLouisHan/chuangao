@@ -69,7 +69,10 @@
 
       &.logout-item{
         line-height: 60px;
-        cursor: pointer;
+
+        img{
+          cursor: pointer;
+        }
       }
     }
   }

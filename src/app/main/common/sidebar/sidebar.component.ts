@@ -14,8 +14,8 @@ export class SidebarComponent implements OnInit {
   orgLink = '';
   orgInputLink = '';
   orgLevel = ['路公司', '管理处', '收费站'];
-  orgLinks = ['roadCompany', '#', 'tollStation'];
-  orgInputLinks = ['roadCompanyInput', , 'tollStationInput'];
+  orgLinks = ['roadCompany', 'division', 'tollStation'];
+  orgInputLinks = ['roadCompanyInput', 'divisionInput', 'tollStationInput'];
 
   constructor(
     private store: Store<any>

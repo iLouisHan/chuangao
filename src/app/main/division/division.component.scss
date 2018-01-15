@@ -130,6 +130,10 @@
           float: left;
           margin-bottom: 20px;
 
+          &.division-staff-next{
+            height: 72px;
+          }
+
           p{
             font-size: 16px;
             color: #333;
@@ -139,13 +143,15 @@
           >span{
             color: #999;
             font-size: 14px;
+            display: inline-block;
+            min-width: 49%;
 
             span{
               color: #666;
             }
 
-            span:last-child{
-              margin-left: 40px;
+            span:first-child{
+              margin-left: 0;
             }
           }
         }
