@@ -12,16 +12,16 @@
     bottom: 0;
     right: 10%;
     margin: auto;
-    width: 560px;
-    box-shadow: #0041c6 0 10px 10px;
+    width: 500px;
+    box-shadow: #0041c6 0 0 10px;
     background: #f1f5ff;
     border-radius: 10px;
-    height: 560px;
+    height: 500px;
 
     h1{
-      font-size: 40px;
+      font-size: 30px;
       text-align: center;
-      line-height: 120px;
+      line-height: 100px;
       background: #6c9cff;
       color: #fff;
       border-radius: 10px 10px 0 0;
@@ -34,17 +34,17 @@
         margin-bottom: 50px;
 
         span{
-          font-size: 24px;
+          font-size: 20px;
           line-height: 60px;
           margin-right: 20px;
         }
 
         input{
-          width: 280px;
-          padding: 0 40px;
+          width: 250px;
+          padding: 0 30px;
           height: 60px;
           border: 1px solid transparent;
-          font-size: 24px;
+          font-size: 20px;
           border-radius: 5px;
           outline: none !important;
 
