@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { MainComponent } from './main.component';
 import { HasLoginGuard } from '../guard/has-login.guard';
 import { TollGuard } from '../guard/toll.guard';
+import { AdminGuard } from '../guard/admin.guard';
 
 import { RoadCompanyComponent } from './road-company/road-company.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
@@ -36,7 +37,7 @@ export const MainRoutes: Routes = [
       {
         path: 'home',
         component: HomeComponent,
-        canActivate: [TollGuard]
+        canActivate: [AdminGuard, TollGuard]
       },
       {
         path: 'staff',

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MainRoutes } from './main.routes';
 import { HasLoginGuard } from '../guard/has-login.guard';
 import { TollGuard } from '../guard/toll.guard';
+import { AdminGuard } from '../guard/admin.guard';
 import { SharedModule } from '../shared/shared.module';
 
 import { SidebarComponent } from './common/sidebar/sidebar.component';
@@ -39,7 +40,8 @@ import { StaffDetailComponent } from './staff-detail/staff-detail.component';
   ],
   providers: [
     HasLoginGuard,
-    TollGuard
+    TollGuard,
+    AdminGuard
   ]
 })
 export class MainModule { }
