@@ -1,11 +1,11 @@
 <div class="sidebar-container">
   <ul class="sidebar-items">
-    <li *ngIf="orgType !== '收费站'" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
+    <li *ngIf="orgType !== 3" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
       <div class="sidebar-item-show">
         <p>系统首页</p>
       </div>
     </li>
-    <li *ngIf="admin" class="sidebar-item basic-item" [class.actived]="testHash(orgLink)">
+    <li class="sidebar-item basic-item" [class.actived]="isBasic()">
       <div class="sidebar-item-show">
         <p>基础数据</p>
       </div>
@@ -14,10 +14,11 @@
           <p class="hover-title"><span class="circle"></span><span>基础信息</span></p>
           <ul class="hover-ul">
             <li class="hover-li">
-              <a routerLink="{{orgLink}}">{{orgType}}信息</a>
+              <a *ngIf="admin" routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
+              <a *ngIf="!admin" [routerLink]="['/main/staffDetail']" [queryParams]="{id: userId}" >个人信息</a>
             </li>
             <li class="hover-li">
-              <a routerLink="{{orgInputLink}}">{{orgType}}信息录入</a>
+              <a routerLink="{{orgInputLink}}">个人信息录入</a>
             </li>
           </ul>
         </div>
@@ -29,7 +30,7 @@
       </div>
       <div class="sidebar-item-hover"></div>
     </li>
-    <li class="sidebar-item staff-item" [class.actived]="testHash('staff')">
+    <li class="sidebar-item staff-item">
       <div class="sidebar-item-show">
         <p>收费人员</p>
       </div>

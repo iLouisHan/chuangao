@@ -44,7 +44,7 @@ export class StaffDetailComponent implements OnInit {
     if (this.staffId) {
       this.getInfo(this.staffId);
     }else {
-      this.router.navigate(['main/staff']);
+      this.router.navigate(['main/home']);
     }
   }
 
