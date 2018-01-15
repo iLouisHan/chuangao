@@ -16,7 +16,7 @@
 
       .sidebar-item-show{
         height: 20px;
-        padding: 77px 0 23px 0;
+        padding: 65px 0 5px 0;
         text-align: center;
         cursor: pointer;
 
@@ -26,8 +26,7 @@
         }
 
         p{
-          margin-top: 10px;
-          font-size: 20px;
+          font-size: 16px;
           line-height: 20px;
         }
       }
@@ -82,39 +81,39 @@
       }
 
       &.home-item{
-        background: url('/assets/images/home-item.png') no-repeat center 23px;
+        background: url('/assets/images/home-item.png') no-repeat center 10px;
         outline: none !important;
 
         &:hover, &.actived{
-          background: #6c9cff url('/assets/images/home-item-hover.png') no-repeat center 23px;
+          background: #6c9cff url('/assets/images/home-item-hover.png') no-repeat center 10px;
         }
       }
       &.basic-item{
-        background: url('/assets/images/basic-item.png') no-repeat center 23px;
+        background: url('/assets/images/basic-item.png') no-repeat center 10px;
 
         &:hover, &.actived{
-          background: #6c9cff url('/assets/images/basic-item-hover.png') no-repeat center 23px;
+          background: #6c9cff url('/assets/images/basic-item-hover.png') no-repeat center 10px;
         }
       }
       &.system-item{
-        background: url('/assets/images/system-item.png') no-repeat center 23px;
+        background: url('/assets/images/system-item.png') no-repeat center 10px;
 
         &:hover, &.actived{
-          background: #6c9cff url('/assets/images/system-item-hover.png') no-repeat center 23px;
+          background: #6c9cff url('/assets/images/system-item-hover.png') no-repeat center 10px;
         }
       }
       &.staff-item{
-        background: url('/assets/images/staff-item.png') no-repeat center 23px;
+        background: url('/assets/images/staff-item.png') no-repeat center 10px;
 
         &:hover, &.actived{
-          background: #6c9cff url('/assets/images/staff-item-hover.png') no-repeat center 23px;
+          background: #6c9cff url('/assets/images/staff-item-hover.png') no-repeat center 10px;
         }
       }
       &.affairs-item{
-        background: url('/assets/images/affairs-item.png') no-repeat center 23px;
+        background: url('/assets/images/affairs-item.png') no-repeat center 10px;
 
         &:hover, &.actived{
-          background: #6c9cff url('/assets/images/affairs-item-hover.png') no-repeat center 23px;
+          background: #6c9cff url('/assets/images/affairs-item-hover.png') no-repeat center 10px;
         }
       }
 
