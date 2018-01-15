@@ -17,6 +17,7 @@ export class SidebarComponent implements OnInit {
   orgLevel = ['路公司', '管理处', '收费站'];
   orgLinks = ['roadCompany', 'division', 'tollStation'];
   orgInputLinks = ['roadCompanyInput', 'divisionInput', 'tollStationInput'];
+  admin: boolean;
 
   constructor(
     private store: Store<any>,
@@ -34,6 +35,7 @@ export class SidebarComponent implements OnInit {
       this.orgType = this.orgLevel[res.orgType - 1];
       this.orgLink = this.orgLinks[res.orgType - 1];
       this.orgInputLink = this.orgInputLinks[res.orgType - 1];
+      this.admin = res.isAdmin;
     });
   }
 
