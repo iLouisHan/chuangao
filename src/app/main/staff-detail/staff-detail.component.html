@@ -1,0 +1,95 @@
+<h1 class="page-title"><div class="page-title-icon"></div>人员明细</h1>
+<div class="part-container">
+  <div class="basic-info-container">
+    <h1 class="part-title">基本信息</h1>
+    <div class="part-content clearfix">
+      <div class="img-container">
+        <img src="/assets/images/staff-photo.jpg" alt="">
+      </div>
+      <div class="basic-info-div">
+        <ul class="basic-info-ul">
+          <li class="basic-info-item userName">
+            <span>姓名：</span>{{data.userName}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>学历：</span>{{educational[data.educational - 1]}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>性别：</span>{{data.userSex}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>岗位：</span>{{work_post[data.workPost]}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>手机号：</span>{{data.userTel}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>出生日期：</span>{{data.birthday}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>年龄：</span>{{age(data.birthday)}}岁
+          </li>
+          <li class="basic-info-item userName">
+            <span>从业证书：</span>{{data.practitionerCertificate}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>人员编码：</span>{{data.UserId}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>系统工号：</span>{{data.collectionSysId}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>组织名称：</span>{{data.orgName}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>上岗证编号：</span>{{data.workLicense}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>入职时间：</span>{{data.hireDate}}
+          </li>
+          <li class="basic-info-item userName">
+            <span>工龄：</span>{{age(data.hireDate)}}年
+          </li>
+          <li class="basic-info-item userName">
+            <span>特长：</span>{{data.specialSkill}}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div [class.not-toll-station]="data.orgType !== 5" class="other-container">
+    <div>
+      <h1 class="part-title">星评情况</h1>
+      <div class="part-content2 score-container clearfix">
+        <div class="comprehensive">
+          <p class="item">综合考核</p>
+          <p class="value">暂无</p>
+        </div>
+        <div class="business">
+          <p class="item">业务考核</p>
+          <p class="value">暂无</p>
+        </div>
+        <div class="level">
+          <p class="item">等级考核</p>
+          <p class="value">暂无</p>
+        </div>
+        <div class="star">
+          <p class="item">星级考核</p>
+          <p class="value">暂无</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h1 class="part-title">获奖情况</h1>
+      <div class="part-content2 list-str">
+        <p>{{data.awardDetail}}</p>
+      </div>
+    </div>
+    <div>
+      <h1 class="part-title">工作履历</h1>
+      <div class="part-content2 list-str">
+        <p>{{data.jobDetail}}</p>
+      </div>
+    </div>
+  </div>
+</div>

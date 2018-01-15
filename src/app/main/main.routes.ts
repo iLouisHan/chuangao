@@ -7,6 +7,8 @@ import { RoadCompanyComponent } from './road-company/road-company.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
 import { HomeComponent } from './home/home.component';
 import { DivisionComponent } from './division/division.component';
+import { StaffComponent } from './staff/staff.component';
+import { StaffDetailComponent } from './staff-detail/staff-detail.component';
 
 export const MainRoutes: Routes = [
   {
@@ -17,28 +19,32 @@ export const MainRoutes: Routes = [
       {
         path: '',
         redirectTo: 'home',
-        pathMatch: 'full',
-        canActivate: [HasLoginGuard]
+        pathMatch: 'full'
       },
       {
         path: 'roadCompany',
-        component: RoadCompanyComponent,
-        canActivate: [HasLoginGuard]
+        component: RoadCompanyComponent
       },
       {
         path: 'division',
-        component: DivisionComponent,
-        canActivate: [HasLoginGuard]
+        component: DivisionComponent
       },
       {
         path: 'tollStation',
-        component: TollStationComponent,
-        canActivate: [HasLoginGuard]
+        component: TollStationComponent
       },
       {
         path: 'home',
         component: HomeComponent,
-        canActivate: [HasLoginGuard, TollGuard]
+        canActivate: [TollGuard]
+      },
+      {
+        path: 'staff',
+        component: StaffComponent
+      },
+      {
+        path: 'staffDetail',
+        component: StaffDetailComponent
       },
       {
         path: 'roadCompanyInput',
