@@ -47,5 +47,4 @@ export class StaffDetailComponent implements OnInit {
       this.router.navigate(['main/home']);
     }
   }
-
 }

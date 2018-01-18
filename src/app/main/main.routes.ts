@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { DivisionComponent } from './division/division.component';
 import { StaffComponent } from './staff/staff.component';
 import { StaffDetailComponent } from './staff-detail/staff-detail.component';
+import { StaffInputComponent } from './staff-input/staff-input.component';
 
 export const MainRoutes: Routes = [
   {
@@ -46,6 +47,10 @@ export const MainRoutes: Routes = [
       {
         path: 'staffDetail',
         component: StaffDetailComponent
+      },
+      {
+        path: 'staffDetailInput',
+        loadChildren: './staff-input/staff-input.module#StaffInputModule'
       },
       {
         path: 'roadCompanyInput',

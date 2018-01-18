@@ -11,8 +11,6 @@ import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { NavbarComponent } from './common/navbar/navbar.component';
 import { MainComponent } from './main.component';
 
-import { CalendarModule } from 'primeng/primeng';
-
 import { RoadCompanyComponent } from './road-company/road-company.component';
 import { HomeComponent } from './home/home.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
@@ -24,8 +22,7 @@ import { StaffDetailComponent } from './staff-detail/staff-detail.component';
   imports: [
     CommonModule,
     RouterModule.forChild(MainRoutes),
-    SharedModule,
-    CalendarModule,
+    SharedModule
   ],
   declarations: [
     SidebarComponent,

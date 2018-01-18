@@ -7,6 +7,7 @@
   padding-top: 30px;
   z-index: 99;
   background: #fff;
+  overflow-y: scroll;
 
   .sidebar-items{
     position: relative;
@@ -44,6 +45,8 @@
         padding: 20px 0 40px 15px;
 
         .hover-item{
+          margin-bottom: 20px;
+
           .hover-title{
             font-size: 16px;
             color: #999;

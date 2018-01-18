@@ -12,13 +12,14 @@
       <div class="sidebar-item-hover">
         <div class="hover-item">
           <p class="hover-title"><span class="circle"></span><span>基础信息</span></p>
-          <ul class="hover-ul">
+          <ul class="hover-ul clearfix">
             <li class="hover-li">
               <a *ngIf="admin" routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
-              <a *ngIf="!admin" [routerLink]="['/main/staffDetail']" [queryParams]="{id: userId}" >个人信息</a>
+              <a *ngIf="!admin" [routerLink]="['/main/staffDetail']" [queryParams]="{id: userId}">个人信息</a>
             </li>
             <li class="hover-li">
-              <a routerLink="{{orgInputLink}}">个人信息录入</a>
+              <a *ngIf="admin" routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
+              <a *ngIf="!admin" [routerLink]="['/main/staffDetailInput']" [queryParams]="{id: userId}">个人信息录入</a>
             </li>
           </ul>
         </div>
@@ -34,7 +35,50 @@
       <div class="sidebar-item-show">
         <p>收费人员</p>
       </div>
-      <div class="sidebar-item-hover"></div>
+      <div class="sidebar-item-hover">
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>人员管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="">人员查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">人员统计</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">人员录入</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>班组排版管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="">排版查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">排班模板设置</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">排版班次设置</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>人员调班查询</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="">调(顶)班查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">调班登记</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">顶班登记</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </li>
     <li class="sidebar-item affairs-item">
       <div class="sidebar-item-show">
