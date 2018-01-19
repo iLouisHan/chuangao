@@ -1,0 +1,4 @@
+<div class="tree">
+  <div><span *ngFor="let file of selectedFiles2">{{file.data}}</span></div>
+  <p-tree [value]="treeNodes" selectionMode="checkbox" [(selection)]="selectedFiles2"></p-tree>
+</div>

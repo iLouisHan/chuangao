@@ -42,7 +42,7 @@ export const MainRoutes: Routes = [
       },
       {
         path: 'staff',
-        component: StaffComponent
+        loadChildren: './staff/staff.module#StaffModule'
       },
       {
         path: 'staffDetail',

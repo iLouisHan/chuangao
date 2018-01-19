@@ -15,7 +15,6 @@ import { RoadCompanyComponent } from './road-company/road-company.component';
 import { HomeComponent } from './home/home.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
 import { DivisionComponent } from './division/division.component';
-import { StaffComponent } from './staff/staff.component';
 import { StaffDetailComponent } from './staff-detail/staff-detail.component';
 
 @NgModule({
@@ -32,7 +31,6 @@ import { StaffDetailComponent } from './staff-detail/staff-detail.component';
     HomeComponent,
     TollStationComponent,
     DivisionComponent,
-    StaffComponent,
     StaffDetailComponent
   ],
   providers: [
