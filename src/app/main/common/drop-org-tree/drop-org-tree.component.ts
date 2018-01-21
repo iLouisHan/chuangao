@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -10,9 +10,14 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./drop-org-tree.component.scss']
 })
 export class DropOrgTreeComponent implements OnInit {
+  @Output()
+  selectedOrg: EventEmitter<any> = new EventEmitter();
+
   login: Observable<any>;
   treeNodes: Array<any> = [];
   selectedFiles2: any;
+  isShow = false;
+  selected: string;
 
   constructor(
     private http: Http,
@@ -21,21 +26,48 @@ export class DropOrgTreeComponent implements OnInit {
     this.login = store.select('login');
   }
 
+  addChild(arr, node) {
+    if (arr.id === node.pid) {
+      arr.children.push({
+        label: node.orgName,
+        data: node.orgCode,
+        id: node.id,
+        children: []
+      });
+    }else if (arr.children.length > 0) {
+      arr.children.forEach(el => {
+        this.addChild(el, node);
+      });
+    }
+  }
+
   toTreeNode(arr) {
     for (let i = 1; i <= 3; i++) {
       const _arr = arr.filter(el => el.orgType === i);
       _arr.forEach(el => {
         if (el.pid) {
-
+          this.treeNodes.forEach(element => {
+            this.addChild(element, el);
+          });
         }else {
           this.treeNodes.push({
             label: el.orgName,
-            data: el.orgCode
+            data: el.orgCode,
+            id: el.id,
+            children: []
           });
-          console.log(this.treeNodes);
         }
       });
     }
+  }
+
+  tab() {
+    this.isShow = !this.isShow;
+  }
+
+  nodeSelect() {
+    this.selected = this.selectedFiles2.map(el => el.label).join(', ');
+    this.selectedOrg.emit(this.selectedFiles2);
   }
 
   getOrgInfo(orgCode) {

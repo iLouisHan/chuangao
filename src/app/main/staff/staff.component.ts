@@ -7,8 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StaffComponent implements OnInit {
 
-  constructor() { }
-
   ngOnInit() {
   }
 

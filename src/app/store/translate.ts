@@ -15,3 +15,18 @@ export const work_post = {
   15: '收费班长',
   16: '收费副班长',
 };
+
+export const educational = {
+  1: '研究生',
+  2: '本科',
+  3: '专科',
+  4: '中专',
+  5: '高中'
+};
+
+export const politics = {
+  1: '中共党员',
+  2: '共青团员',
+  3: '群众',
+  4: '其他党派'
+};

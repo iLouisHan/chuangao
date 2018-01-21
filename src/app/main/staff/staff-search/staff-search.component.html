@@ -1,0 +1,112 @@
+<h1 class="page-title"><div class="page-title-icon"></div>人员明细</h1>
+<router-outlet></router-outlet>
+<div class="part-container">
+  <div class="condition-container">
+    <h1 class="part-title">查询条件</h1>
+    <div class="part-content clearfix">
+      <form [formGroup]="form">
+          <div class="form-item">
+          <p>组织名称</p>
+          <div class="tree-container">
+            <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          </div>
+        </div>
+        <div class="form-item">
+          <p>班组</p>
+          <input type="text" formControlName="listGroup">
+        </div>
+        <div class="form-item">
+          <p>职工姓名</p>
+          <input type="text" formControlName="userName">
+        </div>
+        <div class="form-item">
+          <p>出生年月</p>
+          <p-calendar [(ngModel)]="birthday" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        </div>
+        <div class="form-item">
+          <p>岗位</p>
+          <select formControlName="workPost">
+            <option value="">请选择</option>
+            <option value="2">其它</option>
+            <option value="3">收费站站长</option>
+            <option value="4">收费站副站长</option>
+            <option value="5">收费员</option>
+            <option value="6">管理处高级管理人员</option>
+            <option value="7">管理处中级管理人员</option>
+            <option value="8">管理处一般管理人员</option>
+            <option value="9">营运公司高级管理人员</option>
+            <option value="10">营运公司中级管理人员</option>
+            <option value="11">营运公司一般管理人员</option>
+            <option value="12">川高公司高级管理人员</option>
+            <option value="13">川高公司中级管理人员</option>
+            <option value="14">川高公司一般管理人员</option>
+            <option value="15">收费班长</option>
+            <option value="16">收费副班长</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>入职年月</p>
+          <p-calendar [(ngModel)]="hireDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        </div>
+        <div class="form-item">
+          <p>性别</p>
+          <select formControlName="userSex">
+            <option value="">请选择</option>
+            <option value="男">男</option>
+            <option value="女">女</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>学历</p>
+          <select formControlName="educational">
+            <option value="">请选择</option>
+            <option value="1">研究生</option>
+            <option value="2">本科</option>
+            <option value="3">专科</option>
+            <option value="4">中专</option>
+            <option value="5">高中</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>政治面貌</p>
+          <select formControlName="politics">
+            <option value="">请选择</option>
+            <option value="1">中共党员</option>
+            <option value="2">共青团员</option>
+            <option value="3">群众</option>
+            <option value="4">其他党派</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>特长</p>
+          <input type="text" formControlName="specialSkill">
+        </div>
+        <div class="form-item">
+          <button (click)="submit()" class="form-btn">查&nbsp;询</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="table-container">
+    <h1 class="part-title">用户基本信息展示</h1>
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+              <th>查看明细</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of staffList">
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+              <td><img [routerLink]="['/main/staffDetail']" [queryParams]="{id: item.userId}" src="/assets/images/table-btn1.png"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
