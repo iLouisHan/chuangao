@@ -8,7 +8,7 @@
           <div class="form-item">
             <p>选择收费站</p>
             <div class="tree-container">
-              <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+              <app-drop-org-tree [selectionMode]="checkbox" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">
@@ -37,7 +37,10 @@
           </div>
           <div class="form-item">
             <p>选择收费员</p>
-            <input type="text" formControlName="userId">
+            <select formControlName="userId">
+              <option value="-1">请选择</option>
+              <option *ngFor="let user of staffList" [value]="user.userId">{{user.userName}}</option>
+            </select>
           </div>
           <div class="form-item">
             <p>开始日期</p>
@@ -63,12 +66,27 @@
             <table class="myTable">
               <thead>
                 <tr>
-                  <th *ngFor="let field of cols">{{field.header}}</th>
+                  <th>周日</th>
+                  <th>周一</th>
+                  <th>周二</th>
+                  <th>周三</th>
+                  <th>周四</th>
+                  <th>周五</th>
+                  <th>周六</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of staffList">
-                  <td *ngFor="let field of cols">{{item[field.field]}}</td>
+                <tr *ngFor="let row of myCalendar">
+                  <td *ngFor="let day of row">
+                    <div class="myTable-td-div">
+                      <p>{{day.date}}</p>
+                      <div>
+                        <span *ngIf="day.dayShift" class="team-day">{{list_group[day.dayShift.teamsGroup]}}</span>
+                        <span *ngIf="day.midShift" class="team-mid">{{list_group[day.midShift.teamsGroup]}}</span>
+                        <span *ngIf="day.nightShift" class="team-night">{{list_group[day.nightShift.teamsGroup]}}</span>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>

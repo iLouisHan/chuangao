@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -12,6 +12,8 @@ import { Store } from '@ngrx/store';
 export class DropOrgTreeComponent implements OnInit {
   @Output()
   selectedOrg: EventEmitter<any> = new EventEmitter();
+  @Input()
+  selectionMode: string;
 
   login: Observable<any>;
   treeNodes: Array<any> = [];
@@ -67,8 +69,13 @@ export class DropOrgTreeComponent implements OnInit {
     this.isShow = !this.isShow;
   }
 
-  nodeSelect() {
-    this.selected = this.selectedFiles2.map(el => el.label).join(', ');
+  nodeSelect($event) {
+    if (this.selectionMode === 'checkbox') {
+      this.selected = this.selectedFiles2.map(el => el.label).join(', ');
+    }else {
+      this.selectedFiles2 = [$event.node];
+      this.selected = this.selectedFiles2[0].label;
+    }
     this.selectedOrg.emit(this.selectedFiles2);
   }
 

@@ -39,17 +39,6 @@ export class TeamScheduleModComponent implements OnInit {
       shiftId: new FormControl('', Validators.nullValidator),
       userId: new FormControl('', Validators.nullValidator)
     });
-    this.cols = [
-      { field: 'userName', header: '姓名' },
-      { field: 'userSex', header: '性别' },
-      { field: 'politicalStatus', header: '政治面貌' },
-      { field: 'userTel', header: '手机号码' },
-      { field: 'userMail', header: '邮箱' },
-      { field: 'workPost', header: '岗位' },
-      { field: 'educational', header: '学历' },
-      { field: 'listGroup', header: '班组' },
-      { field: 'orgName', header: '组织名称' }
-    ];
   }
 
   dateFormat(date) {

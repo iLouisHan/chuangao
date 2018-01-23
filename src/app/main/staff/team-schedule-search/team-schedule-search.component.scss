@@ -194,7 +194,7 @@ form{
           background: #e2ebff;
           padding: 0 30px;
           text-align: center;
-          border: 1px solid #fff;
+          border: 1px solid #e6e6e6;
           font-size: 14px;
           height: 40px;
           line-height: 40px;
@@ -203,18 +203,54 @@ form{
         }
 
         td{
-          padding: 0 30px;
           white-space: nowrap;
-          text-align: center;
-          border: 1px solid #fff;
-          background: #ededed;
+          border: 1px solid #e6e6e6;
           font-size: 14px;
-          height: 40px;
-          line-height: 40px;
-          color: #666;
+          height: 90px;
 
-          img{
-            cursor: pointer;
+          .myTable-td-div{
+            width: 100%;
+            height: 100%;
+
+            p{
+              height: 36px;
+              line-height: 36px;
+              font-size: 16px;
+              color: #333;
+              text-align: center;
+            }
+
+            div{
+              position: relative;
+              height: 54px;
+
+              span{
+                display: block;
+                position: absolute;
+                top: 0;
+                width: 33.3%;
+                text-align: center;
+                font-size: 14px;
+                height: 26px;
+                padding-top: 28px;
+
+                &.team-day{
+                  left: 0;
+                  background: url('/assets/images/schedule-day.png') no-repeat center 0;
+                  color: #ffa94b;
+                }
+
+                &.team-mid{
+                  left: 33.3%;
+                }
+
+                &.team-night{
+                  right: 0;
+                  background: url('/assets/images/schedule-night.png') no-repeat center 0;
+                  color: #6c9cff;
+                }
+              }
+            }
           }
         }
       }

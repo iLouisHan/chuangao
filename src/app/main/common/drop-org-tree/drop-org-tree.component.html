@@ -1,4 +1,12 @@
 <div class="tree-container">
   <div class="tree-value" (click)="tab()">{{selected}}</div>
-  <p-tree class="tree" (onNodeSelect)="nodeSelect()" (onNodeUnselect)="nodeSelect()" [value]="treeNodes" [class.show]="isShow" selectionMode="checkbox" [(selection)]="selectedFiles2" [propagateSelectionUp]="false" [propagateSelectionDown]="false"></p-tree>
+  <p-tree class="tree"
+    (onNodeSelect)="nodeSelect($event)"
+    (onNodeUnselect)="nodeSelect($event)"
+    [value]="treeNodes"
+    [class.show]="isShow"
+    selectionMode="selectionMode"
+    [(selection)]="selectedFiles2"
+    [propagateSelectionUp]="false"
+    [propagateSelectionDown]="false"></p-tree>
 </div>

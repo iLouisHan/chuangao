@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post, politics, educational } from '../../../store/translate';
+import { work_post, politics, educational, list_group } from '../../../store/translate';
 
 @Component({
   selector: 'app-team-schedule-search',
@@ -29,12 +29,17 @@ export class TeamScheduleSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  myCalendar = [[], [], [], [], [], [], []];
+  nowTime = new Date();
+  now: string;
+  secheduleList: any;
+  list_group = list_group;
 
   constructor(
     private http: Http
   ) {
+    this.now = this.dateFormat(this.nowTime);
     this.form = new FormGroup({
-      listGroup: new FormControl('', Validators.nullValidator),
       teamsGroup: new FormControl('', Validators.nullValidator),
       shiftId: new FormControl('', Validators.nullValidator),
       userId: new FormControl('', Validators.nullValidator)
@@ -50,6 +55,34 @@ export class TeamScheduleSearchComponent implements OnInit {
       { field: 'listGroup', header: '班组' },
       { field: 'orgName', header: '组织名称' }
     ];
+    this.calendarInit(this.now);
+  }
+
+  calendarInit(mydate) {
+    mydate = new Date(mydate);
+    mydate = new Date(mydate.setMonth(mydate.getMonth() + 1));
+    const monthLong = new Date(mydate.setDate(0)).getDate();
+    const first = new Date(mydate.setDate(1));
+    const startDate = first.getDay();
+    for (let i = 0; i < 35; i++) {
+      const row = Math.floor(i / 7);
+      const col = Math.floor(i % 7);
+      if (row === 0 && col < startDate) {
+        const day = new Date((new Date(first)).setDate(first.getDate() - (startDate - col)));
+        this.myCalendar[row][col] = {
+          day: day,
+          month: day.getMonth(),
+          date: day.getDate()
+        };
+      }else {
+        const day = new Date((new Date(first)).setDate(first.getDate() + (i - startDate)));
+        this.myCalendar[row][col] = {
+          day: day,
+          month: day.getMonth(),
+          date: day.getDate()
+        };
+      }
+    }
   }
 
   dateFormat(date) {
@@ -73,6 +106,7 @@ export class TeamScheduleSearchComponent implements OnInit {
     }else if (this.orgList.filter(el => el.orgType !== 3).length > 0) {
       alert('请选择收费站');
     }else {
+      this.calendarInit(this.now);
       this.getInfo(this.page, this.size);
     }
   }
@@ -81,13 +115,59 @@ export class TeamScheduleSearchComponent implements OnInit {
     this.getInfo(event.page, this.size);
   }
 
+  bindSechedule() {
+    const _month = (new Date(this.now)).getMonth();
+    const _thisMonth = _month - 1;
+    const _thisMonthList = this.secheduleList.filter(el => {
+      const diff = Math.abs((new Date(el.scheduleDate)).getMonth() - _thisMonth);
+      return diff === 0 || diff === 1 || diff === 11;
+    });
+    _thisMonthList.forEach(el => {
+      const day = new Date(el.scheduleDate);
+      const month = day.getMonth();
+      const date = day.getDate();
+      this.myCalendar.forEach(row => {
+        row.forEach(element => {
+          if (element.date === date && element.month === month) {
+            switch (el.shiftId) {
+              case 1: {
+                element.dayShift = {
+                  shiftId: el.shiftId,
+                  teamsGroup: el.teamsGroup,
+                  scheduleType: el.scheduleType,
+                };
+                break;
+              }
+              case 2: {
+                element.nightShift = {
+                  shiftId: el.shiftId,
+                  teamsGroup: el.teamsGroup,
+                  scheduleType: el.scheduleType,
+                };
+                break;
+              }
+              case 3: {
+                element.midShift = {
+                  shiftId: el.shiftId,
+                  teamsGroup: el.teamsGroup,
+                  scheduleType: el.scheduleType,
+                };
+                break;
+              }
+            }
+          }
+        });
+      });
+    });
+  }
+
   getInfo(page: number, size: number) {
     this.form.value.startTime = this.dateFormat(this.startTime);
     this.form.value.endTime = this.dateFormat(this.endTime);
     this.form.value.orgList = this.orgList.map(el => el.data);
     const param = {
       page: page,
-      size: size,
+      size: size
     };
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
@@ -97,17 +177,14 @@ export class TeamScheduleSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/getTeamSchedule', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.staffList = res.data.staffDataList;
-                }
+                this.secheduleList = res.data.teamScheduleDataList;
+                this.bindSechedule();
               }else {
                 alert(res.message);
               }
@@ -116,7 +193,7 @@ export class TeamScheduleSearchComponent implements OnInit {
 
   teamChange($event) {
     if (this.orgList.length > 0 && $event.target.length !== -1) {
-      this.getStaffs($event.target.value, this.orgList[0].id);
+      this.getStaffs($event.target.value, this.orgList[0].data);
     }
   }
 
@@ -124,7 +201,9 @@ export class TeamScheduleSearchComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${teams}&stationCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
-              console.log(res);
+              if (res.code) {
+                this.staffList = res.data;
+              }
             });
   }
 
