@@ -257,3 +257,66 @@ form{
     }
   }
 }
+
+.month-choose-container{
+  width: 100%;
+  height: 66px;
+  position: relative;
+  margin-bottom: 20px;
+
+  .today{
+    width: 60px;
+    height: 30px;
+    border-radius: 15px;
+    line-height: 30px;
+    font-size: 14px;
+    color: #fff;
+    background: #ffa94b;
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+  }
+
+  .month-choose{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 180px;
+    height: 26px;
+
+    p{
+      width: 100%;
+      line-height: 26px;
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+    }
+
+    span{
+      display: block;
+      position: absolute;
+      top: 0;
+      height: 26px;
+      width: 26px;
+      background: #a4c2ff;
+      cursor: pointer;
+      font-size: 18px;
+      text-align: center;
+      line-height: 26px;
+      color: #fff;
+
+      &.pre-month{
+        left: 0;
+      }
+
+      &.next-month{
+        right: 0;
+      }
+    }
+  }
+}

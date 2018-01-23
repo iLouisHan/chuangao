@@ -62,6 +62,18 @@
       <h1 class="part-title">班组排班表</h1>
       <div class="scroll-table-container">
         <div class="part-content">
+          <div class="month-choose-container">
+            <div (click)="resetToday()" class="today">今天</div>
+            <div class="month-choose">
+              <span (click)="changeMonth(-1)" class="pre-month">
+                <i class="fa fa-angle-left"></i>
+              </span>
+              <p>{{_year}}年{{_month}}月</p>
+              <span (click)="changeMonth(1)" class="next-month">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </div>
+          </div>
           <div>
             <table class="myTable">
               <thead>

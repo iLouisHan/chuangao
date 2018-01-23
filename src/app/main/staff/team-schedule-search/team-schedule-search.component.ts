@@ -29,9 +29,11 @@ export class TeamScheduleSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
-  myCalendar = [[], [], [], [], [], [], []];
+  myCalendar = [[], [], [], [], [], [], [], []];
   nowTime = new Date();
   now: string;
+  _month = this.nowTime.getMonth() + 1;
+  _year = this.nowTime.getFullYear();
   secheduleList: any;
   list_group = list_group;
 
@@ -64,7 +66,7 @@ export class TeamScheduleSearchComponent implements OnInit {
     const monthLong = new Date(mydate.setDate(0)).getDate();
     const first = new Date(mydate.setDate(1));
     const startDate = first.getDay();
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 42; i++) {
       const row = Math.floor(i / 7);
       const col = Math.floor(i % 7);
       if (row === 0 && col < startDate) {
@@ -88,7 +90,7 @@ export class TeamScheduleSearchComponent implements OnInit {
   dateFormat(date) {
     if (date) {
       const _date = new Date(date);
-      const _month = (_date.getMonth() + 1) <= 9 ? `0${(_date.getMonth() + 1)}` : _date.getMonth();
+      const _month = (_date.getMonth() + 1) <= 9 ? `0${(_date.getMonth() + 1)}` : (_date.getMonth() + 1);
       const _day = _date.getDate() <= 9 ? `0${_date.getDate()}` : _date.getDate();
       return `${_date.getFullYear()}-${_month}-${_day}`;
     }else {
@@ -213,6 +215,22 @@ export class TeamScheduleSearchComponent implements OnInit {
 
   test(val) {
     return val === +this.checkItem;
+  }
+
+  changeMonth(val) {
+    this.nowTime.setMonth(this.nowTime.getMonth() + val);
+    this._month = this.nowTime.getMonth() + 1;
+    this._year = this.nowTime.getFullYear();
+    this.now = this.dateFormat(this.nowTime);
+    this.calendarInit(this.now);
+  }
+
+  resetToday() {
+    this.nowTime = new Date();
+    this._month = this.nowTime.getMonth() + 1;
+    this._year = this.nowTime.getFullYear();
+    this.now = this.dateFormat(this.nowTime);
+    this.calendarInit(this.now);
   }
 
   ngOnInit() {
