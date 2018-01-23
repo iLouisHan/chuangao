@@ -8,10 +8,12 @@ import { SharedModule } from '../../shared/shared.module';
 import { CalendarModule, PaginatorModule } from 'primeng/primeng';
 import { StaffSearchComponent } from './staff-search/staff-search.component';
 import { StaffEditComponent } from './staff-edit/staff-edit.component';
-import { StaffLeaveComponent } from './staff-leave/staff-leave.component';
 import { SwitchSearchComponent } from './switch-search/switch-search.component';
 import { SwitchEditComponent } from './switch-edit/switch-edit.component';
 import { HoldEditComponent } from './hold-edit/hold-edit.component';
+import { LeaveSearchComponent } from './leave-search/leave-search.component';
+import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedule-search.component';
+import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.component';
 
 @NgModule({
   imports: [
@@ -27,10 +29,12 @@ import { HoldEditComponent } from './hold-edit/hold-edit.component';
     StaffComponent,
     StaffSearchComponent,
     StaffEditComponent,
-    StaffLeaveComponent,
     SwitchSearchComponent,
     SwitchEditComponent,
-    HoldEditComponent
+    HoldEditComponent,
+    LeaveSearchComponent,
+    TeamScheduleSearchComponent,
+    TeamScheduleModComponent
   ]
 })
 export class StaffModule { }

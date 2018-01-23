@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StaffLeaveComponent } from './staff-leave.component';
+import { TeamScheduleSearchComponent } from './team-schedule-search.component';
 
-describe('StaffLeaveComponent', () => {
-  let component: StaffLeaveComponent;
-  let fixture: ComponentFixture<StaffLeaveComponent>;
+describe('TeamScheduleSearchComponent', () => {
+  let component: TeamScheduleSearchComponent;
+  let fixture: ComponentFixture<TeamScheduleSearchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StaffLeaveComponent ]
+      declarations: [ TeamScheduleSearchComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StaffLeaveComponent);
+    fixture = TestBed.createComponent(TeamScheduleSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

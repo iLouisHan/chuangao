@@ -32,6 +32,7 @@ export class DropOrgTreeComponent implements OnInit {
         label: node.orgName,
         data: node.orgCode,
         id: node.id,
+        orgType: node.orgType,
         children: []
       });
     }else if (arr.children.length > 0) {
@@ -54,6 +55,7 @@ export class DropOrgTreeComponent implements OnInit {
             label: el.orgName,
             data: el.orgCode,
             id: el.id,
+            orgType: el.orgType,
             children: []
           });
         }

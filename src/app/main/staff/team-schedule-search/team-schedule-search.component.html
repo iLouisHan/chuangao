@@ -5,34 +5,50 @@
       <h1 class="part-title">查询条件</h1>
       <div class="part-content clearfix">
         <form [formGroup]="form">
-            <div class="form-item">
-            <p>组织机构</p>
+          <div class="form-item">
+            <p>选择收费站</p>
             <div class="tree-container">
               <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">
-            <p>职工姓名</p>
-            <input type="text" formControlName="userName">
-          </div>
-          <div class="form-checkbox">
-            <p>调班类型</p>
-            <div>
-              <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>不限</span></label>
-              <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>换班</span></label>
-              <label><div [class.checked]="test(2)"></div><input (click)="check($event)" [checked]="test(2)" value="2" type="checkbox"><span>顶班</span></label>
-            </div>
+            <p>班组</p>
+            <select (change)="teamChange($event)" formControlName="teamsGroup">
+              <option value="-1">请选择</option>
+              <option value="1">一班</option>
+              <option value="2">二班</option>
+              <option value="3">三班</option>
+              <option value="4">四班</option>
+              <option value="5">五班</option>
+              <option value="6">六班</option>
+              <option value="7">机动班</option>
+              <option value="8">常白班</option>
+              <option value="100">站监控站</option>
+            </select>
           </div>
           <div class="form-item">
-            <p>起始调班日期</p>
+            <p>班次</p>
+            <select formControlName="shiftId">
+              <option value="-1">请选择</option>
+              <option value="1">白班</option>
+              <option value="2">夜班</option>
+              <option value="3">中班</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <p>选择收费员</p>
+            <input type="text" formControlName="userId">
+          </div>
+          <div class="form-item">
+            <p>开始日期</p>
             <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
-            <p>结束调班日期</p>
+            <p>结束日期</p>
             <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
-            <button class="form-btn">查&nbsp;询</button>
+            <button (click)="submit()" class="form-btn">查询排班情况</button>
           </div>
         </form>
       </div>
@@ -40,7 +56,7 @@
   </div>
   <div class="table-container">
     <div class="part-container">
-      <h1 class="part-title">换（顶）班信息展示</h1>
+      <h1 class="part-title">班组排班表</h1>
       <div class="scroll-table-container">
         <div class="part-content">
           <div>
