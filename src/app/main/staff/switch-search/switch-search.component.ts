@@ -5,18 +5,15 @@ import 'rxjs/add/operator/map';
 import { work_post, politics, educational } from '../../../store/translate';
 
 @Component({
-  selector: 'app-staff-search',
-  templateUrl: './staff-search.component.html',
-  styleUrls: ['./staff-search.component.scss']
+  selector: 'app-switch-search',
+  templateUrl: './switch-search.component.html',
+  styleUrls: ['./switch-search.component.scss']
 })
-export class StaffSearchComponent implements OnInit {
+export class SwitchSearchComponent implements OnInit {
   form: FormGroup;
-  birthday: string;
-  hireDate: string;
+  startTime: string;
+  endTime: string;
   count: number;
-  work_post = work_post;
-  politics = politics;
-  educational = educational;
   staffList: Array<any>;
   orgList: Array<any>;
   page = 0;
@@ -31,19 +28,14 @@ export class StaffSearchComponent implements OnInit {
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
   cols: any;
+  checkItem: number;
 
   constructor(
     private http: Http
   ) {
     this.form = new FormGroup({
-      orgName: new FormControl('', Validators.nullValidator),
       listGroup: new FormControl('', Validators.nullValidator),
-      userName: new FormControl('', Validators.nullValidator),
-      workPost: new FormControl('', Validators.nullValidator),
-      userSex: new FormControl('', Validators.nullValidator),
-      educational: new FormControl('', Validators.nullValidator),
-      politics: new FormControl('', Validators.nullValidator),
-      specialSkill: new FormControl('', Validators.nullValidator)
+      userName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
       { field: 'userName', header: '姓名' },
@@ -110,17 +102,20 @@ export class StaffSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.staffDataList.map(el => {
-                    el.politicalStatus = this.politics[el.politicalStatus];
-                    el.workPost = this.work_post[el.workPost];
-                    el.educational = this.educational[el.educational];
-                    return el;
-                  });
+                  this.staffList = res.data.staffDataList;
                 }
               }else {
                 alert(res.message);
               }
             });
+  }
+
+  check($event) {
+    this.checkItem = $event.target.value;
+  }
+
+  test(val) {
+    return val === +this.checkItem;
   }
 
   ngOnInit() {

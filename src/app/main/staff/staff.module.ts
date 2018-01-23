@@ -9,6 +9,9 @@ import { CalendarModule, PaginatorModule } from 'primeng/primeng';
 import { StaffSearchComponent } from './staff-search/staff-search.component';
 import { StaffEditComponent } from './staff-edit/staff-edit.component';
 import { StaffLeaveComponent } from './staff-leave/staff-leave.component';
+import { SwitchSearchComponent } from './switch-search/switch-search.component';
+import { SwitchEditComponent } from './switch-edit/switch-edit.component';
+import { HoldEditComponent } from './hold-edit/hold-edit.component';
 
 @NgModule({
   imports: [
@@ -24,7 +27,10 @@ import { StaffLeaveComponent } from './staff-leave/staff-leave.component';
     StaffComponent,
     StaffSearchComponent,
     StaffEditComponent,
-    StaffLeaveComponent
+    StaffLeaveComponent,
+    SwitchSearchComponent,
+    SwitchEditComponent,
+    HoldEditComponent
   ]
 })
 export class StaffModule { }
