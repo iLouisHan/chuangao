@@ -191,8 +191,7 @@ export class StaffEditComponent implements OnInit {
   search() {
     if (this.searchName && this.searchName.trim()) {
       this.param.userName = this.searchName;
-      const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
-      element.click();
+      this.toFirstPage();
     }else {
       alert('请输入要查询的人员姓名！');
     }
@@ -240,7 +239,7 @@ export class StaffEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.getInfo();
+                this.upload(res.data.userId);
               }else {
                 alert(res.message);
               }
@@ -259,13 +258,17 @@ export class StaffEditComponent implements OnInit {
     this.data.changeTime = this.dateFormat(this.changeTime);
     this.data.politics = this.data.politics ? this.data.politics : 0;
     this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.param), {
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                console.log(res);
+                if (this.file) {
+                  this.upload(this.data.userId);
+                }else {
+                  this.toFirstPage();
+                }
               }else {
                 alert(res.message);
               }
@@ -283,6 +286,28 @@ export class StaffEditComponent implements OnInit {
     }else {
       this.updateStaff();
     }
+  }
+
+  upload(userId) {
+    const formdata = new FormData();
+    formdata.append('file', this.file);
+    formdata.append('userId', userId);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          alert(res.message);
+        }else {
+          alert(res.message);
+        }
+        this.toFirstPage();
+      });
+  }
+
+  toFirstPage() {
+    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    this.isChosen = false;
+    element.click();
   }
 
   ngOnInit() {

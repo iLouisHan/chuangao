@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { CalendarModule, PaginatorModule } from 'primeng/primeng';
 import { StaffSearchComponent } from './staff-search/staff-search.component';
 import { StaffEditComponent } from './staff-edit/staff-edit.component';
+import { StaffLeaveComponent } from './staff-leave/staff-leave.component';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { StaffEditComponent } from './staff-edit/staff-edit.component';
   declarations: [
     StaffComponent,
     StaffSearchComponent,
-    StaffEditComponent
+    StaffEditComponent,
+    StaffLeaveComponent
   ]
 })
 export class StaffModule { }
