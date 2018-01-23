@@ -78,8 +78,8 @@ export class SwitchSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.birthday = this.dateFormat(this.birthday);
-    this.form.value.hireDate = this.dateFormat(this.hireDate);
+    this.form.value.startTime = this.dateFormat(this.startTime);
+    this.form.value.endTime = this.dateFormat(this.endTime);
     this.form.value.orgList = this.orgList.map(el => el.data);
     const param = {
       page: page,

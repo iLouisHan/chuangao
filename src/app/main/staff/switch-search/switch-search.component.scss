@@ -179,12 +179,13 @@ form{
   }
 }
 
-.table-container{
+.scroll-table-container{
 
   .part-content{
 
     >div {
       overflow: scroll;
+      padding-bottom: 10px;
 
       .myTable{
         min-width: 100%;
@@ -198,6 +199,7 @@ form{
           height: 40px;
           line-height: 40px;
           color: #666;
+          white-space: nowrap;
         }
 
         td{
