@@ -25,7 +25,7 @@ export class StaffEditComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   orgCode: string;
   page = 0;
-  size = 1;
+  size = 15;
   count: number;
   staffList: Array<any>;
   hasData: boolean;
@@ -183,6 +183,7 @@ export class StaffEditComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(this.initForm);
     this.form.patchValue({orgName: this.orgName});
+    this.filename = '';
     this.isChosen = true;
     this.isAdd = true;
   }
@@ -190,7 +191,8 @@ export class StaffEditComponent implements OnInit {
   search() {
     if (this.searchName && this.searchName.trim()) {
       this.param.userName = this.searchName;
-      this.paginate({page: 0});
+      const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+      element.click();
     }else {
       alert('请输入要查询的人员姓名！');
     }
@@ -239,6 +241,8 @@ export class StaffEditComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 this.getInfo();
+              }else {
+                alert(res.message);
               }
             });
   }
