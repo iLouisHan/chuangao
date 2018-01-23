@@ -1,16 +1,16 @@
 <form [formGroup]="form">
   <div class="form-item form-textarea">
-      <p>收费站简介<span class="form-required">*</span></p>
-      <textarea type="text" formControlName="stationIntroduce"></textarea>
-    </div>
-    <div class="form-item form-textarea">
-      <p>收费站历史荣誉（回车分隔）<span class="form-required">*</span></p>
-      <textarea type="text" formControlName="stationHorstoryHonor"></textarea>
-    </div>
-    <div class="form-item form-textarea">
-      <p>收费站大事件<span class="form-required">*</span></p>
-      <textarea type="text" formControlName="stationEventHistory"></textarea>
-    </div>
+    <p>收费站简介<span class="form-required">*</span></p>
+    <textarea type="text" formControlName="stationIntroduce"></textarea>
+  </div>
+  <div class="form-item form-textarea">
+    <p>收费站历史荣誉（回车分隔）<span class="form-required">*</span></p>
+    <textarea type="text" formControlName="stationHorstoryHonor"></textarea>
+  </div>
+  <div class="form-item form-textarea">
+    <p>收费站大事件<span class="form-required">*</span></p>
+    <textarea type="text" formControlName="stationEventHistory"></textarea>
+  </div>
   <div class="flex-container">
     <div class="form-item">
       <button (click)="submit()" class="form-btn">保存</button>

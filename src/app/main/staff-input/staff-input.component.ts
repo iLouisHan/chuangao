@@ -37,7 +37,10 @@ export class StaffInputComponent implements OnInit {
       positionalTitle: new FormControl('', Validators.nullValidator),
       emergencyContact: new FormControl('', Validators.nullValidator),
       emergencyPhone: new FormControl('', Validators.nullValidator),
-      userMail: new FormControl('', Validators.nullValidator)
+      userMail: new FormControl('', Validators.nullValidator),
+      jobDetail: new FormControl('', Validators.nullValidator),
+      awardDetail: new FormControl('', Validators.nullValidator),
+      specialSkill: new FormControl('', Validators.nullValidator)
     });
     this.staffId = this.route.snapshot.queryParams['id'];
     this.en = {
@@ -67,6 +70,10 @@ export class StaffInputComponent implements OnInit {
 
   btn() {
     console.log(this.hireDate);
+  }
+
+  submit() {
+
   }
 
   fileChange($event) {

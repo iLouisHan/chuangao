@@ -4,7 +4,6 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational } from '../../../store/translate';
 
-
 @Component({
   selector: 'app-staff-search',
   templateUrl: './staff-search.component.html',
@@ -21,7 +20,7 @@ export class StaffSearchComponent implements OnInit {
   staffList: Array<any>;
   orgList: Array<any>;
   page = 0;
-  size = 15;
+  size = 1;
   hasData = false;
   en = {
     firstDayOfWeek: 0,
@@ -56,7 +55,7 @@ export class StaffSearchComponent implements OnInit {
       { field: 'educational', header: '学历' },
       { field: 'listGroup', header: '班组' },
       { field: 'orgName', header: '组织名称' }
-  ];
+    ];
   }
 
   dateFormat(date) {

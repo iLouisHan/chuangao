@@ -1,11 +1,11 @@
 <h1 class="page-title"><div class="page-title-icon"></div>人员录入</h1>
-<div class="part-container">
+<div *ngIf="isChosen" class="part-container">
   <h1 class="part-title">用户基本信息填报</h1>
   <div class="part-content">
     <form [formGroup]="form">
       <div class="form-item">
         <p>组织名称</p>
-        <input type="text" formControlName="orgName">
+        <input type="text" disabled="true" formControlName="orgName">
       </div>
       <div class="form-item">
         <p>人员姓名</p>
@@ -73,7 +73,7 @@
       </div>
       <div class="form-item">
         <p>政治面貌</p>
-        <select formControlName="politics">
+        <select formControlName="politicalStatus">
           <option value="">请选择</option>
           <option value="1">中共党员</option>
           <option value="2">共青团员</option>
@@ -129,5 +129,42 @@
         </div>
       </div>
     </form>
+  </div>
+</div>
+<div class="part-container">
+  <div class="staff-navbar">
+    <h1 class="part-title">用户基本信息展示</h1>
+    <div class="part-content clearfix">
+      <ul class="btn-list cleafix">
+        <li (click)="add()" class="btn-list-li">添加</li>
+        <li (click)="update()" class="btn-list-li">修改</li>
+        <li (click)="delete()" class="btn-list-li">离职</li>
+      </ul>
+      <div class="searchbar-container">
+        <input type="text" [(ngModel)]="searchName">
+        <div (click)="search()">查询</div>
+      </div>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of staffList">
+              <td><input type="checkbox" (click)="select(item.userId)" [checked]="check(item.userId)"></td>
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
   </div>
 </div>
