@@ -16,8 +16,9 @@ export class LeaveEditComponent implements OnInit {
   form: FormGroup;
   staffId: string;
   applyType = applyType;
-  hireDate: string;
-  birthday: string;
+  applyDate: string;
+  applyDateEnd: string;
+  adminId: string;
   en: any;
   changeTime: string;
   file: any;
@@ -28,15 +29,15 @@ export class LeaveEditComponent implements OnInit {
   page = 0;
   size = 15;
   count: number;
+  leaveList: Array<any>;
   staffList: Array<any>;
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
-  selectedUser = '';
+  selectedLeave = '';
   isAdd: boolean;
   keys: Array<any>;
   searchName: string;
-  orgName: string;
   orgType: number;
   initForm: any;
   param: any = {
@@ -49,22 +50,9 @@ export class LeaveEditComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      orgName: new FormControl('', Validators.nullValidator),
-      userName: new FormControl('', Validators.nullValidator),
-      userSex: new FormControl('', Validators.nullValidator),
-      educational: new FormControl('', Validators.nullValidator),
-      practitionerCertificate: new FormControl('', Validators.nullValidator),
-      userTel: new FormControl('', Validators.nullValidator),
-      workPost: new FormControl('', Validators.nullValidator),
-      politicalStatus: new FormControl('', Validators.nullValidator),
-      positionalTitle: new FormControl('', Validators.nullValidator),
-      emergencyContact: new FormControl('', Validators.nullValidator),
-      emergencyPhone: new FormControl('', Validators.nullValidator),
-      userMail: new FormControl('', Validators.nullValidator),
-      jobDetail: new FormControl('', Validators.nullValidator),
-      listGroup: new FormControl('', Validators.nullValidator),
-      awardDetail: new FormControl('', Validators.nullValidator),
-      specialSkill: new FormControl('', Validators.nullValidator)
+      applyUserId: new FormControl('', Validators.nullValidator),
+      applyType: new FormControl('', Validators.nullValidator),
+      remark: new FormControl('', Validators.nullValidator)
     });
     this.keys = Object.keys(this.form.value);
     this.en = {
@@ -79,49 +67,25 @@ export class LeaveEditComponent implements OnInit {
     this.cols = [
       { field: 'orgName', header: '组织机构' },
       { field: 'userName', header: '请假人' },
-      { field: 'applyType', header: '请假类型' },
+      { field: 'applyTypeCN', header: '请假类型' },
       { field: 'applyDate', header: '开始请假时间' },
       { field: 'applyDateEnd', header: '结束请假时间' },
-      { field: 'remark', header: '请假理由' },
-      { field: 'leaveTipDownload', header: '请假条下载' }
+      { field: 'remark', header: '请假理由' }
     ];
     this.initForm = {
-      orgName: '',
-      userName: '',
-      userSex: '',
-      educational: '',
-      practitionerCertificate: '',
-      userTel: '',
-      workPost: '',
-      politicalStatus: '',
-      positionalTitle: '',
-      emergencyContact: '',
-      emergencyPhone: '',
-      userMail: '',
-      jobDetail: '',
-      listGroup: '',
-      awardDetail: '',
-      specialSkill: '',
-      hireDate: '',
-      birthday: '',
-      changeTime: ''
+      userId: '',
+      leaveType: '-1'
     };
   }
 
-  getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.hireDate = res.data.hireDate;
-                this.birthday = res.data.birthday;
-                this.changeTime = res.data.changeTime;
-              }else {
-                alert(res.message);
-              }
-            });
+  getLeaveInfo(leaveId) {
+    this.data = this.leaveList.filter(el => el.id === leaveId)[0];
+    this.isChosen = true;
+    this.form.patchValue(this.data);
+    this.form.patchValue({applyUserId: this.data.userId});
+    this.applyDate = this.data.applyDate;
+    this.applyDateEnd = this.data.applyDateEnd;
+    this.filename = this.data.picName;
   }
 
   getInfo() {
@@ -136,8 +100,8 @@ export class LeaveEditComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.staffDataList.map(el => {
-                    el.applyType = this.applyType[el.applyType];
+                  this.leaveList = res.data.leaveDataList.map(el => {
+                    el.applyTypeCN = this.applyType[el.applyType];
                     return el;
                   });
                 }
@@ -183,87 +147,81 @@ export class LeaveEditComponent implements OnInit {
   }
 
   update() {
-    if (this.selectedUser) {
-      this.getStaffInfo(this.selectedUser);
+    if (this.selectedLeave) {
+      this.getLeaveInfo(this.selectedLeave);
       this.isChosen = true;
       this.isAdd = false;
     }else {
-      alert('请选择一个人员');
+      alert('请选择一个请假信息！');
     }
   }
 
   delete() {
-    if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
+    if (this.selectedLeave) {
+      this.deleteLeave(this.selectedLeave);
     }else {
       alert('请选择一个人员');
     }
   }
 
   select(val) {
-    this.selectedUser = val === this.selectedUser ? '' : val;
+    this.selectedLeave = val === this.selectedLeave ? '' : val;
   }
 
   check(val) {
-    return val === this.selectedUser;
+    return val === this.selectedLeave;
   }
 
-  staffLeave(selectedUser) {
+  deleteLeave(selectedLeave) {
     const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Leave/deleteLeave?id=${selectedLeave}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
+              if (res.code) {
+                this.hasData = false;
+                this.toFirstPage();
+              }
             });
   }
 
-  addStaff() {
+  addStaffLeave() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.hireDate = this.dateFormat(this.hireDate);
-    this.form.value.birthday = this.dateFormat(this.birthday);
-    this.form.value.changeTime = this.dateFormat(this.changeTime);
-    this.form.value.workPost = +this.form.value.workPost;
-    this.form.value.educational = +this.form.value.educational;
-    this.form.value.listGroup = +this.form.value.listGroup;
-    this.form.value.orgType = +this.orgType;
-    this.form.value.orgCode = +this.orgCode;
-    this.form.value.politicalStatus = +this.form.value.politicalStatus;
-    this.form.value.positionalTitle = +this.form.value.positionalTitle;
-    this.form.value.userId = '' + Math.round(1000 * Math.random());
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/StaffMag/addStaff`, JSON.stringify(this.form.value), {
+    this.form.value.applyDate = this.dateFormat(this.applyDate);
+    this.form.value.applyDateEnd = this.dateFormat(this.applyDateEnd);
+    this.form.value.stationCode = this.orgCode;
+    this.form.value.adminId = this.adminId;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/staffLeaveByAdmin`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.upload(res.data.userId);
+                this.upload(res.data.id);
               }else {
                 alert(res.message);
               }
             });
   }
 
-  updateStaff() {
+  updateLeave() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.hireDate = this.dateFormat(this.hireDate);
-    this.data.birthday = this.dateFormat(this.birthday);
-    this.data.changeTime = this.dateFormat(this.changeTime);
-    this.data.politics = this.data.politics ? this.data.politics : 0;
-    this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.data.applyDate = this.dateFormat(this.applyDate);
+    this.data.applyDateEnd = this.dateFormat(this.applyDateEnd);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/updateLeave`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
                 if (this.file) {
-                  this.upload(this.data.userId);
+                  this.upload(this.data.id);
                 }else {
                   this.toFirstPage();
                 }
@@ -280,17 +238,17 @@ export class LeaveEditComponent implements OnInit {
 
   submit() {
     if (this.isAdd) {
-      this.addStaff();
+      this.addStaffLeave();
     }else {
-      this.updateStaff();
+      this.updateLeave();
     }
   }
 
-  upload(userId) {
+  upload(id) {
     const formdata = new FormData();
     formdata.append('file', this.file);
-    formdata.append('userId', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
+    formdata.append('id', id);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/leaveInfo`, formdata)
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
@@ -298,25 +256,63 @@ export class LeaveEditComponent implements OnInit {
         }else {
           alert(res.message);
         }
+        this.isChosen = false;
         this.toFirstPage();
       });
   }
 
   toFirstPage() {
     const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
-    this.isChosen = false;
-    element.click();
+    if (element) {
+      this.isChosen = false;
+      element.click();
+    }else {
+      this.getInfo();
+    }
+  }
+
+  getStaff() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.staffList = res.data;
+              }else {
+                alert(res.message);
+              }
+            });
+  }
+
+  changeCheckStatus(id, type) {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/checkLeave`, JSON.stringify({
+      id: id,
+      checkUserId: this.adminId,
+      checkType: type
+    }), {
+      headers: myHeaders
+    }).map(res => res.json())
+    .subscribe(res => {
+      if (res.code) {
+        alert(res.message);
+        this.toFirstPage();
+      }else {
+        alert(res.message);
+      }
+    });
   }
 
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.adminId = res.userId;
         this.orgCode = res.orgCode;
-        this.orgName = res.orgName;
         this.orgType = res.orgType;
         this.param.orgList = [res.orgCode];
         this.form.value.orgName = res.orgName;
         this.getInfo();
+        this.getStaff();
       }
     });
   }

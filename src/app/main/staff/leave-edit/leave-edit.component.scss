@@ -221,9 +221,29 @@ form{
           img{
             cursor: pointer;
           }
+
+          div{
+            button{
+              padding: 2px 10px;
+            }
+          }
         }
       }
     }
+  }
+}
+
+.form-item{
+  button{
+    width: 120px;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background: #6c9cff;
+    cursor: pointer;
+    color: #fff;
+    font-size: 18px;
+    outline: none !important;
   }
 }
 

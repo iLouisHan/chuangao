@@ -141,7 +141,7 @@ export class TeamScheduleSearchComponent implements OnInit {
                 };
                 break;
               }
-              case 3: {
+              case 2: {
                 element.nightShift = {
                   shiftId: el.shiftId,
                   teamsGroup: el.teamsGroup,
@@ -149,7 +149,7 @@ export class TeamScheduleSearchComponent implements OnInit {
                 };
                 break;
               }
-              case 2: {
+              case 3: {
                 element.midShift = {
                   shiftId: el.shiftId,
                   teamsGroup: el.teamsGroup,
