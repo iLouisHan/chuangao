@@ -141,7 +141,7 @@ export class TeamScheduleSearchComponent implements OnInit {
                 };
                 break;
               }
-              case 2: {
+              case 3: {
                 element.nightShift = {
                   shiftId: el.shiftId,
                   teamsGroup: el.teamsGroup,
@@ -149,7 +149,7 @@ export class TeamScheduleSearchComponent implements OnInit {
                 };
                 break;
               }
-              case 3: {
+              case 2: {
                 element.midShift = {
                   shiftId: el.shiftId,
                   teamsGroup: el.teamsGroup,
@@ -224,6 +224,7 @@ export class TeamScheduleSearchComponent implements OnInit {
     this._year = this.nowTime.getFullYear();
     this.now = this.dateFormat(this.nowTime);
     this.calendarInit(this.now);
+    this.bindSechedule();
   }
 
   resetToday() {
@@ -232,6 +233,7 @@ export class TeamScheduleSearchComponent implements OnInit {
     this._year = this.nowTime.getFullYear();
     this.now = this.dateFormat(this.nowTime);
     this.calendarInit(this.now);
+    this.bindSechedule();
   }
 
   ngOnInit() {

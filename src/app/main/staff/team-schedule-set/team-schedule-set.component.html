@@ -1,0 +1,28 @@
+<h1 class="page-title"><div class="page-title-icon"></div>班组排班</h1>
+<div class="part-container">
+  <h1 class="part-title">设置班组排班</h1>
+  <div class="part-content">
+    <form [formGroup]="form">
+      <div class="form-item">
+        <p>班组模板</p>
+        <select formControlName="scheduleType">
+          <option value="">请选择</option>
+          <option *ngFor="let mod of modList" [value]="mod.scheduleType">{{mod.scheduleTypeDesc}}</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>开始时间</p>
+        <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>结束时间</p>
+        <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-btn-container">
+        <div class="form-item">
+          <button (click)="submit()" class="form-btn">保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -145,6 +145,26 @@ export class TeamScheduleModComponent implements OnInit {
     this.modDetail = [];
   }
 
+  deleteMod() {
+    if (this.checkItem) {
+      this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/deleteScheduleMould?scheduleType=${this.checkItem}`)
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  this.getInfo();
+                }else {
+                  alert(res.message);
+                }
+              });
+    }else {
+      alert('请选择一个模板！');
+    }
+  }
+
+  chooseMod(id) {
+    this.checkItem = this.checkItem === id ? '' : id;
+  }
+
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {

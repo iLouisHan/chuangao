@@ -9,6 +9,7 @@ import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedul
 import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.component';
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
+import { TeamScheduleSetComponent } from './team-schedule-set/team-schedule-set.component';
 
 export const StaffRoutes: Routes = [
   {
@@ -54,6 +55,10 @@ export const StaffRoutes: Routes = [
       {
         path: 'teamScheduleMod',
         component: TeamScheduleModComponent
+      },
+      {
+        path: 'teamScheduleSet',
+        component: TeamScheduleSetComponent
       }
     ]
   }

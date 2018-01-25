@@ -17,7 +17,7 @@ export class StaffSearchComponent implements OnInit {
   work_post = work_post;
   politics = politics;
   educational = educational;
-  leaveDataList: Array<any>;
+  staffList: Array<any>;
   orgList: Array<any>;
   page = 0;
   size = 15;
@@ -111,7 +111,7 @@ export class StaffSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.leaveDataList = res.data.leaveDataList.map(el => {
+                  this.staffList = res.data.staffDataList.map(el => {
                     el.politicalStatus = this.politics[el.politicalStatus];
                     el.workPost = this.work_post[el.workPost];
                     el.educational = this.educational[el.educational];
