@@ -17,11 +17,12 @@ export class StaffSearchComponent implements OnInit {
   work_post = work_post;
   politics = politics;
   educational = educational;
-  staffList: Array<any>;
+  leaveDataList: Array<any>;
   orgList: Array<any>;
   page = 0;
   size = 15;
   hasData = false;
+  selectionMode = 'checkbox';
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -110,7 +111,7 @@ export class StaffSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.staffDataList.map(el => {
+                  this.leaveDataList = res.data.leaveDataList.map(el => {
                     el.politicalStatus = this.politics[el.politicalStatus];
                     el.workPost = this.work_post[el.workPost];
                     el.educational = this.educational[el.educational];

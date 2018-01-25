@@ -19,7 +19,7 @@ form{
   flex-wrap: wrap;
 
   .form-item{
-    width: 100%;
+    width: 50%;
     margin-bottom: 20px;
 
     p{
@@ -32,44 +32,8 @@ form{
       }
     }
 
-    .upload-photo{
-      width: calc(100% - 2px);
-      padding-right: 0px;
-      height: 40px;
-      border-radius: 5px;
-      box-shadow: none;
-      border: 1px solid #d9d9d9;
-
-      input{
-        display: none;
-      }
-
-      span{
-        display: inline-block;
-        line-height: 40px;
-        width: calc(100% - 125px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-indent: 15px;
-      }
-
-      .upload-photo-btn{
-        float: right;
-        margin: 5px;
-        height: 30px;
-        width: 100px;
-        text-align: center;
-        line-height: 30px;
-        background: #ffaf58;
-        color: #fff;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-      }
-    }
-
     input{
-      width: calc(100% - 15px);
+      width: calc(100% - 30px);
       padding-right: 15px;
       height: 38px;
       text-indent: 15px;
@@ -220,4 +184,100 @@ form{
       }
     }
   }
+}
+
+.mod-btns{
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+
+  span{
+    display: block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+
+    &.mod-btn-add{
+      float: left;
+      background: #6c9cff;
+    }
+
+    &.mod-btn-del{
+      float: right;
+      background: #fca157;
+    }
+  }
+}
+
+.mod-container{
+
+  ul{
+    margin-top: 15px;
+
+    .mod-li{
+      height: 40px;
+      margin-bottom: 20px;
+
+      .checkbox-container{
+        display: inline-block;
+
+        div{
+          width: 14px;
+          height: 14px;
+          border: 1px solid #ddd;
+          border-radius: 3px;
+
+          &.checked{
+            background: #6c9cff url('/assets/images/checked.png') no-repeat center center;
+            border: none;
+            height: 16px;
+            width: 16px;
+            background-size: 80%;
+          }
+        }
+
+        input{
+          display: none;
+        }
+      }
+
+      .mod{
+        cursor: pointer;
+        display: inline-block;
+        margin-left: 14px;
+        height: 38px;
+        width: calc(100% - 40px);
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        line-height: 38px;
+        color: #666;
+
+        .mod-des{
+          margin-left: 15px;
+        }
+
+        .mod-day{
+          float: right;
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+}
+
+button{
+  width: 80px;
+  height: 30px;
+  border: none;
+  border-radius: 20px;
+  background: #6c9cff;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  line-height: 30px;
+  outline: none !important;
 }

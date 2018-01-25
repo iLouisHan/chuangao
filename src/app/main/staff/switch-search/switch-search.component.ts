@@ -19,6 +19,7 @@ export class SwitchSearchComponent implements OnInit {
   page = 0;
   size = 15;
   hasData = false;
+  selectionMode = 'single';
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -28,7 +29,7 @@ export class SwitchSearchComponent implements OnInit {
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
   cols: any;
-  checkItem: number;
+  checkItem = 0;
 
   constructor(
     private http: Http

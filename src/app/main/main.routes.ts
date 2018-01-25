@@ -63,6 +63,10 @@ export const MainRoutes: Routes = [
       {
         path: 'tollStationInput',
         loadChildren: './toll-station-input/toll-station-input.module#TollStationInputModule'
+      },
+      {
+        path: 'internal',
+        loadChildren: './internal/internal.module#InternalModule'
       }
     ]
   }

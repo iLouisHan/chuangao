@@ -14,6 +14,7 @@ import { HoldEditComponent } from './hold-edit/hold-edit.component';
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
 import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedule-search.component';
 import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.component';
+import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.
     HoldEditComponent,
     LeaveSearchComponent,
     TeamScheduleSearchComponent,
-    TeamScheduleModComponent
+    TeamScheduleModComponent,
+    LeaveEditComponent
   ]
 })
 export class StaffModule { }

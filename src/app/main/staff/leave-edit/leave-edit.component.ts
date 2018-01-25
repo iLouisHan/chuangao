@@ -4,17 +4,18 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { work_post, politics, educational } from '../../../store/translate';
+import { applyType } from '../../../store/translate';
 
 @Component({
-  selector: 'app-staff-edit',
-  templateUrl: './staff-edit.component.html',
-  styleUrls: ['./staff-edit.component.scss']
+  selector: 'app-leave-edit',
+  templateUrl: './leave-edit.component.html',
+  styleUrls: ['./leave-edit.component.scss']
 })
-export class StaffEditComponent implements OnInit {
+export class LeaveEditComponent implements OnInit {
   data: any = {};
   form: FormGroup;
   staffId: string;
+  applyType = applyType;
   hireDate: string;
   birthday: string;
   en: any;
@@ -29,9 +30,6 @@ export class StaffEditComponent implements OnInit {
   count: number;
   staffList: Array<any>;
   hasData: boolean;
-  work_post = work_post;
-  politics = politics;
-  educational = educational;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
   selectedUser = '';
@@ -79,24 +77,13 @@ export class StaffEditComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'orgName', header: '组织名称' },
-      { field: 'userId', header: '人员编码' },
-      { field: 'userName', header: '姓名' },
-      { field: 'userSex', header: '性别' },
-      { field: 'userTel', header: '手机号码' },
-      { field: 'userMail', header: '邮箱' },
-      { field: 'politicalStatus', header: '政治面貌' },
-      { field: 'workPost', header: '岗位' },
-      { field: 'birthday', header: '出生日期' },
-      { field: 'hireDate', header: '入职时间' },
-      { field: 'educational', header: '学历' },
-      { field: 'practitionerCertificate', header: '从业证书' },
-      { field: 'collectionSysId', header: '系统工号' },
-      { field: 'workLicense', header: '上岗证编号' },
-      { field: 'listGroup', header: '班组' },
-      { field: 'changeTime', header: '变更时间' },
-      { field: 'emergencyContact', header: '紧急联系人' },
-      { field: 'emergencyPhone', header: '紧急联系电话' }
+      { field: 'orgName', header: '组织机构' },
+      { field: 'userName', header: '请假人' },
+      { field: 'applyType', header: '请假类型' },
+      { field: 'applyDate', header: '开始请假时间' },
+      { field: 'applyDateEnd', header: '结束请假时间' },
+      { field: 'remark', header: '请假理由' },
+      { field: 'leaveTipDownload', header: '请假条下载' }
     ];
     this.initForm = {
       orgName: '',
@@ -140,7 +127,7 @@ export class StaffEditComponent implements OnInit {
   getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -150,9 +137,7 @@ export class StaffEditComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   this.staffList = res.data.staffDataList.map(el => {
-                    el.politicalStatus = this.politics[el.politicalStatus];
-                    el.workPost = this.work_post[el.workPost];
-                    el.educational = this.educational[el.educational];
+                    el.applyType = this.applyType[el.applyType];
                     return el;
                   });
                 }

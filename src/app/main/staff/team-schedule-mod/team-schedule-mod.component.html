@@ -3,59 +3,82 @@
   <div class="main-container">
     <div class="condition-container">
       <h1 class="part-title">排班模式数据设置</h1>
-      <div class="part-content clearfix">
-        <form [formGroup]="form">
-          <div class="form-item">
-            <p>选择收费站</p>
-            <div class="tree-container">
-              <app-drop-org-tree [selectionMode]="single" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
-            </div>
-          </div>
-          <div class="form-item">
-            <p>班组</p>
-            <input type="text" formControlName="teamsGroup">
-          </div>
-          <div class="form-item">
-            <p>班次</p>
-            <input type="text" formControlName="shiftId">
-          </div>
-          <div class="form-item">
-            <p>选择收费员</p>
-            <input type="text" formControlName="userId">
-          </div>
-          <div class="form-item">
-            <p>开始日期</p>
-            <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
-          </div>
-          <div class="form-item">
-            <p>结束日期</p>
-            <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
-          </div>
-          <div class="form-item">
-            <button class="form-btn">查询排班情况</button>
-          </div>
-        </form>
+      <div class="part-content">
+        <div class="mod-btns clearfix">
+          <span (click)="add()" class="mod-btn-add">增加</span>
+          <span class="mod-btn-del">删除</span>
+        </div>
+        <div class="mod-container">
+          <ul>
+            <li *ngFor="let mod of modList" class="mod-li">
+              <div class="checkbox-container">
+                <label>
+                  <div [class.checked]="test(mod.scheduleType)"></div>
+                  <input type="checkbox" (click)="chooseMod(mod.scheduleType)">
+                </label>
+              </div>
+              <div (click)="searchModDetail(mod.scheduleType)" class="mod">
+                <span class="mod-des">{{mod.scheduleTypeDesc}}</span>
+                <span class="mod-day">[{{mod.scheduleDays}}天]</span>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="table-container">
       <h1 class="part-title">排班详情</h1>
       <div class="scroll-table-container">
         <div class="part-content">
+          <div *ngIf="addMod">
+            <form [formGroup]="form">
+              <div class="form-item">
+                <p>模板描述</p>
+                <input type="text" formControlName="scheduleTypeDesc">
+              </div>
+              <div class="form-item">
+                <p>模板周期</p>
+                <input type="number" (change)="modChange()" formControlName="scheduleDays">
+              </div>
+            </form>
+          </div>
           <div>
             <table class="myTable">
               <thead>
                 <tr>
-                  <th *ngFor="let field of cols">{{field.header}}</th>
+                  <th>排班第几天</th>
+                  <th>班次</th>
+                  <th>班组</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of staffList">
-                  <td *ngFor="let field of cols">{{item[field.field]}}</td>
+                <tr *ngFor="let item of modDetail">
+                  <td>{{item.cycleDay}}</td>
+                  <td>{{shiftList[item.shiftId]}}</td>
+                  <td *ngIf="addMod">
+                    <select [(ngModel)]="item.teamsGroup">
+                      <option value="-1">请选择</option>
+                      <option value="1">一班</option>
+                      <option value="2">二班</option>
+                      <option value="3">三班</option>
+                      <option value="4">四班</option>
+                      <option value="5">五班</option>
+                      <option value="6">六班</option>
+                      <option value="7">机动班</option>
+                      <option value="8">常白班</option>
+                      <option value="100">站监控站</option>
+                    </select>
+                  </td>
+                  <td *ngIf="!addMod">
+                    {{list_group[item.teamsGroup]}}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+          <div *ngIf="addMod" class="form-item">
+            <button (click)="submit()" class="form-btn">保存</button>
+          </div>
         </div>
       </div>
     </div>

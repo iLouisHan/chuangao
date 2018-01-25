@@ -8,6 +8,7 @@ import { HoldEditComponent } from './hold-edit/hold-edit.component';
 import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedule-search.component';
 import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.component';
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
+import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 
 export const StaffRoutes: Routes = [
   {
@@ -37,6 +38,10 @@ export const StaffRoutes: Routes = [
       {
         path: 'switchEdit',
         component: SwitchEditComponent
+      },
+      {
+        path: 'leaveEdit',
+        component: LeaveEditComponent
       },
       {
         path: 'holdSearch',

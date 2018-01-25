@@ -5,7 +5,7 @@
     (onNodeUnselect)="nodeSelect($event)"
     [value]="treeNodes"
     [class.show]="isShow"
-    selectionMode="selectionMode"
+    [selectionMode]="selectionMode"
     [(selection)]="selectedFiles2"
     [propagateSelectionUp]="false"
     [propagateSelectionDown]="false"></p-tree>

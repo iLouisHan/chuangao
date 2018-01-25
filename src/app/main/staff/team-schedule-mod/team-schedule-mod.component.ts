@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post, politics, educational } from '../../../store/translate';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { list_group } from '../../../store/translate';
 
 @Component({
   selector: 'app-team-schedule-mod',
@@ -14,11 +16,12 @@ export class TeamScheduleModComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
-  staffList: Array<any>;
-  orgList: Array<any>;
-  page = 0;
-  size = 15;
-  hasData = false;
+  modList: Array<any>;
+  login: Observable<any> = new Observable<any>();
+  selectionMode = 'single';
+  orgCode: string;
+  modDetail: Array<any>;
+  list_group = list_group;
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -29,16 +32,27 @@ export class TeamScheduleModComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  addMod = false;
+  col: Array<any>;
+  shiftList = {
+    1: '早班',
+    2: '夜班',
+    3: '中班'
+  };
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
     this.form = new FormGroup({
-      listGroup: new FormControl('', Validators.nullValidator),
-      teamsGroup: new FormControl('', Validators.nullValidator),
-      shiftId: new FormControl('', Validators.nullValidator),
-      userId: new FormControl('', Validators.nullValidator)
+      scheduleTypeDesc	: new FormControl('', Validators.nullValidator),
+      scheduleDays: new FormControl('', Validators.nullValidator)
     });
+    this.login = this.store.select('login');
+    this.cols = [
+      { field: 'cycleDay', header: '排班第几天' },
+      { field: 'shiftId', header: '班次' }
+    ];
   }
 
   dateFormat(date) {
@@ -52,64 +66,92 @@ export class TeamScheduleModComponent implements OnInit {
     }
   }
 
-  selectedOrg($event) {
-    this.orgList = $event;
-  }
-
-  submit() {
-    if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
-    }else {
-      this.getInfo(this.page, this.size);
-    }
-  }
-
-  paginate(event) {
-    this.getInfo(event.page, this.size);
-  }
-
-  getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
-      page: page,
-      size: size,
-    };
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
-      }
-    });
+  getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(param) , {
-              headers: myHeaders
-            })
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/getScheduleMould?stationCode=${this.orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.staffList = res.data.staffDataList;
-                }
+                this.modList = res.data;
               }else {
                 alert(res.message);
               }
             });
   }
 
-  check($event) {
-    this.checkItem = $event.target.value;
+  modChange() {
+    const days = this.form.value.scheduleDays;
+    this.modDetail = [];
+    for (let i = 1; i <= 2 * days; i++) {
+      const shiftId = i % 2 === 1 ? 1 : 2;
+      this.modDetail.push({
+        shiftId: shiftId,
+        cycleDay: Math.ceil(i / 2),
+        teamsGroup: -1
+      });
+    }
+  }
+
+  submit() {
+    if (this.form.value.scheduleDays && this.form.value.scheduleDays > 0) {
+      const valid = this.modDetail.filter(el => el.teamsGroup === -1).length === 0;
+      if (valid) {
+        const myHeaders: Headers = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+        this.http.post(`http://119.29.144.125:8080/cgfeesys/Schedule/setScheduleMould`, JSON.stringify({
+            stationCode: this.orgCode,
+            scheduleTypeDesc: this.form.value.scheduleTypeDesc,
+            scheduleDays: this.form.value.scheduleDays,
+            mouldLists: this.modDetail
+          }), {
+            headers: myHeaders
+          })
+          .map(res => res.json())
+          .subscribe(res => {
+            if (res.code) {
+              alert(res.message);
+              this.getInfo();
+              this.addMod = false;
+              this.modDetail = [];
+            }
+          });
+      }else {
+        alert('请在所有班次选择班组！');
+      }
+    }else {
+      alert('请填写正确周期');
+    }
   }
 
   test(val) {
     return val === +this.checkItem;
   }
 
+  searchModDetail(id) {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/getScheduleMouldList?scheduleType=${id}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.modDetail = res.data;
+              }else {
+                alert(res.message);
+              }
+            });
+  }
+
+  add() {
+    this.addMod = true;
+    this.modDetail = [];
+  }
+
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgCode = res.orgCode;
+        this.getInfo();
+      }
+    });
   }
 
 }

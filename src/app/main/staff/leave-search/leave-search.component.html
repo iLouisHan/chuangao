@@ -1,3 +1,70 @@
-<p>
-  leave-search works!
-</p>
+<h1 class="page-title"><div class="page-title-icon"></div>请假查询</h1>
+<div class="main-container">
+  <div class="condition-container">
+    <div class="part-container">
+      <h1 class="part-title">查询条件</h1>
+      <div class="part-content clearfix">
+        <form [formGroup]="form">
+          <div class="form-item">
+            <p>组织机构</p>
+            <div class="tree-container">
+              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+            </div>
+          </div>
+          <div class="form-item">
+            <p>请假类型</p>
+            <select formControlName="leaveType">
+              <option value="-1">请选择</option>
+              <option value="1">事假</option>
+              <option value="2">年休</option>
+              <option value="3">补休</option>
+              <option value="4">病假</option>
+              <option value="5">产假</option>
+              <option value="6">婚假</option>
+              <option value="7">其他</option>
+            </select>
+          </div>
+          <div class="form-item">
+              <p>职工姓名</p>
+              <input type="text" formControlName="userName">
+          </div>
+          <div class="form-item">
+            <p>开始日期</p>
+            <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+          </div>
+          <div class="form-item">
+            <p>结束日期</p>
+            <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+          </div>
+          <div class="form-item">
+            <button (click)="submit()" class="form-btn">查&nbsp;询</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-container">
+      <h1 class="part-title">请假信息展示</h1>
+      <div class="scroll-table-container">
+        <div class="part-content">
+          <div>
+            <table class="myTable">
+              <thead>
+                <tr>
+                  <th *ngFor="let field of cols">{{field.header}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of leaveDataList">
+                  <td *ngFor="let field of cols">{{item[field.field]}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

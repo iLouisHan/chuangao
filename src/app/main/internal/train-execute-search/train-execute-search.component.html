@@ -1,34 +1,60 @@
-<h1 class="page-title"><div class="page-title-icon"></div>调顶班查询</h1>
+<h1 class="page-title"><div class="page-title-icon"></div>培训落实查询</h1>
 <div class="main-container">
   <div class="condition-container">
     <div class="part-container">
       <h1 class="part-title">查询条件</h1>
       <div class="part-content clearfix">
         <form [formGroup]="form">
-            <div class="form-item">
-            <p>组织机构</p>
+          <div class="form-item">
+            <p>发起单位</p>
             <div class="tree-container">
-              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+              <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">
-            <p>职工姓名</p>
-            <input type="text" formControlName="userName">
-          </div>
-          <div class="form-checkbox">
-            <p>调班类型</p>
-            <div>
-              <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>不限</span></label>
-              <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>换班</span></label>
-              <label><div [class.checked]="test(2)"></div><input (click)="check($event)" [checked]="test(2)" value="2" type="checkbox"><span>顶班</span></label>
+            <p>落实单位</p>
+            <div class="tree-container">
+              <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">
-            <p>起始调班日期</p>
+            <p>落实状态</p>
+            <select formControlName="executeType">
+              <option value="-1">请选择</option>
+              <option value="1">未落实</option>
+              <option value="2">落实</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <p>培训方式</p>
+            <select formControlName="executeType">
+              <option value="-1">请选择</option>
+              <option value="1">未落实</option>
+              <option value="2">落实</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <p>培训类别</p>
+            <select formControlName="executeType">
+              <option value="-1">请选择</option>
+              <option value="1">未落实</option>
+              <option value="2">落实</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <p>培训名称</p>
+            <select formControlName="executeType">
+              <option value="-1">请选择</option>
+              <option value="1">未落实</option>
+              <option value="2">落实</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <p>开始日期</p>
             <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
-            <p>结束调班日期</p>
+            <p>结束日期</p>
             <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
@@ -40,7 +66,7 @@
   </div>
   <div class="table-container">
     <div class="part-container">
-      <h1 class="part-title">换（顶）班信息展示</h1>
+      <h1 class="part-title">培训信息展示</h1>
       <div class="scroll-table-container">
         <div class="part-content">
           <div>
