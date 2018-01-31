@@ -18,21 +18,21 @@
           <div class="form-checkbox">
             <p>调班类型</p>
             <div>
-              <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>不限</span></label>
+              <label><div [class.checked]="test(-1)"></div><input (click)="check($event)" [checked]="test(-1)" value="-1" type="checkbox"><span>不限</span></label>
               <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>换班</span></label>
               <label><div [class.checked]="test(2)"></div><input (click)="check($event)" [checked]="test(2)" value="2" type="checkbox"><span>顶班</span></label>
             </div>
           </div>
           <div class="form-item">
             <p>起始调班日期</p>
-            <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <p>结束调班日期</p>
-            <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
-            <button class="form-btn">查&nbsp;询</button>
+            <button (click)="submit()" class="form-btn">查&nbsp;询</button>
           </div>
         </form>
       </div>
@@ -51,7 +51,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of staffList">
+                <tr *ngFor="let item of shiftChangeDataList">
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>
               </tbody>

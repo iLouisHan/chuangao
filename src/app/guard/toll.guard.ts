@@ -7,7 +7,8 @@ import { Store } from '@ngrx/store';
 @Injectable()
 export class TollGuard implements CanActivate {
   login: Observable<any>;
-  toll: boolean;
+  admin: boolean;
+  orgType: number;
 
   constructor(
     private router: Router,
@@ -20,17 +21,14 @@ export class TollGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
       this.login.subscribe(res => {
-        if (res.orgType === 3) {
-          this.toll = true;
-        }else {
-          this.toll = false;
-        }
+        this.admin = res.isAdmin;
+        this.orgType = res.orgType;
       });
-      if (this.toll) {
-        this.router.navigate(['/main/tollStation']);
-        return false;
-      }else {
+      if (this.orgType === 3 && this.admin) {
         return true;
+      }else {
+        return false;
       }
   }
 }
+

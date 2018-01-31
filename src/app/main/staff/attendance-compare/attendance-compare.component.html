@@ -1,0 +1,50 @@
+<h1 class="page-title"><div class="page-title-icon"></div>出勤对比</h1>
+<div class="part-container">
+  <h1 class="part-title">出勤排班表</h1>
+  <div class="scroll-table-container">
+    <div class="part-content">
+      <div class="month-choose-container">
+        <div (click)="resetToday()" class="today">今天</div>
+        <div class="month-choose">
+          <span (click)="changeMonth(-1)" class="pre-month">
+            <i class="fa fa-angle-left"></i>
+          </span>
+          <p>{{_year}}年{{_month}}月</p>
+          <span (click)="changeMonth(1)" class="next-month">
+            <i class="fa fa-angle-right"></i>
+          </span>
+        </div>
+      </div>
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th>周日</th>
+              <th>周一</th>
+              <th>周二</th>
+              <th>周三</th>
+              <th>周四</th>
+              <th>周五</th>
+              <th>周六</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of myCalendar">
+              <td *ngFor="let day of row">
+                <div class="myTable-td-div">
+                  <p>{{day.date}}</p>
+                  <div>
+                    <span *ngIf="day.dayShift" class="team-day">{{list_group[day.dayShift.teamsGroup]}}</span>
+                    <span *ngIf="day.midShift" class="team-mid">{{list_group[day.midShift.teamsGroup]}}</span>
+                    <span *ngIf="day.nightShift" class="team-night">{{list_group[day.nightShift.teamsGroup]}}</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

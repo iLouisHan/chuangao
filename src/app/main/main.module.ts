@@ -8,7 +8,6 @@ import { AdminGuard } from '../guard/admin.guard';
 import { SharedModule } from '../shared/shared.module';
 
 import { SidebarComponent } from './common/sidebar/sidebar.component';
-import { NavbarComponent } from './common/navbar/navbar.component';
 import { MainComponent } from './main.component';
 
 import { RoadCompanyComponent } from './road-company/road-company.component';
@@ -25,7 +24,6 @@ import { StaffDetailComponent } from './staff-detail/staff-detail.component';
   ],
   declarations: [
     SidebarComponent,
-    NavbarComponent,
     MainComponent,
     RoadCompanyComponent,
     HomeComponent,

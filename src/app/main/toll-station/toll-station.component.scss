@@ -13,11 +13,13 @@
       p{
         line-height: 24px;
         text-indent: 2em;
+        text-align: justify;
       }
 
       .company-img{
         width: 370px;
         float: right;
+        margin-left: 15px;
       }
     }
   }
@@ -198,10 +200,12 @@
 
   p{
     text-indent: 2em;
+    text-align: justify;
   }
   img{
     float: right;
     width: 270px;
+    margin-left: 15px;
   }
 }
 
@@ -215,10 +219,12 @@
 
   p{
     text-indent: 2em;
+    text-align: justify;
   }
   img{
     float: right;
     width: 270px;
+    margin-left: 15px;
   }
 }
 

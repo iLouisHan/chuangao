@@ -129,3 +129,20 @@ p{word-wrap:break-word}
     border-color: #ac2925;
   }
 }
+
+.main-container{
+  min-height: calc(100% - 61px);
+  width: calc(100% - 100px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-top: 61px;
+  padding-left: 100px;
+  z-index: 9;
+  background: #dce8ff;
+
+  .main{
+    padding: 0 30px;
+    padding-bottom: 20px;
+  }
+}

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
-import * as Actions from '../../../store/cacheStore.actions';
+import * as Actions from '../../store/cacheStore.actions';
 
 @Component({
   selector: 'app-navbar',

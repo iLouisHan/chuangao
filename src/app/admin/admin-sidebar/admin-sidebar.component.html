@@ -1,0 +1,114 @@
+<div class="sidebar-container">
+  <ul class="sidebar-items">
+    <li *ngIf="orgType !== 3" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
+      <div class="sidebar-item-show">
+        <p>系统首页</p>
+      </div>
+    </li>
+    <li class="sidebar-item basic-item" [class.actived]="isBasic()">
+      <div class="sidebar-item-show">
+        <p>基础数据</p>
+      </div>
+      <div class="sidebar-item-hover">
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>基础信息</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+    <li class="sidebar-item system-item">
+      <div class="sidebar-item-show">
+        <p>系统管理</p>
+      </div>
+      <div class="sidebar-item-hover"></div>
+    </li>
+    <li class="sidebar-item staff-item">
+      <div class="sidebar-item-show">
+        <p>收费人员</p>
+      </div>
+      <div class="sidebar-item-hover">
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>人员管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/staff/search">人员查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/staff/count">人员统计</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/staff/edit">人员录入</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/staff/edit">人员调动</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>班组排版管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/staff/teamScheduleSearch">排班查询</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>人员调班管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/staff/switchSearch">调(顶)班查询</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>人员请假管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/staff/leaveSearch">请假查询</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>考勤管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/staff/attendanceCheck">人员出勤统计</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>服装管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="">在用服装查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="">历史服装查询</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>星评管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/staff/checkSearch">星评查询</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+    <li class="sidebar-item affairs-item">
+      <div class="sidebar-item-show">
+        <p>内务管理</p>
+      </div>
+      <div class="sidebar-item-hover"></div>
+    </li>
+  </ul>
+</div>

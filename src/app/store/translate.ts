@@ -52,3 +52,8 @@ export const applyType = {
   6: '婚假',
   7: '其他'
 };
+
+export const shiftId = {
+  1: '早班',
+  2: '晚班'
+};

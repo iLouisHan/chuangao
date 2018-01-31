@@ -16,6 +16,12 @@ import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedul
 import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 import { TeamScheduleSetComponent } from './team-schedule-set/team-schedule-set.component';
+import { AttendanceCheckComponent } from './attendance-check/attendance-check.component';
+import { AttendanceCompareComponent } from './attendance-compare/attendance-compare.component';
+import { AttendanceEditComponent } from './attendance-edit/attendance-edit.component';
+import { CheckSearchComponent } from './check-search/check-search.component';
+import { StaffCountComponent } from './staff-count/staff-count.component';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   imports: [
@@ -38,7 +44,12 @@ import { TeamScheduleSetComponent } from './team-schedule-set/team-schedule-set.
     TeamScheduleSearchComponent,
     TeamScheduleModComponent,
     LeaveEditComponent,
-    TeamScheduleSetComponent
+    TeamScheduleSetComponent,
+    AttendanceCheckComponent,
+    AttendanceCompareComponent,
+    AttendanceEditComponent,
+    CheckSearchComponent,
+    StaffCountComponent
   ]
 })
 export class StaffModule { }

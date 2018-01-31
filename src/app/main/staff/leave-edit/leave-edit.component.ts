@@ -131,7 +131,6 @@ export class LeaveEditComponent implements OnInit {
   add() {
     this.form.reset();
     this.form.patchValue(this.initForm);
-    this.form.patchValue({orgName: this.orgName});
     this.filename = '';
     this.isChosen = true;
     this.isAdd = true;

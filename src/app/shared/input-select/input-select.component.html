@@ -1,0 +1,6 @@
+<div class="input-select-container">
+  <input (change)="inputChange($event)" (click)="inputClick()" type="text" [(ngModel)]="userName">
+  <ul [class.show]="listShow">
+    <li (click)="chooseUser(user)" *ngFor="let user of staffListShow">{{user.userName}}</li>
+  </ul>
+</div>

@@ -3,7 +3,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-
 @Component({
   selector: 'app-leave-search',
   templateUrl: './leave-search.component.html',

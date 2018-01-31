@@ -8,6 +8,7 @@ export class AdminGuard implements CanActivate {
   login: Observable<any>;
   admin: boolean;
   userId: string;
+  orgType: number;
 
   constructor(
     private router: Router,
@@ -22,11 +23,12 @@ export class AdminGuard implements CanActivate {
       this.login.subscribe(res => {
         this.admin = res.isAdmin;
         this.userId = res.userId;
+        this.orgType = res.orgType;
       });
+      // if (this.orgType === 1 || this.orgType === 2) {
       if (this.admin) {
         return true;
       }else {
-        this.router.navigate(['main/staffDetail'], {queryParams: {id: this.userId}});
         return false;
       }
   }

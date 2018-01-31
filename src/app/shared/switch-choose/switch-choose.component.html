@@ -1,0 +1,25 @@
+<div class="switch-choose-container">
+  <div (click)="toggle()" class="switch-value">{{_username}}</div>
+  <div *ngIf="switchTableShow" class="switch-table-container">
+    <ul class="ul-header-container">
+      <li class="li-index"></li>
+      <li class="li-userName">申请人</li>
+      <li class="li-scheduleDate">上班日期</li>
+      <li class="li-teamsGroup">班组</li>
+      <li class="li-shiftId">班次</li>
+      <li class="li-type">排班类型</li>
+    </ul>
+    <ul class="ul-body-container">
+      <li (click)="chooseSchedule(schedule)" *ngFor="let schedule of scheduleList; index as i">
+        <ul class="ul-header-container">
+          <li class="li-index">{{i}}</li>
+          <li class="li-userName">{{schedule.userName}}</li>
+          <li class="li-scheduleDate">{{schedule.scheduleDate}}</li>
+          <li class="li-teamsGroup">{{list_group[schedule.teamsGroup]}}</li>
+          <li class="li-shiftId">{{shiftId[schedule.shiftId]}}</li>
+          <li class="">排班类型</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>

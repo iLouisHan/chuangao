@@ -10,6 +10,11 @@ import { TeamScheduleModComponent } from './team-schedule-mod/team-schedule-mod.
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 import { TeamScheduleSetComponent } from './team-schedule-set/team-schedule-set.component';
+import { AttendanceCompareComponent } from './attendance-compare/attendance-compare.component';
+import { AttendanceCheckComponent } from './attendance-check/attendance-check.component';
+import { AttendanceEditComponent } from './attendance-edit/attendance-edit.component';
+import { CheckSearchComponent } from './check-search/check-search.component';
+import { StaffCountComponent } from './staff-count/staff-count.component';
 
 export const StaffRoutes: Routes = [
   {
@@ -59,6 +64,34 @@ export const StaffRoutes: Routes = [
       {
         path: 'teamScheduleSet',
         component: TeamScheduleSetComponent
+      },
+      {
+        path: 'switchEdit',
+        component: SwitchEditComponent
+      },
+      {
+        path: 'holdEdit',
+        component: HoldEditComponent
+      },
+      {
+        path: 'attendanceCompare',
+        component: AttendanceCompareComponent
+      },
+      {
+        path: 'attendanceCheck',
+        component: AttendanceCheckComponent
+      },
+      {
+        path: 'attendanceEdit',
+        component: AttendanceEditComponent
+      },
+      {
+        path: 'checkSearch',
+        component: CheckSearchComponent
+      },
+      {
+        path: 'count',
+        component: StaffCountComponent
       }
     ]
   }

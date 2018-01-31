@@ -11,15 +11,15 @@ import { work_post, politics, educational } from '../../../store/translate';
 })
 export class SwitchSearchComponent implements OnInit {
   form: FormGroup;
-  startTime: string;
-  endTime: string;
+  startDate: string;
+  endDate: string;
   count: number;
-  staffList: Array<any>;
+  shiftChangeDataList: Array<any>;
   orgList: Array<any>;
   page = 0;
   size = 15;
   hasData = false;
-  selectionMode = 'single';
+  selectionMode = 'checkbox';
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -29,7 +29,11 @@ export class SwitchSearchComponent implements OnInit {
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
   cols: any;
-  checkItem = 0;
+  checkItem = -1;
+  param: any = {
+    page: this.page,
+    size: this.size
+  };
 
   constructor(
     private http: Http
@@ -39,15 +43,17 @@ export class SwitchSearchComponent implements OnInit {
       userName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'userName', header: '姓名' },
-      { field: 'userSex', header: '性别' },
-      { field: 'politicalStatus', header: '政治面貌' },
-      { field: 'userTel', header: '手机号码' },
-      { field: 'userMail', header: '邮箱' },
-      { field: 'workPost', header: '岗位' },
-      { field: 'educational', header: '学历' },
-      { field: 'listGroup', header: '班组' },
-      { field: 'orgName', header: '组织名称' }
+      { field: 'orgName', header: '组织名称' },
+      { field: 'applyUserName', header: '换/顶班申请人' },
+      { field: 'applyTeams', header: '换/顶班班组' },
+      { field: 'applyDate', header: '换/顶班日期' },
+      { field: 'applyShift', header: '换/顶班班次' },
+      { field: 'applyChangeType', header: '排班类型' },
+      { field: 'backUserName', header: '替班收费员' },
+      { field: 'backTeams', header: '替班班组' },
+      { field: 'backDate', header: '替班日期' },
+      { field: 'backShift', header: '替班班次' },
+      { field: 'remark', header: '备注' }
     ];
   }
 
@@ -69,32 +75,32 @@ export class SwitchSearchComponent implements OnInit {
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
       alert('未选择机构');
+    }else if (this.orgList.filter(el => el.orgType !== 3).length > 0) {
+      alert('请选择收费站');
     }else {
-      this.getInfo(this.page, this.size);
+      this.paginate({page: 0});
     }
   }
 
   paginate(event) {
-    this.getInfo(event.page, this.size);
+    this.param.page = event.page;
+    this.getInfo();
   }
 
-  getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
+  getInfo() {
+    this.form.value.startDate = this.dateFormat(this.startDate);
+    this.form.value.endDate = this.dateFormat(this.endDate);
     this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
-      page: page,
-      size: size,
-    };
+    this.param.applyChangeType = this.checkItem;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
+        this.param[el] = this.form.value[el];
       }
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -103,7 +109,7 @@ export class SwitchSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.staffDataList;
+                  this.shiftChangeDataList = res.data.shiftChangeDataList;
                 }
               }else {
                 alert(res.message);
