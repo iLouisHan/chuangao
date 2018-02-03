@@ -14,6 +14,8 @@ export class DropOrgTreeComponent implements OnInit {
   selectedOrg: EventEmitter<any> = new EventEmitter();
   @Input()
   selectionMode: string;
+  @Input()
+  initOrgName: string;
 
   login: Observable<any>;
   treeNodes: Array<any> = [];
@@ -97,6 +99,7 @@ export class DropOrgTreeComponent implements OnInit {
         this.getOrgInfo(res.orgCode);
       }
     });
+    this.selected = this.initOrgName || '';
   }
 
 }

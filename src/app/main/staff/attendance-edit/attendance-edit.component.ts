@@ -102,7 +102,6 @@ export class AttendanceEditComponent implements OnInit {
         el.staff = el.staff.filter(user => user.userId !== id);
       }
     });
-    console.log(this.attendanceList);
   }
 
   submit() {
