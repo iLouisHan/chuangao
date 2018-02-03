@@ -16,6 +16,7 @@ import { StaffEditComponent } from './staff-edit/staff-edit.component';
 import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedule-search.component';
 import { SwitchSearchComponent } from './switch-search/switch-search.component';
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
+import { AttendanceCheckComponent } from './attendance-check/attendance-check.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { LeaveSearchComponent } from './leave-search/leave-search.component';
     StaffEditComponent,
     TeamScheduleSearchComponent,
     SwitchSearchComponent,
-    LeaveSearchComponent
+    LeaveSearchComponent,
+    AttendanceCheckComponent
   ],
   exports: [
     DropOrgTreeComponent,
@@ -53,7 +55,8 @@ import { LeaveSearchComponent } from './leave-search/leave-search.component';
     StaffEditComponent,
     TeamScheduleSearchComponent,
     SwitchSearchComponent,
-    LeaveSearchComponent
+    LeaveSearchComponent,
+    AttendanceCheckComponent
   ]
 })
 export class SharedModule { }

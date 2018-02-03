@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../../store/translate';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-attendance-edit',
@@ -10,17 +11,17 @@ import { work_post, politics, educational, list_group } from '../../../store/tra
   styleUrls: ['./attendance-edit.component.scss']
 })
 export class AttendanceEditComponent implements OnInit {
-  form: FormGroup;
-  startTime: string;
-  endTime: string;
-  count: number;
+  login: Observable<any> = new Observable<any>();
   staffList: Array<any>;
-  orgList: Array<any>;
-  page = 0;
   applyDate: string;
-  size = 15;
-  hasData = false;
-  selectionMode = 'single';
+  shiftId: number;
+  orgCode: string;
+  teams: string;
+  isShow: boolean;
+  activedType: number;
+  attenceSmallType: number;
+  myHeaders: Headers = new Headers();
+  leaveUser: string;
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -29,64 +30,59 @@ export class AttendanceEditComponent implements OnInit {
     monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
-  cols: any;
-  checkItem: number;
-  myCalendar = [[], [], [], [], [], [], [], []];
-  nowTime = new Date();
-  now: string;
-  _month = this.nowTime.getMonth() + 1;
-  _year = this.nowTime.getFullYear();
-  secheduleList: any;
-  list_group = list_group;
+  attendanceList: Array<any>;
+  freeItemsList: Array<any>;
+  attenceTypeToAdd: number;
+  initType: Array<any>;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
-    this.now = this.dateFormat(this.nowTime);
-    this.form = new FormGroup({
-      remark: new FormControl('', Validators.nullValidator),
-      teamsGroup: new FormControl('', Validators.nullValidator),
-      shiftId: new FormControl('', Validators.nullValidator)
-    });
-    this.cols = [
-      { field: 'userName', header: '姓名' },
-      { field: 'userSex', header: '性别' },
-      { field: 'politicalStatus', header: '政治面貌' },
-      { field: 'userTel', header: '手机号码' },
-      { field: 'userMail', header: '邮箱' },
-      { field: 'workPost', header: '岗位' },
-      { field: 'educational', header: '学历' },
-      { field: 'listGroup', header: '班组' },
-      { field: 'orgName', header: '组织名称' }
-    ];
-    this.calendarInit(this.now);
-  }
-
-  calendarInit(mydate) {
-    mydate = new Date(mydate);
-    mydate = new Date(mydate.setMonth(mydate.getMonth() + 1));
-    const monthLong = new Date(mydate.setDate(0)).getDate();
-    const first = new Date(mydate.setDate(1));
-    const startDate = first.getDay();
-    for (let i = 0; i < 42; i++) {
-      const row = Math.floor(i / 7);
-      const col = Math.floor(i % 7);
-      if (row === 0 && col < startDate) {
-        const day = new Date((new Date(first)).setDate(first.getDate() - (startDate - col)));
-        this.myCalendar[row][col] = {
-          day: day,
-          month: day.getMonth(),
-          date: day.getDate()
-        };
-      }else {
-        const day = new Date((new Date(first)).setDate(first.getDate() + (i - startDate)));
-        this.myCalendar[row][col] = {
-          day: day,
-          month: day.getMonth(),
-          date: day.getDate()
-        };
+    this.login = this.store.select('login');
+    this.myHeaders.append('Content-Type', 'application/json');
+    this.attenceTypeToAdd = 0;
+    this.shiftId = 0;
+    this.attendanceList = [];
+    this.initType = [
+      {
+        value: '1',
+        label: '上班'
+      },
+      {
+        value: '2',
+        label: '替班'
+      },
+      {
+        value: '3',
+        label: '加班'
+      },
+      {
+        value: '4',
+        label: '休息'
+      },
+      {
+        value: '5',
+        label: '请假'
+      },
+      {
+        value: '6',
+        label: '还班'
+      },
+      {
+        value: '7',
+        label: '旷工'
+      },
+      {
+        value: '8',
+        label: '早退'
+      },
+      {
+        value: '9',
+        label: '迟到'
       }
-    }
+    ];
+    this.freeItemsList = this.initType;
   }
 
   dateFormat(date) {
@@ -100,109 +96,68 @@ export class AttendanceEditComponent implements OnInit {
     }
   }
 
-  selectedOrg($event) {
-    this.orgList = $event;
+  removeStaff(val, id) {
+    this.attendanceList.forEach(el => {
+      if (+el.value === +val) {
+        el.staff = el.staff.filter(user => user.userId !== id);
+      }
+    });
+    console.log(this.attendanceList);
   }
 
   submit() {
-    if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
-    }else if (this.orgList.filter(el => el.orgType !== 3).length > 0) {
-      alert('请选择收费站');
-    }else {
-      this.calendarInit(this.now);
-      this.getInfo(this.page, this.size);
-    }
-  }
-
-  paginate(event) {
-    this.getInfo(event.page, this.size);
-  }
-
-  bindSechedule() {
-    const _month = (new Date(this.now)).getMonth();
-    const _thisMonth = _month - 1;
-    const _thisMonthList = this.secheduleList.filter(el => {
-      const diff = Math.abs((new Date(el.scheduleDate)).getMonth() - _thisMonth);
-      return diff === 0 || diff === 1 || diff === 11;
-    });
-    _thisMonthList.forEach(el => {
-      const day = new Date(el.scheduleDate);
-      const month = day.getMonth();
-      const date = day.getDate();
-      this.myCalendar.forEach(row => {
-        row.forEach(element => {
-          if (element.date === date && element.month === month) {
-            switch (el.shiftId) {
-              case 1: {
-                element.dayShift = {
-                  shiftId: el.shiftId,
-                  teamsGroup: el.teamsGroup,
-                  scheduleType: el.scheduleType,
-                };
-                break;
-              }
-              case 2: {
-                element.nightShift = {
-                  shiftId: el.shiftId,
-                  teamsGroup: el.teamsGroup,
-                  scheduleType: el.scheduleType,
-                };
-                break;
-              }
-              case 3: {
-                element.midShift = {
-                  shiftId: el.shiftId,
-                  teamsGroup: el.teamsGroup,
-                  scheduleType: el.scheduleType,
-                };
-                break;
-              }
-            }
+    const attendanceStaffList: Array<any> = [];
+    this.attendanceList.forEach(el => {
+      if (el.staff && el.staff.length > 0) {
+        el.staff.forEach(staff => {
+          const user: any = {
+            attenceUser: staff.userId,
+            userTeams: el.teams,
+            attenceType: el.value
+          };
+          if (+el.value === 5) {
+            user.attenceSmallType = staff.attenceSmallType;
           }
+          attendanceStaffList.push(user);
         });
-      });
-    });
-  }
-
-  getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
-      page: page,
-      size: size
-    };
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
       }
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/getTeamSchedule', JSON.stringify(param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.secheduleList = res.data.teamScheduleDataList;
-                this.bindSechedule();
-              }else {
-                alert(res.message);
-              }
-            });
-  }
-
-  teamChange($event) {
-    if (this.orgList.length > 0 && $event.target.length !== -1) {
-      this.getStaffs($event.target.value, this.orgList[0].data);
+    const param = {
+      stationCode: this.orgCode,
+      attenceDate: this.dateFormat(this.applyDate),
+      shiftId: this.shiftId,
+      attendanceStaffList: attendanceStaffList
+    };
+    if (!param.attenceDate) {
+      alert('请选择考勤日期！');
+    }else if (!param.shiftId) {
+      alert('请选择班次！');
+    }else {
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/add`, JSON.stringify(param), {
+        headers: this.myHeaders
+      }).map(res => res.json())
+        .subscribe(res => {
+          if (res.code) {
+            alert(res.message);
+            this.freeItemsList = this.initType;
+            this.attendanceList = [];
+            this.applyDate = '';
+            this.shiftId = 0;
+          }else {
+            alert(res.message);
+          }
+        });
     }
   }
 
-  getStaffs(teams, orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${teams}&stationCode=${orgCode}`)
+  teamsChange() {
+    if (this.teams) {
+      this.getStaffs();
+    }
+  }
+
+  getStaffs() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
@@ -211,33 +166,67 @@ export class AttendanceEditComponent implements OnInit {
             });
   }
 
-  check($event) {
-    this.checkItem = $event.target.value;
+  addAttendanceType() {
+    if (this.attenceTypeToAdd) {
+      const item = this.freeItemsList.filter(el => el.value === this.attenceTypeToAdd)[0];
+      this.attendanceList.push(item);
+      this.freeItemsList = this.freeItemsList.filter(el => +el.value !== +this.attenceTypeToAdd);
+      this.attenceTypeToAdd = 0;
+    }else {
+      alert('请选择要添加的考勤类别！');
+    }
   }
 
-  test(val) {
-    return val === +this.checkItem;
+  chooseStaff(staff) {
+    this.staffList.forEach(el => {
+      if (el.userId === staff.userId) {
+        el.choose = !el.choose;
+      }
+    });
   }
 
-  changeMonth(val) {
-    this.nowTime.setMonth(this.nowTime.getMonth() + val);
-    this._month = this.nowTime.getMonth() + 1;
-    this._year = this.nowTime.getFullYear();
-    this.now = this.dateFormat(this.nowTime);
-    this.calendarInit(this.now);
-    this.bindSechedule();
+  addStaffs(val) {
+    this.teams = '0';
+    this.isShow = true;
+    this.activedType = val;
   }
 
-  resetToday() {
-    this.nowTime = new Date();
-    this._month = this.nowTime.getMonth() + 1;
-    this._year = this.nowTime.getFullYear();
-    this.now = this.dateFormat(this.nowTime);
-    this.calendarInit(this.now);
-    this.bindSechedule();
+  staffSubmit() {
+    if (+this.activedType !== 5) {
+      this.attendanceList.forEach(el => {
+        if (+el.value === +this.activedType) {
+          el.staff = this.staffList.filter(user => user.choose);
+          el.teams = this.teams;
+        }
+      });
+    }else {
+      this.attendanceList.forEach(el => {
+        if (+el.value === +this.activedType) {
+          if (!el.staff) {
+            el.staff = [];
+          }
+          const item = this.staffList.filter(user => user.userId === this.leaveUser)[0];
+          item.attenceSmallType = this.attenceSmallType;
+          el.staff.push(item);
+          el.teams = this.teams;
+        }
+      });
+    }
+    this.isShow = false;
+    this.staffList = [];
+  }
+
+  staffCancel() {
+    this.isShow = false;
+    this.staffList = [];
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgCode = res.orgCode;
+      }
+    });
   }
 
 }
