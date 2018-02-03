@@ -5,48 +5,37 @@
     <form [formGroup]="form">
       <div class="form-item">
         <p>顶班人所在班组</p>
-        <select formControlName="applyUserId">
-          <option value="">请选择</option>
-          <option *ngFor="let user of staffList" [value]="user.userId">{{user.userName}}</option>
+        <select formControlName="applyTeams">
+          <option value="-1">请选择</option>
+          <option value="1">一班</option>
+          <option value="2">二班</option>
+          <option value="3">三班</option>
+          <option value="4">四班</option>
+          <option value="5">五班</option>
+          <option value="6">六班</option>
+          <option value="7">机动班</option>
+          <option value="8">常白班</option>
+          <option value="100">站监控站</option>
         </select>
       </div>
       <div class="form-item">
         <p>顶班日期</p>
-        <select formControlName="applyType">
-          <option value="-1">请选择</option>
-          <option value="1">事假</option>
-          <option value="2">年休</option>
-          <option value="3">补休</option>
-          <option value="4">病假</option>
-          <option value="5">产假</option>
-          <option value="6">婚假</option>
-          <option value="7">其他</option>
-        </select>
+        <p-calendar [(ngModel)]="applyDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>顶班班次</p>
-        <select formControlName="applyType">
+        <select formControlName="shiftId">
           <option value="-1">请选择</option>
-          <option value="1">事假</option>
-          <option value="2">年休</option>
-          <option value="3">补休</option>
-          <option value="4">病假</option>
-          <option value="5">产假</option>
-          <option value="6">婚假</option>
-          <option value="7">其他</option>
+          <option value="1">白班</option>
+          <option value="2">夜班</option>
+          <option value="3">中班</option>
         </select>
       </div>
       <div class="form-item">
         <p>顶板申请人</p>
-        <select formControlName="applyType">
-          <option value="-1">请选择</option>
-          <option value="1">事假</option>
-          <option value="2">年休</option>
-          <option value="3">补休</option>
-          <option value="4">病假</option>
-          <option value="5">产假</option>
-          <option value="6">婚假</option>
-          <option value="7">其他</option>
+        <select formControlName="applyUserId">
+          <option value="">请选择</option>
+          <option *ngFor="let user of staffList" [value]="user.userId">{{user.userName}}</option>
         </select>
       </div>
       <div class="form-item form-textarea">
@@ -93,7 +82,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of leaveList">
+            <tr *ngFor="let item of holdList">
               <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
               <td>

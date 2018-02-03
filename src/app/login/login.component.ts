@@ -16,6 +16,8 @@ export class LoginComponent implements OnInit {
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   });
+  orgType: number;
+  isAdmin: boolean;
 
   getCookie(): void {
     const cookie = document.cookie.split(';');
@@ -48,7 +50,15 @@ export class LoginComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           this.store.dispatch(new Actions.SaveLogin(res.data));
-          this.router.navigate(['/main']);
+          this.orgType = res.data.orgType;
+          this.isAdmin = res.data.isAdmin;
+          if (this.orgType === 1 || this.orgType === 2) {
+            this.router.navigate(['/admin']);
+          }else if (this.orgType === 3 && this.isAdmin) {
+            this.router.navigate(['/main']);
+          }else if (this.orgType === 3 && !this.isAdmin) {
+            this.router.navigate(['/general']);
+          }
           document.cookie = `login=${JSON.stringify(res.data)}`;
         }else {
           alert(res.message);

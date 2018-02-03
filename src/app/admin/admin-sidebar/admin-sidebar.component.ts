@@ -15,9 +15,9 @@ export class AdminSidebarComponent implements OnInit {
   orgTypeStr: string;
   orgLink: string;
   orgInputLink: string;
-  orgLevel = ['路公司', '管理处', '收费站'];
-  orgLinks = ['roadCompany', 'division', 'tollStation'];
-  orgInputLinks = ['roadCompanyInput', 'divisionInput', 'tollStationInput'];
+  orgLevel = ['路公司', '管理处'];
+  orgLinks = ['roadCompany', 'division'];
+  orgInputLinks = ['roadCompanyInput', 'divisionInput'];
   userId: string;
 
   constructor(

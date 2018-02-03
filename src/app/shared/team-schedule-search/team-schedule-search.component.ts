@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post, politics, educational, list_group } from '../../../store/translate';
+import { work_post, politics, educational, list_group } from '../../store/translate';
 
 @Component({
   selector: 'app-team-schedule-search',

@@ -9,6 +9,8 @@ import * as Actions from '../store/cacheStore.actions';
 export class HasLoginGuard implements CanActivate {
   login: Observable<any>;
   hasLogin = false;
+  orgType: number;
+  isAdmin: boolean;
 
   constructor(
     private router: Router,
@@ -31,6 +33,8 @@ export class HasLoginGuard implements CanActivate {
     }
     this.login.subscribe(res => {
       if (res) {
+        this.orgType = res.orgType;
+        this.isAdmin = res.isAdmin;
         this.hasLogin = true;
       }else {
         this.hasLogin = false;
@@ -45,7 +49,13 @@ export class HasLoginGuard implements CanActivate {
       }
     }else {
       if (this.hasLogin) {
-        this.router.navigate(['/main']);
+        if (this.orgType === 1 || this.orgType === 2) {
+          this.router.navigate(['/admin']);
+        }else if (this.orgType === 3 && this.isAdmin) {
+          this.router.navigate(['/main']);
+        }else if (this.orgType === 3 && !this.isAdmin) {
+          this.router.navigate(['/general']);
+        }
         return false;
       }else {
         return true;

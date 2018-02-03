@@ -13,5 +13,9 @@ export const AppRoutes: Routes = [
   {
     path: 'main',
     loadChildren: './main/main.module#MainModule'
+  },
+  {
+    path: 'admin',
+    loadChildren: './admin/admin.module#AdminModule'
   }
 ];

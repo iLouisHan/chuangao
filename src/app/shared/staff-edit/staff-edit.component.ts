@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { work_post, politics, educational } from '../../../store/translate';
+import { work_post, politics, educational } from '../../store/translate';
 
 @Component({
   selector: 'app-staff-edit',

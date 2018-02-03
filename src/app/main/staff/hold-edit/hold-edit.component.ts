@@ -29,7 +29,7 @@ export class HoldEditComponent implements OnInit {
   page = 0;
   size = 15;
   count: number;
-  leaveList: Array<any>;
+  holdList: Array<any>;
   staffList: Array<any>;
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
@@ -42,7 +42,8 @@ export class HoldEditComponent implements OnInit {
   initForm: any;
   param: any = {
     page: this.page,
-    size: this.size
+    size: this.size,
+    applyChangeType: 2
   };
 
   constructor(
@@ -51,7 +52,8 @@ export class HoldEditComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       applyUserId: new FormControl('', Validators.nullValidator),
-      applyType: new FormControl('', Validators.nullValidator),
+      applyTeams: new FormControl('', Validators.nullValidator),
+      shiftId: new FormControl('', Validators.nullValidator),
       remark: new FormControl('', Validators.nullValidator)
     });
     this.keys = Object.keys(this.form.value);
@@ -66,35 +68,31 @@ export class HoldEditComponent implements OnInit {
     this.login = store.select('login');
     this.cols = [
       { field: 'orgName', header: '组织名称' },
-      { field: 'userName', header: '顶班申请人' },
-      { field: 'applyTypeCN', header: '顶板班组' },
-      { field: 'applyDate', header: '顶板日期' },
-      { field: 'applyDateEnd', header: '顶板班次' },
-      { field: 'remark', header: '创建人' },
-      { field: 'remark', header: '创建时间' },
-      { field: 'remark', header: '修改人' },
-      { field: 'remark', header: '修改时间' }
+      { field: 'applyUserName', header: '顶班申请人' },
+      { field: 'applyTeams', header: '顶板班组' },
+      { field: 'applyDate', header: '顶板日期' }
     ];
     this.initForm = {
-      userId: '',
-      leaveType: '-1'
+      applyUserId: '',
+      applyTeams: '-1',
+      shiftId: '',
+      remark: ''
     };
   }
 
   getLeaveInfo(leaveId) {
-    this.data = this.leaveList.filter(el => el.id === leaveId)[0];
+    this.data = this.holdList.filter(el => el.id === leaveId)[0];
     this.isChosen = true;
     this.form.patchValue(this.data);
     this.form.patchValue({applyUserId: this.data.userId});
     this.applyDate = this.data.applyDate;
-    this.applyDateEnd = this.data.applyDateEnd;
     this.filename = this.data.picName;
   }
 
   getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(this.param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -103,10 +101,7 @@ export class HoldEditComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.leaveList = res.data.leaveDataList.map(el => {
-                    el.applyTypeCN = this.applyType[el.applyType];
-                    return el;
-                  });
+                  this.holdList = res.data.shiftChangeDataList;
                 }
               }else {
                 alert(res.message);
@@ -187,20 +182,20 @@ export class HoldEditComponent implements OnInit {
             });
   }
 
-  addStaffLeave() {
+  addHold() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.dateFormat(this.applyDate);
-    this.form.value.applyDateEnd = this.dateFormat(this.applyDateEnd);
     this.form.value.stationCode = this.orgCode;
     this.form.value.adminId = this.adminId;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/staffLeaveByAdmin`, JSON.stringify(this.form.value), {
+    this.form.value.applyChangeType = 2;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.upload(res.data.id);
+                this.toFirstPage();
               }else {
                 alert(res.message);
               }
@@ -222,11 +217,7 @@ export class HoldEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                if (this.file) {
-                  this.upload(this.data.id);
-                }else {
-                  this.toFirstPage();
-                }
+                this.toFirstPage();
               }else {
                 alert(res.message);
               }
@@ -240,27 +231,10 @@ export class HoldEditComponent implements OnInit {
 
   submit() {
     if (this.isAdd) {
-      this.addStaffLeave();
+      this.addHold();
     }else {
       this.updateLeave();
     }
-  }
-
-  upload(id) {
-    const formdata = new FormData();
-    formdata.append('file', this.file);
-    formdata.append('id', id);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/leaveInfo`, formdata)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          alert(res.message);
-        }else {
-          alert(res.message);
-        }
-        this.isChosen = false;
-        this.toFirstPage();
-      });
   }
 
   toFirstPage() {

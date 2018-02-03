@@ -10,11 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { MainComponent } from './main.component';
 
-import { RoadCompanyComponent } from './road-company/road-company.component';
-import { HomeComponent } from './home/home.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
-import { DivisionComponent } from './division/division.component';
-import { StaffDetailComponent } from './staff-detail/staff-detail.component';
 
 @NgModule({
   imports: [
@@ -25,11 +21,7 @@ import { StaffDetailComponent } from './staff-detail/staff-detail.component';
   declarations: [
     SidebarComponent,
     MainComponent,
-    RoadCompanyComponent,
-    HomeComponent,
-    TollStationComponent,
-    DivisionComponent,
-    StaffDetailComponent
+    TollStationComponent
   ],
   providers: [
     HasLoginGuard,
