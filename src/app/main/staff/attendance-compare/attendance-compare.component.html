@@ -34,9 +34,9 @@
                 <div class="myTable-td-div">
                   <p>{{day.date}}</p>
                   <div>
-                    <span *ngIf="day.dayShift" class="team-day">{{list_group[day.dayShift.teamsGroup]}}</span>
-                    <span *ngIf="day.midShift" class="team-mid">{{list_group[day.midShift.teamsGroup]}}</span>
-                    <span *ngIf="day.nightShift" class="team-night">{{list_group[day.nightShift.teamsGroup]}}</span>
+                    <span (click)="getAttendance(day, day.dayShift)" *ngIf="day.dayShift" class="team-day">{{list_group[day.dayShift.teamsGroup]}}</span>
+                    <span (click)="getAttendance(day)" *ngIf="day.midShift" class="team-mid">{{list_group[day.midShift.teamsGroup]}}</span>
+                    <span (click)="getAttendance(day, day.nightShift)" *ngIf="day.nightShift" class="team-night">{{list_group[day.nightShift.teamsGroup]}}</span>
                   </div>
                 </div>
               </td>
@@ -46,5 +46,43 @@
       </div>
       <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
     </div>
+  </div>
+</div>
+<div class="popup-container" [class.show]="isShow">
+  <div class="popup">
+    <h1>上班信息详情</h1>
+    <div class="staffList-container">
+      <p>计划上班人员</p>
+      <div>
+        <ul class="clearfix">
+          <li *ngFor="let staff of planUserList" class="staffList-li">{{staff.userName}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="staffList-container">
+      <p>实际上班人员</p>
+      <div>
+        <ul class="clearfix">
+          <li *ngFor="let staff of attendanceList" class="staffList-li">{{staff.userName}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="staffList-container">
+      <p>请假人员</p>
+      <div>
+        <ul class="clearfix">
+          <li *ngFor="let staff of leaveList" class="staffList-li">{{staff.userName}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="staffList-container">
+      <p>换班顶班人员</p>
+      <div>
+        <ul class="clearfix">
+          <li *ngFor="let staff of shiftChangeList" class="staffList-li">{{staff.userName}}</li>
+        </ul>
+      </div>
+    </div>
+    <button (click)="hide()" class="btn close-button">关闭</button>
   </div>
 </div>

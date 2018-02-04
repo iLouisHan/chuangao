@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../../store/translate';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-attendance-compare',
@@ -10,16 +12,16 @@ import { work_post, politics, educational, list_group } from '../../../store/tra
   styleUrls: ['./attendance-compare.component.scss']
 })
 export class AttendanceCompareComponent implements OnInit {
-  form: FormGroup;
   startTime: string;
   endTime: string;
-  count: number;
-  staffList: Array<any>;
-  orgList: Array<any>;
-  page = 0;
-  size = 15;
   hasData = false;
+  login: Observable<any> = new Observable<any>();
   selectionMode = 'single';
+  isShow = false;
+  planUserList: Array<any> = [];
+  shiftChangeList: Array<any> = [];
+  attendanceList: Array<any> = [];
+  leaveList: Array<any> = [];
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -28,8 +30,6 @@ export class AttendanceCompareComponent implements OnInit {
     monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
-  cols: any;
-  checkItem: number;
   myCalendar = [[], [], [], [], [], [], [], []];
   nowTime = new Date();
   now: string;
@@ -37,28 +37,15 @@ export class AttendanceCompareComponent implements OnInit {
   _year = this.nowTime.getFullYear();
   secheduleList: any;
   list_group = list_group;
+  orgCode: string;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
     this.now = this.dateFormat(this.nowTime);
-    this.form = new FormGroup({
-      teamsGroup: new FormControl('', Validators.nullValidator),
-      shiftId: new FormControl('', Validators.nullValidator),
-      userId: new FormControl('', Validators.nullValidator)
-    });
-    this.cols = [
-      { field: 'userName', header: '姓名' },
-      { field: 'userSex', header: '性别' },
-      { field: 'politicalStatus', header: '政治面貌' },
-      { field: 'userTel', header: '手机号码' },
-      { field: 'userMail', header: '邮箱' },
-      { field: 'workPost', header: '岗位' },
-      { field: 'educational', header: '学历' },
-      { field: 'listGroup', header: '班组' },
-      { field: 'orgName', header: '组织名称' }
-    ];
     this.calendarInit(this.now);
+    this.login = store.select('login');
   }
 
   calendarInit(mydate) {
@@ -88,6 +75,10 @@ export class AttendanceCompareComponent implements OnInit {
     }
   }
 
+  hide() {
+    this.isShow = false;
+  }
+
   dateFormat(date) {
     if (date) {
       const _date = new Date(date);
@@ -97,25 +88,6 @@ export class AttendanceCompareComponent implements OnInit {
     }else {
       return '';
     }
-  }
-
-  selectedOrg($event) {
-    this.orgList = $event;
-  }
-
-  submit() {
-    if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
-    }else if (this.orgList.filter(el => el.orgType !== 3).length > 0) {
-      alert('请选择收费站');
-    }else {
-      this.calendarInit(this.now);
-      this.getInfo(this.page, this.size);
-    }
-  }
-
-  paginate(event) {
-    this.getInfo(event.page, this.size);
   }
 
   bindSechedule() {
@@ -164,20 +136,12 @@ export class AttendanceCompareComponent implements OnInit {
     });
   }
 
-  getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
+  getInfo() {
     const param = {
-      page: page,
-      size: size
+      stationCode: this.orgCode,
+      startTime: this.startTime,
+      endTime: this.endTime
     };
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
-      }
-    });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/getTeamSchedule', JSON.stringify(param) , {
@@ -194,36 +158,14 @@ export class AttendanceCompareComponent implements OnInit {
             });
   }
 
-  teamChange($event) {
-    if (this.orgList.length > 0 && $event.target.length !== -1) {
-      this.getStaffs($event.target.value, this.orgList[0].data);
-    }
-  }
-
-  getStaffs(teams, orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${teams}&stationCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }
-            });
-  }
-
-  check($event) {
-    this.checkItem = $event.target.value;
-  }
-
-  test(val) {
-    return val === +this.checkItem;
-  }
-
   changeMonth(val) {
     this.nowTime.setMonth(this.nowTime.getMonth() + val);
     this._month = this.nowTime.getMonth() + 1;
     this._year = this.nowTime.getFullYear();
     this.now = this.dateFormat(this.nowTime);
     this.calendarInit(this.now);
+    this.getTime();
+    this.getInfo();
     this.bindSechedule();
   }
 
@@ -233,10 +175,45 @@ export class AttendanceCompareComponent implements OnInit {
     this._year = this.nowTime.getFullYear();
     this.now = this.dateFormat(this.nowTime);
     this.calendarInit(this.now);
+    this.getTime();
+    this.getInfo();
     this.bindSechedule();
   }
 
+  getTime() {
+    this.startTime = this.dateFormat(new Date((new Date(this.nowTime)).setDate(1)));
+    this.endTime = this.dateFormat((new Date((new Date(this.nowTime)).setMonth(this.nowTime.getMonth() + 1))).setDate(0));
+  }
+
+  getAttendance(day, shift) {
+    this.isShow = true;
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/getCompare`, JSON.stringify({
+      stationCode: this.orgCode,
+      date: this.dateFormat(day.day),
+      shiftId: shift.shiftId
+    }), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.planUserList = res.data.planUserList;
+          this.shiftChangeList = res.data.shiftChangeList;
+          this.attendanceList = res.data.attendanceList;
+          this.leaveList = res.data.leaveList;
+        }
+      });
+  }
+
   ngOnInit() {
+    this.getTime();
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgCode = res.orgCode;
+        this.getInfo();
+      }
+    });
   }
 
 }

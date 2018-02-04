@@ -8,11 +8,20 @@
       float: left;
       margin-right: 20px;
 
+      .tree-container{
+        width: 200px;
+        display: inline-block;
+        height: 38px;
+        border-radius: 5px;
+        border: 1px solid #d9d9d9;
+      }
+
       span{
         font-size: 14px;
         line-height: 40px;
         color: #333;
         margin: 0 15px;
+        float: left;
       }
 
       select{

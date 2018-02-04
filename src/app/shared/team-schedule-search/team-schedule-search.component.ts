@@ -16,8 +16,6 @@ export class TeamScheduleSearchComponent implements OnInit {
   count: number;
   staffList: Array<any>;
   orgList: Array<any>;
-  page = 0;
-  size = 15;
   hasData = false;
   selectionMode = 'single';
   en = {
@@ -110,12 +108,12 @@ export class TeamScheduleSearchComponent implements OnInit {
       alert('请选择收费站');
     }else {
       this.calendarInit(this.now);
-      this.getInfo(this.page, this.size);
+      this.getInfo();
     }
   }
 
   paginate(event) {
-    this.getInfo(event.page, this.size);
+    this.getInfo();
   }
 
   bindSechedule() {
@@ -164,14 +162,11 @@ export class TeamScheduleSearchComponent implements OnInit {
     });
   }
 
-  getInfo(page: number, size: number) {
+  getInfo() {
     this.form.value.startTime = this.dateFormat(this.startTime);
     this.form.value.endTime = this.dateFormat(this.endTime);
     this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
-      page: page,
-      size: size
-    };
+    const param = {};
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       if (this.form.value[el] || this.form.value[el] === 0) {

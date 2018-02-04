@@ -8,20 +8,21 @@
           <div>
             <div>
               <span>收费站</span>
-              <select>
-                <option value=""></option>
-              </select>
+              <div class="tree-container">
+                <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+              </div>
             </div>
             <div>
               <span>姓名</span>
-              <select>
-                <option value=""></option>
+              <select [(ngModel)]="staff">
+                <option value="0">请选择</option>
+                <option *ngFor="let staff of staffList" [value]="staff.userId">{{staff.userName}}</option>
               </select>
             </div>
             <div>
               <span>年份</span>
-              <select>
-                <option value=""></option>
+              <select [(ngModel)]="year">
+                <option *ngFor="let year of yearList" [value]="year">{{year}}</option>
               </select>
             </div>
             <div class="search-btn" (click)="search()">查询</div>
@@ -31,7 +32,9 @@
     </div>
     <div class="chart-container">
       <div class="part-content">
-        <img src="/assets/images/attendance-check.png" alt="">
+        <div class="echart-container">
+          <div echarts [options]="options" [merge]="updateOptions"></div>
+        </div>
       </div>
     </div>
     <div class="table-container">
@@ -40,13 +43,15 @@
           <table class="myTable">
             <thead>
               <tr>
+                <th>系列</th>
                 <th *ngFor="let field of cols">{{field.header}}</th>
               </tr>
             </thead>
             <tbody>
-              <!-- <tr *ngFor="let item of leaveList">
-                <td *ngFor="let field of cols">{{item[field.field]}}</td>
-              </tr> -->
+              <tr *ngFor="let item of rows">
+                <td>{{item.name}}</td>
+                <td *ngFor="let field of cols">{{attendanceList[field.field][item.value]}}</td>
+              </tr>
             </tbody>
           </table>
         </div>

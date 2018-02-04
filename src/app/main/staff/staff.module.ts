@@ -13,7 +13,6 @@ import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 import { TeamScheduleSetComponent } from './team-schedule-set/team-schedule-set.component';
 import { AttendanceCompareComponent } from './attendance-compare/attendance-compare.component';
 import { AttendanceEditComponent } from './attendance-edit/attendance-edit.component';
-import { CheckSearchComponent } from './check-search/check-search.component';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
@@ -34,8 +33,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     LeaveEditComponent,
     TeamScheduleSetComponent,
     AttendanceCompareComponent,
-    AttendanceEditComponent,
-    CheckSearchComponent
+    AttendanceEditComponent
   ]
 })
 export class StaffModule { }
