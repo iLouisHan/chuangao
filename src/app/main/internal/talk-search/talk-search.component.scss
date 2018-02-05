@@ -1,11 +1,25 @@
-form{
+.main-container{
+    display: flex;
+    justify-content: space-between;
+  
+    .condition-container{
+      width: 25%;
+      min-width: 315px;
+    }
+  
+    .table-container{
+      width: calc(75% - 20px);
+      max-width: calc(100% - 335px);
+    }
+  }
+  
+  form{
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
   
     .form-item{
-      width: 20%;
-      margin-right: 5%;
+      width: 100%;
       margin-bottom: 20px;
   
       p{
@@ -57,7 +71,7 @@ form{
       input{
         width: calc(100% - 15px);
         padding-right: 15px;
-        height: 40px;
+        height: 38px;
         text-indent: 15px;
         border-radius: 5px;
         box-shadow: none;
@@ -66,6 +80,13 @@ form{
         &:disabled{
           background: #eee;
         }
+      }
+  
+      .tree-container{
+        width: 100%;
+        height: 38px;
+        border-radius: 5px;
+        border: 1px solid #d9d9d9;
       }
   
       select{
@@ -95,20 +116,21 @@ form{
       }
   
       button{
-        width: 120px;
+        width: 100%;
         height: 40px;
         border: none;
         border-radius: 20px;
         background: #6c9cff;
         cursor: pointer;
+        margin-top: 27px;
         color: #fff;
         font-size: 18px;
         outline: none !important;
       }
     }
+  
     .form-checkbox{
-      width: 20%;
-      margin-right: 5%;
+      width: 100%;
   
       p{
         font-size: 16px;
@@ -118,73 +140,46 @@ form{
         line-height: 40px;
       }
   
-      label{
-        font-size: 14px;
-        margin-right: 5px;
+      >div {
+        height: 40px;
+        line-height: 40px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
   
-        div{
-          display: inline-block;
-          height: 22px;
-          width: 22px;
-          border: 1px solid #d9d9d9;
-          border-radius: 3px;
-          position: relative;
-          top: 7px;
+        label{
+          font-size: 14px;
           margin-right: 5px;
+          width: 33%;
   
-          &.checked{
-            background: #6c9cff url('/assets/images/checked.png') no-repeat center center;
-            border: none;
-            height: 24px;
-            width: 24px;
+          div{
+            display: inline-block;
+            height: 18px;
+            width: 18px;
+            border: 1px solid #d9d9d9;
+            border-radius: 3px;
+            position: relative;
+            top: 6px;
+            margin-right: 5px;
+            border-radius: 10px;
+  
+            &.checked{
+              border: 6px solid #6c9cff;
+              height: 8px;
+              width: 8px;
+            }
+          }
+  
+          input{
+            display: none;
           }
         }
-  
-        input{
-          display: none;
-        }
       }
-    }
-  }
-  .form-btn-container{
-    width: 100%;
   
-    >div{
-      float: right;
-      width: auto;
     }
   }
   
-  .staff-navbar{
-  
-    .part-content{
-      padding: 15px;
-  
-      .btn-list{
-        float: left;
-  
-        .btn-list-li{
-          float: left;
-          width: 100px;
-          height: 40px;
-          border-radius: 5px;
-          color: #fff;
-          background: #6c9cff;
-          line-height: 40px;
-          text-align: center;
-          margin-right: 15px;
-          cursor: pointer;
-        }
-      }
-  
-      .searchbar-container{
-        float: right;
-      }
-    }
-  
-  }
-  
-  .table-container{
+  .scroll-table-container{
   
     .part-content{
   
@@ -224,36 +219,6 @@ form{
           }
         }
       }
-    }
-  }
-  
-  .searchbar-container{
-    width: 400px;
-    height: 40px;
-  
-    .tree-container{
-      width: 299px;
-      float: left;
-      border: 1px solid #d9d9d9;
-      border-right: 0;
-      height: 38px;
-      background: white;
-      color: black;
-      border-radius: 5px 0 0 5px;
-      text-indent: 15px;
-    }
-  
-    div{
-      width: 100px;
-      float: left;
-      height: 40px;
-      color: #fff;
-      background: #6c9cff;
-      line-height: 40px;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-      text-indent: 40px;
-      font-size: 18px;
     }
   }
   

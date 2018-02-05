@@ -1,39 +1,60 @@
-<h1 class="page-title"><div class="page-title-icon"></div>培训计划</h1>
+<h1 class="page-title"><div class="page-title-icon"></div>收费设施设备登记</h1>
 <div *ngIf="isChosen" class="part-container">
-  <h1 class="part-title">培训落实信息</h1>
+  <h1 class="part-title">收费设施设备登记</h1>
   <div class="part-content">
     <form [formGroup]="form">
       <div class="form-item">
-        <p>计划名称</p>
-        <input type="text" formControlName="trainPlanName">
+        <p>设备类型</p>
+        <select formControlName="trainType">
+          <option value="文明礼仪">收费站</option>
+          <option value="稽查业务培训">收费用品</option>
+          <option value="机电培训">收费站公示</option>
+        </select>
       </div>
       <div class="form-item">
-        <p>落实单位</p>
-        <input type="text" formControlName="trainDoOrg">
+        <p>设备名称</p>
+        <input type="text" formControlName="trainPlanOrg">
       </div>
       <div class="form-item">
-        <p>开始日期</p>
-        <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p>设备状态</p>
+        <select formControlName="trainType">
+          <option value="文明礼仪">封存</option>
+          <option value="稽查业务培训">维修</option>
+          <option value="机电培训">报废</option>
+          <option value="机电培训">在用</option>
+        </select>
       </div>
       <div class="form-item">
-        <p>结束日期</p>
-        <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p>资产单位</p>
+        <input type="text" formControlName="trainPlanOrg">
       </div>
       <div class="form-item">
-        <p>培训讲师</p>
+        <p>设备理论年限</p>
         <input type="text" formControlName="trainTeacher">
       </div>
       <div class="form-item">
-        <p>培训课时</p>
+        <p>设备型号</p>
         <input type="text" formControlName="trainTimeLong">
       </div>
       <div class="form-item">
-        <p>培训地点</p>
+        <p>设备编号</p>
         <input type="text" formControlName="trainLoc">
       </div>
-      <div class="form-item form-textarea">
-        <p>培训纪要</p>
-        <textarea type="text" formControlName="trainContent"></textarea>
+      <div class="form-item">
+        <p>设备管理人</p>
+        <input type="text" formControlName="trainLoc">
+      </div>
+      <div class="form-item">
+        <p>报废日期</p>
+        <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>购置日期</p>
+        <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>购置数量</p>
+        <input type="text" formControlName="trainUnit">
       </div>
       <div class="form-btn-container">
         <div class="form-item">
@@ -45,7 +66,7 @@
 </div>
 <div class="part-container">
   <div class="staff-navbar">
-    <h1 class="part-title">培训落实安排</h1>
+    <h1 class="part-title">收费设施设备录入</h1>
     <div class="part-content clearfix">
       <ul class="btn-list cleafix">
         <li (click)="add()" class="btn-list-li">添加</li>

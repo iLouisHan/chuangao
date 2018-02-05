@@ -13,11 +13,16 @@ export class TrainPlanSearchComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
-  staffList: Array<any>;
+  hasDo: number;
   orgList: Array<any>;
+  planList: Array<any>;
+  trainWay: string;
+  trainType: string;
+  trainPlanName: string;
   page = 0;
   size = 15;
   hasData = false;
+  selectionMode = 'single';
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -33,23 +38,24 @@ export class TrainPlanSearchComponent implements OnInit {
     private http: Http
   ) {
     this.form = new FormGroup({
-      listGroup: new FormControl('', Validators.nullValidator),
-      userName: new FormControl('', Validators.nullValidator),
-      leaveType: new FormControl('', Validators.nullValidator)
+      hasDo: new FormControl('', Validators.nullValidator),
+      trainWay: new FormControl('', Validators.nullValidator),
+      trainType: new FormControl('', Validators.nullValidator),
+      trainPlanName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
       { field: 'operateExecuteSituation', header: '操作' },
       { field: 'operateExecuteContent', header: '操作' },
       { field: 'trainPlanName', header: '培训计划名称' },
-      { field: 'startOrg', header: '发起单位' },
-      { field: 'executeStatus', header: '落实情况' },
-      { field: 'planStartTime', header: '计划开始时间' },
-      { field: 'planEndTime', header: '计划结束时间' },
-      { field: 'trainMethod', header: '培训方式' },
+      { field: 'trainOrgName', header: '发起单位' },
+      { field: 'trainHasDo', header: '落实情况' },
+      { field: 'trainStartDate', header: '计划开始时间' },
+      { field: 'trainEndDate', header: '计划结束时间' },
+      { field: 'trainWay', header: '培训方式' },
       { field: 'trainType', header: '培训类别' },
       { field: 'trainTeacher', header: '培训讲师' },
-      { field: 'trainTime', header: '培训课时' },
-      { field: 'trainLocation', header: '培训地点' }
+      { field: 'trainTimeLong', header: '培训课时' },
+      { field: 'trainLoc', header: '培训地点' }
     ];
   }
 
@@ -59,7 +65,7 @@ export class TrainPlanSearchComponent implements OnInit {
       const _month = (_date.getMonth() + 1) <= 9 ? `0${(_date.getMonth() + 1)}` : _date.getMonth();
       const _day = _date.getDate() <= 9 ? `0${_date.getDate()}` : _date.getDate();
       return `${_date.getFullYear()}-${_month}-${_day}`;
-    }else {
+    } else {
       return '';
     }
   }
@@ -71,7 +77,7 @@ export class TrainPlanSearchComponent implements OnInit {
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
       alert('未选择机构');
-    }else {
+    } else {
       this.getInfo(this.page, this.size);
     }
   }
@@ -96,7 +102,7 @@ export class TrainPlanSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -105,9 +111,13 @@ export class TrainPlanSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.staffDataList;
+                  res.data.trainPlanDataList.forEach(item => {
+                    item.operateExecuteSituation = '落实情况';
+                    item.operateExecuteContent = '培训内容';
+                  });
+                  this.planList = res.data.trainPlanDataList;
                 }
-              }else {
+              } else {
                 alert(res.message);
               }
             });

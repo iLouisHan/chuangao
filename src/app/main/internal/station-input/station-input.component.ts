@@ -4,12 +4,14 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+
 @Component({
-  selector: 'app-train-execute',
-  templateUrl: './train-execute.component.html',
-  styleUrls: ['./train-execute.component.scss']
+  selector: 'app-station-input',
+  templateUrl: './station-input.component.html',
+  styleUrls: ['./station-input.component.scss']
 })
-export class TrainExecuteComponent implements OnInit {
+export class StationInputComponent implements OnInit {
+
   data: any = {};
   form: FormGroup;
   startDate: string;
@@ -66,16 +68,15 @@ export class TrainExecuteComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'trainPlanName', header: '培训计划名称' },
-      { field: 'trainDoOrg', header: '落实单位' },
-      { field: 'trainStartDate', header: '开始时间' },
-      { field: 'trainEndDate', header: '结束时间' },
-      { field: 'trainWay', header: '培训方式' },
-      { field: 'trainType', header: '培训类别' },
-      { field: 'trainTeacher', header: '培训讲师' },
-      { field: 'trainTimeLong', header: '培训课时' },
-      { field: 'trainLoc', header: '培训地点' },
-      { field: 'trainContent', header: '培训内容' }
+      { field: 'trainPlanName', header: '查看明细' },
+      { field: 'trainDoOrg', header: '会议名称' },
+      { field: 'trainStartDate', header: '会议地点' },
+      { field: 'trainEndDate', header: '所属机构' },
+      { field: 'trainWay', header: '会议时间' },
+      { field: 'trainType', header: '主持人' },
+      { field: 'trainTeacher', header: '记录人' },
+      { field: 'trainTimeLong', header: '参会人员' },
+      { field: 'trainContent', header: '会议内容' }
     ];
     this.initForm = {
       trainPlanName: '',
@@ -300,4 +301,3 @@ export class TrainExecuteComponent implements OnInit {
     });
   }
 }
-

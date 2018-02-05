@@ -4,22 +4,25 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Component({
-  selector: 'app-train-execute-search',
-  templateUrl: './train-execute-search.component.html',
-  styleUrls: ['./train-execute-search.component.scss']
+  selector: 'app-talk-search',
+  templateUrl: './talk-search.component.html',
+  styleUrls: ['./talk-search.component.scss']
 })
-export class TrainExecuteSearchComponent implements OnInit {
+export class TalkSearchComponent implements OnInit {
   form: FormGroup;
   startTime: string;
   endTime: string;
   count: number;
-  staffList: Array<any>;
+  hasDo: number;
   orgList: Array<any>;
-  trainDoOrgList: Array<any>;
+  planList: Array<any>;
+  trainWay: string;
+  trainType: string;
+  trainPlanName: string;
   page = 0;
   size = 15;
-  selectionMode = 'single';
   hasData = false;
+  selectionMode = 'single';
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -41,23 +44,13 @@ export class TrainExecuteSearchComponent implements OnInit {
       trainPlanName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'operate', header: '操作' },
-      { field: 'trainPlanName', header: '培训计划名称' },
-      { field: 'startOrg', header: '发起单位' },
-      { field: 'endOrg', header: '落实单位' },
-      { field: 'executeStatus', header: '落实状态' },
-      { field: 'planStartTime', header: '计划开始时间' },
-      { field: 'planEndTime', header: '计划结束时间' },
-      { field: 'trainMethod', header: '培训方式' },
-      { field: 'trainType', header: '培训类别' },
-      { field: 'trainTeacher', header: '培训讲师' },
-      { field: 'trainTime', header: '培训课时' },
-      { field: 'trainLocation', header: '培训地点' },
-      { field: 'executeTrainTeacher', header: '落实培训讲师' },
-      { field: 'executeTrainTime', header: '落实培训课时' },
-      { field: 'executeTrainLocation', header: '落实培训地点' },
-      { field: 'executeStartTime', header: '落实开始时间' },
-      { field: 'executeEndTime', header: '落实结束时间' }
+      { field: 'operateExecuteSituation', header: '查看明细' },
+      { field: 'trainPlanName', header: '单位名称' },
+      { field: 'trainOrgName', header: '谈心人员' },
+      { field: 'trainHasDo', header: '谈心类型' },
+      { field: 'trainStartDate', header: '谈心地点' },
+      { field: 'trainEndDate', header: '谈心时间' },
+      { field: 'trainLoc', header: '概要内容' }
     ];
   }
 
@@ -74,10 +67,6 @@ export class TrainExecuteSearchComponent implements OnInit {
 
   selectedOrg($event) {
     this.orgList = $event;
-  }
-
-  selectedExOrg($event) {
-    this.trainDoOrgList = $event;
   }
 
   submit() {
@@ -108,7 +97,7 @@ export class TrainExecuteSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/doGet', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -117,7 +106,11 @@ export class TrainExecuteSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.trainDoDataList;
+                  res.data.trainPlanDataList.forEach(item => {
+                    item.operateExecuteSituation = '落实情况';
+                    item.operateExecuteContent = '培训内容';
+                  });
+                  this.planList = res.data.trainPlanDataList;
                 }
               } else {
                 alert(res.message);

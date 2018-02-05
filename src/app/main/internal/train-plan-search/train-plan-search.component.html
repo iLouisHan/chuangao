@@ -8,18 +8,12 @@
           <div class="form-item">
             <p>发起单位</p>
             <div class="tree-container">
-              <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
-            </div>
-          </div>
-          <div class="form-item">
-            <p>落实单位</p>
-            <div class="tree-container">
-              <app-drop-org-tree (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">
             <p>落实状态</p>
-            <select formControlName="executeType">
+            <select formControlName="hasDo">
               <option value="-1">请选择</option>
               <option value="1">未落实</option>
               <option value="2">落实</option>
@@ -27,7 +21,7 @@
           </div>
           <div class="form-item">
             <p>培训方式</p>
-            <select formControlName="executeType">
+            <select formControlName="trainWay">
               <option value="-1">请选择</option>
               <option value="1">未落实</option>
               <option value="2">落实</option>
@@ -35,15 +29,15 @@
           </div>
           <div class="form-item">
             <p>培训类别</p>
-            <select formControlName="executeType">
+            <select formControlName="trainType">
               <option value="-1">请选择</option>
               <option value="1">未落实</option>
               <option value="2">落实</option>
             </select>
           </div>
           <div class="form-item">
-            <p>培训名称</p>
-            <select formControlName="executeType">
+            <p>培训计划名称</p>
+            <select formControlName="trainPlanName">
               <option value="-1">请选择</option>
               <option value="1">未落实</option>
               <option value="2">落实</option>
@@ -51,14 +45,14 @@
           </div>
           <div class="form-item">
             <p>开始日期</p>
-            <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="trainStartDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <p>结束日期</p>
-            <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="trainEndDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
-            <button class="form-btn">查&nbsp;询</button>
+            <button (click)="submit()" class="form-btn">查&nbsp;询</button>
           </div>
         </form>
       </div>
@@ -77,7 +71,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of staffList">
+                <tr *ngFor="let item of planList">
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>
               </tbody>

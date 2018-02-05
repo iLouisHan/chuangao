@@ -4,12 +4,14 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+
 @Component({
-  selector: 'app-train-execute',
-  templateUrl: './train-execute.component.html',
-  styleUrls: ['./train-execute.component.scss']
+  selector: 'app-device-input',
+  templateUrl: './device-input.component.html',
+  styleUrls: ['./device-input.component.scss']
 })
-export class TrainExecuteComponent implements OnInit {
+export class DeviceInputComponent implements OnInit {
+
   data: any = {};
   form: FormGroup;
   startDate: string;
