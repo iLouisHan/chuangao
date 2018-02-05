@@ -9,6 +9,15 @@ import { SharedModule } from '../../shared/shared.module';
 import { TrainExecuteComponent } from './train-execute/train-execute.component';
 import { TrainExecuteSearchComponent } from './train-execute-search/train-execute-search.component';
 import { TrainPlanSearchComponent } from './train-plan-search/train-plan-search.component';
+import { TrainPlanComponent } from './train-plan/train-plan.component';
+import { TalkSearchComponent } from './talk-search/talk-search.component';
+import { TalkCountComponent } from './talk-count/talk-count.component';
+import { DocSearchComponent } from './doc-search/doc-search.component';
+import { DocUploadComponent } from './doc-upload/doc-upload.component';
+import { StationSearchComponent } from './station-search/station-search.component';
+import { StationInputComponent } from './station-input/station-input.component';
+import { DeviceSearchComponent } from './device-search/device-search.component';
+import { DeviceInputComponent } from './device-input/device-input.component';
 
 @NgModule({
   imports: [
@@ -20,6 +29,7 @@ import { TrainPlanSearchComponent } from './train-plan-search/train-plan-search.
     ReactiveFormsModule,
     FormsModule
   ],
-  declarations: [InternalComponent, TrainExecuteComponent, TrainExecuteSearchComponent, TrainPlanSearchComponent]
+  declarations: [InternalComponent, TrainExecuteComponent, TrainExecuteSearchComponent,
+    TrainPlanSearchComponent, TrainPlanComponent, TalkSearchComponent, TalkCountComponent, DocSearchComponent, DocUploadComponent, StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent]
 })
 export class InternalModule { }

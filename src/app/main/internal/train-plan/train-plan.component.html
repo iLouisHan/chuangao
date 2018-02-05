@@ -1,11 +1,15 @@
 <h1 class="page-title"><div class="page-title-icon"></div>培训计划</h1>
 <div *ngIf="isChosen" class="part-container">
-  <h1 class="part-title">培训落实信息</h1>
+  <h1 class="part-title">培训计划信息</h1>
   <div class="part-content">
     <form [formGroup]="form">
       <div class="form-item">
         <p>计划名称</p>
         <input type="text" formControlName="trainPlanName">
+      </div>
+      <div class="form-item">
+        <p>发起单位</p>
+        <input type="text" formControlName="trainPlanOrg">
       </div>
       <div class="form-item">
         <p>落实单位</p>
@@ -31,6 +35,35 @@
         <p>培训地点</p>
         <input type="text" formControlName="trainLoc">
       </div>
+      <div class="form-item">
+        <p>发起人</p>
+        <input type="text" formControlName="trainLoc">
+      </div>
+      <div class="form-item">
+        <p>培训类别</p>
+        <select formControlName="trainType">
+          <option value="文明礼仪">文明礼仪</option>
+          <option value="稽查业务培训">稽查业务培训</option>
+          <option value="机电培训">机电培训</option>
+          <option value="安全培训">安全培训</option>
+          <option value="综合培训">综合培训</option>
+          <option value="应急演练">应急演练</option>
+          <option value="劳动竞赛">劳动竞赛</option>
+          <option value="收费业务培训">收费业务培训</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>培训方式</p>
+        <select formControlName="trainWay">
+          <option value="委外">委外</option>
+          <option value="自主">自主</option>
+          <option value="参与">参与</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>培训单位</p>
+        <input type="text" formControlName="trainUnit">
+      </div>
       <div class="form-item form-textarea">
         <p>培训纪要</p>
         <textarea type="text" formControlName="trainContent"></textarea>
@@ -45,7 +78,7 @@
 </div>
 <div class="part-container">
   <div class="staff-navbar">
-    <h1 class="part-title">培训落实安排</h1>
+    <h1 class="part-title">培训计划安排</h1>
     <div class="part-content clearfix">
       <ul class="btn-list cleafix">
         <li (click)="add()" class="btn-list-li">添加</li>

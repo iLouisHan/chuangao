@@ -4,12 +4,13 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+
 @Component({
-  selector: 'app-train-execute',
-  templateUrl: './train-execute.component.html',
-  styleUrls: ['./train-execute.component.scss']
+  selector: 'app-train-plan',
+  templateUrl: './train-plan.component.html',
+  styleUrls: ['./train-plan.component.scss']
 })
-export class TrainExecuteComponent implements OnInit {
+export class TrainPlanComponent implements OnInit {
   data: any = {};
   form: FormGroup;
   startDate: string;
@@ -300,4 +301,3 @@ export class TrainExecuteComponent implements OnInit {
     });
   }
 }
-
