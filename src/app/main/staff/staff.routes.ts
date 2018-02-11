@@ -92,6 +92,10 @@ export const StaffRoutes: Routes = [
       {
         path: 'count',
         component: StaffCountComponent
+      },
+      {
+        path: 'checkEdit',
+        loadChildren: './check-edit/check-edit.module#CheckEditModule'
       }
     ]
   }
