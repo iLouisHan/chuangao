@@ -8,9 +8,10 @@
           <div>
             <div>
               <span>收费站</span>
-              <div class="tree-container">
+              <div *ngIf="orgType !== 3" class="tree-container">
                 <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
               </div>
+              <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
             </div>
             <div>
               <span>姓名</span>

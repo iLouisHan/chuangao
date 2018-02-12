@@ -7,9 +7,10 @@
         <form [formGroup]="form">
           <div class="form-item">
             <p>选择收费站</p>
-            <div class="tree-container">
+            <div *ngIf="orgType !== 3" class="tree-container">
               <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
+            <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
           </div>
           <div class="form-item">
             <p>评定年份</p>

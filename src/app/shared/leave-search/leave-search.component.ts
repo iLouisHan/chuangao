@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-leave-search',
@@ -29,10 +31,16 @@ export class LeaveSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  orgType: number;
+  orgCode: string;
+  orgName: string;
+  login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     this.form = new FormGroup({
       listGroup: new FormControl('', Validators.nullValidator),
       userName: new FormControl('', Validators.nullValidator),
@@ -118,6 +126,16 @@ export class LeaveSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgType = res.orgType;
+        this.orgCode = res.orgCode;
+        this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+      }
+    })
   }
 
 }

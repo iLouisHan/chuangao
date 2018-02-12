@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational } from '../../store/translate';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-switch-search',
@@ -34,10 +36,16 @@ export class SwitchSearchComponent implements OnInit {
     page: this.page,
     size: this.size
   };
+  orgType: number;
+  orgCode: string;
+  orgName: string;
+  login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     this.form = new FormGroup({
       listGroup: new FormControl('', Validators.nullValidator),
       userName: new FormControl('', Validators.nullValidator)
@@ -126,6 +134,16 @@ export class SwitchSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgType = res.orgType;
+        this.orgCode = res.orgCode;
+        this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+      }
+    })
   }
 
 }

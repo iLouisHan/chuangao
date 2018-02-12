@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-attendance-check',
@@ -19,10 +21,16 @@ export class AttendanceCheckComponent implements OnInit {
   staffList: Array<Object>;
   attendanceList: Array<any> = [];
   updateOptions: any;
+  orgType: number;
+  orgCode: string;
+  orgName: string;
+  login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     for (let i = 0; i < 12; i++) {
       this.attendanceList[i] = [];
       for (let j = 0; j < 20; j++) {
@@ -185,6 +193,17 @@ export class AttendanceCheckComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgType = res.orgType;
+        this.orgCode = res.orgCode;
+        this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+      }
+    })
+
     const year = (new Date()).getFullYear();
     const xAxisData: any = [];
     const data1 = [];

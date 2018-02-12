@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-check-search',
@@ -30,10 +32,16 @@ export class CheckSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  orgType: number;
+  orgCode: string;
+  orgName: string;
+  login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     const year = (new Date()).getFullYear();
     for (let i = 0; i < 10; i++) {
       this.yearList[i] = year - i;
@@ -125,6 +133,16 @@ export class CheckSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgType = res.orgType;
+        this.orgCode = res.orgCode;
+        this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+      }
+    })
   }
 
 }
