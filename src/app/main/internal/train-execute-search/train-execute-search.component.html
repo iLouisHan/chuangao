@@ -1,7 +1,43 @@
 <h1 class="page-title"><div class="page-title-icon"></div>培训落实查询</h1>
 <div class="main-container">
-  <div class="condition-container">
-    <div class="part-container">
+  <div *ngIf="isChosen" class="infoContainer">
+      <div class="basic-info part-container">
+          <h1 class="part-title">计划信息</h1>
+          <button (click)="download('do')">下载落实附件</button>
+          <button (click)="download('plan')">下载计划附件</button>
+          <button (click)="isChosen = !isChosen">返回</button>
+          
+          <div class="basic-items part-content">
+              <ul class="clearfix">
+                  <li class="basic-info-item shortName"><span>计划名称</span>{{planData.trainType}}</li>
+                  <li class="basic-info-item stationType"><span>培训类别</span>{{planData.trainType}}</li>
+                  <li class="basic-info-item address"><span>计划地点</span>{{planData.trainLoc}}</li>
+                  <li class="basic-info-item staff"><span>计划讲师</span>{{planData.trainTeacher}}</li>
+                  <li class="basic-info-item floorArea"><span>发起单位</span>{{planData.trainOrgName}}</li>
+                  <li class="basic-info-item staff"><span>发起人</span>{{planData.trainOrgName}}</li>
+                  <li class="basic-info-item date"><span>计划日期</span>{{planData.trainStartDate}}</li>
+                  <li class="basic-info-item unit"><span>培训单位</span>{{planData.trainUnit}}</li>
+                  <li class="basic-info-item way"><span>培训方式</span>{{planData.trainWay}}</li>
+                  <li class="basic-last-item abstract"><p>计划摘要</p><div class="text">{{planData.trainContent}}</div></li>
+                </ul>
+          </div>
+        </div>
+        <div class="basic-info part-container">
+            <h1 class="part-title">落实信息</h1>
+            <div class="basic-items part-content">
+                <ul class="clearfix">
+                    <li class="basic-info-item unit"><span>落实单位</span>{{doData.trainDoOrgName}}</li>
+                    <li class="basic-info-item date"><span>落实日期</span>{{doData.trainDoStartDate}}</li>
+                    <li class="basic-info-item address"><span>落实地点</span>{{doData.trainDoAddress}}</li>
+                    <li class="basic-info-item staff"><span>落实讲师</span>{{doData.trainDoTeacher}}</li>
+                    <li class="basic-info-item long"><span>落实课时</span>{{doData.trainDoTimeLong}}</li>
+                    <li class="basic-info-item abstract"><p>落实摘要</p>{{doData.trainDoContent}}</li>
+                  </ul>
+            </div>
+          </div>
+  </div>
+  <div class="condition-container" *ngIf="!isChosen">
+    <div class="part-container" >
       <h1 class="part-title">查询条件</h1>
       <div class="part-content clearfix">
         <form [formGroup]="form">
@@ -20,34 +56,37 @@
           <div class="form-item">
             <p>落实状态</p>
             <select formControlName="hasDo">
-              <option value="-1">请选择</option>
-              <option value="1">未落实</option>
-              <option value="2">落实</option>
+              <option value="-1">全部类别</option>
+              <option value="0">未落实</option>
+              <option value="1">落实</option>
             </select>
           </div>
           <div class="form-item">
             <p>培训方式</p>
             <select formControlName="trainWay">
-              <option value="-1">请选择</option>
-              <option value="1">未落实</option>
-              <option value="2">落实</option>
-            </select>
+                <option value="">全部类别</option>
+                <option value="委外">委外</option>
+                <option value="自主">自主</option>
+                <option value="参与">参与</option>
+              </select>
           </div>
           <div class="form-item">
             <p>培训类别</p>
             <select formControlName="trainType">
-              <option value="-1">请选择</option>
-              <option value="1">未落实</option>
-              <option value="2">落实</option>
-            </select>
+                <option value="">全部类别</option>
+                <option value="文明礼仪">文明礼仪</option>
+                <option value="稽查业务培训">稽查业务培训</option>
+                <option value="机电培训">机电培训</option>
+                <option value="安全培训">安全培训</option>
+                <option value="综合培训">综合培训</option>
+                <option value="应急演练">应急演练</option>
+                <option value="劳动竞赛">劳动竞赛</option>
+                <option value="收费业务培训">收费业务培训</option>
+              </select>
           </div>
           <div class="form-item">
             <p>培训名称</p>
-            <select formControlName="trainPlanName">
-              <option value="-1">请选择</option>
-              <option value="1">未落实</option>
-              <option value="2">落实</option>
-            </select>
+            <input type="text" formControlName="trainPlanName">
           </div>
           <div class="form-item">
             <p>培训开始日期</p>
@@ -64,7 +103,7 @@
       </div>
     </div>
   </div>
-  <div class="table-container">
+  <div class="table-container" *ngIf="!isChosen">
     <div class="part-container">
       <h1 class="part-title">培训信息展示</h1>
       <div class="scroll-table-container">
@@ -73,11 +112,13 @@
             <table class="myTable">
               <thead>
                 <tr>
+                  <th>操作</th>
                   <th *ngFor="let field of cols">{{field.header}}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let item of staffList">
+                    <td><span class="station" (click)="detail(item.planId)">落实详情</span></td>
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>
               </tbody>

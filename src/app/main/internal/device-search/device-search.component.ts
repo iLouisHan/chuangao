@@ -13,12 +13,11 @@ export class DeviceSearchComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
-  hasDo: number;
   orgList: Array<any>;
-  planList: Array<any>;
-  trainWay: string;
-  trainType: string;
-  trainPlanName: string;
+  deviceList: Array<any>;
+  assetName: string;
+  deviceStartDate: string;
+  deviceEndDate: string;
   page = 0;
   size = 15;
   hasData = false;
@@ -38,20 +37,17 @@ export class DeviceSearchComponent implements OnInit {
     private http: Http
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl('', Validators.nullValidator),
-      trainWay: new FormControl('', Validators.nullValidator),
-      trainType: new FormControl('', Validators.nullValidator),
-      trainPlanName: new FormControl('', Validators.nullValidator)
+      assetName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'operateExecuteSituation', header: '资产名称' },
-      { field: 'trainPlanName', header: '资产类别' },
-      { field: 'trainOrgName', header: '资产状态' },
-      { field: 'trainHasDo', header: '资产单位' },
-      { field: 'trainStartDate', header: '购置数量' },
-      { field: 'trainEndDate', header: '资产理论年限' },
-      { field: 'trainLoc', header: '购置日期' },
-      { field: 'trainLoc', header: '报废日期' }
+      { field: 'assetName', header: '资产名称' },
+      { field: 'assetType', header: '资产类别' },
+      { field: 'assetState', header: '资产状态' },
+      { field: 'useOrg', header: '资产单位' },
+      { field: 'buyNum', header: '购置数量' },
+      { field: 'assetLife', header: '资产理论年限' },
+      { field: 'buyDate', header: '购置日期' },
+      { field: 'scrapDate', header: '报废日期' }
     ];
   }
 
@@ -83,8 +79,8 @@ export class DeviceSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
+    this.form.value.startTime = this.dateFormat(this.deviceStartDate);
+    this.form.value.endTime = this.dateFormat(this.deviceEndDate);
     this.form.value.orgList = this.orgList.map(el => el.data);
     const param = {
       page: page,
@@ -98,7 +94,7 @@ export class DeviceSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -107,11 +103,7 @@ export class DeviceSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.trainPlanDataList.forEach(item => {
-                    item.operateExecuteSituation = '落实情况';
-                    item.operateExecuteContent = '培训内容';
-                  });
-                  this.planList = res.data.trainPlanDataList;
+                  this.deviceList = res.data.fixedAssetDataList;
                 }
               } else {
                 alert(res.message);

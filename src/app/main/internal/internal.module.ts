@@ -30,6 +30,7 @@ import { DeviceInputComponent } from './device-input/device-input.component';
     FormsModule
   ],
   declarations: [InternalComponent, TrainExecuteComponent, TrainExecuteSearchComponent,
-    TrainPlanSearchComponent, TrainPlanComponent, TalkSearchComponent, TalkCountComponent, DocSearchComponent, DocUploadComponent, StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent]
+    TrainPlanSearchComponent, TrainPlanComponent, TalkSearchComponent, TalkCountComponent, DocSearchComponent, DocUploadComponent,
+    StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent]
 })
 export class InternalModule { }

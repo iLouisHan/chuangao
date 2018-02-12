@@ -201,7 +201,18 @@
             color: #666;
             white-space: nowrap;
           }
-  
+          .station {
+            background: #61b3f2;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+          }
+          .content {
+            background: #f3ab5d ;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+          }
           td{
             padding: 0 30px;
             white-space: nowrap;

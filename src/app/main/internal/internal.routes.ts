@@ -11,6 +11,7 @@ import { StationSearchComponent } from './station-search/station-search.componen
 import { StationInputComponent } from './station-input/station-input.component';
 import { DeviceSearchComponent } from './device-search/device-search.component';
 import { DeviceInputComponent } from './device-input/device-input.component';
+import { DocUploadComponent } from './doc-upload/doc-upload.component';
 
 export const InternalRoutes: Routes = [
   {
@@ -44,6 +45,10 @@ export const InternalRoutes: Routes = [
         {
             path: 'docSearch',
             component: DocSearchComponent
+        },
+        {
+            path: 'docInput',
+            component: DocUploadComponent
         },
         {
             path: 'stationSearch',

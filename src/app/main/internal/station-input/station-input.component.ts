@@ -11,11 +11,10 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./station-input.component.scss']
 })
 export class StationInputComponent implements OnInit {
-
   data: any = {};
   form: FormGroup;
   startDate: string;
-  endDate: string;
+  orgCode: Array<any>;
   en: any;
   file: any;
   filename: string;
@@ -43,18 +42,12 @@ export class StationInputComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      trainPlanName: new FormControl('', Validators.nullValidator),
-      trainPlanOrg: new FormControl('', Validators.nullValidator),
-      trainDoOrg: new FormControl('', Validators.nullValidator),
-      trainStartDate: new FormControl('', Validators.nullValidator),
-      trainTeacher: new FormControl('', Validators.nullValidator),
-      trainEndDate: new FormControl('', Validators.nullValidator),
-      trainUnit: new FormControl('', Validators.nullValidator),
-      trainTimeLong: new FormControl('', Validators.nullValidator),
-      trainType: new FormControl('', Validators.nullValidator),
-      trainWay: new FormControl('', Validators.nullValidator),
-      trainContent: new FormControl('', Validators.nullValidator),
-      trainLoc: new FormControl('', Validators.nullValidator)
+      meetingName: new FormControl('', Validators.nullValidator),
+      meetingPlace: new FormControl('', Validators.nullValidator),
+      meetingHost: new FormControl('', Validators.nullValidator),
+      meetingNote: new FormControl('', Validators.nullValidator),
+      meetingJoinPeople: new FormControl('', Validators.nullValidator),
+      meetingContent: new FormControl('', Validators.nullValidator)
     });
     this.searchOrg = [];
     this.keys = Object.keys(this.form.value);
@@ -79,21 +72,20 @@ export class StationInputComponent implements OnInit {
       { field: 'trainContent', header: '会议内容' }
     ];
     this.initForm = {
-      trainPlanName: '',
-      trainPlanOrg: '',
-      trainStartDate: '',
-      trainTeacher: '',
-      trainEndDate: '',
-      trainUnit: '',
-      trainTimeLong: '',
-      trainType: '',
-      trainWay: '',
-      trainContent: '',
-      trainLoc: ''
+      meetingName: '',
+      meetingPlace: '',
+      meetingHost: '',
+      meetingNote: '',
+      meetingJoinPeople: '',
+      meetingContent: ''
     };
   }
 
   selectedOrg($event) {
+    console.log($event);
+    this.orgCode = ($event);
+  }
+  selectedSearchOrg($event) {
     console.log($event);
     this.searchOrg[0] = ($event);
   }
@@ -110,14 +102,15 @@ export class StationInputComponent implements OnInit {
             });
   }
   getInfo() {
-    if (this.searchOrg.length !== 0 || this.searchOrg) {
+    if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     } else {
       this.param.orgList = ['00200119'];
+      // this.param.meetingName = '斯蒂芬';
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(this.param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/StationMeeting/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -212,14 +205,13 @@ export class StationInputComponent implements OnInit {
   addStaff() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.trainStartDate = this.dateFormat(this.startDate);
-    this.form.value.trainEndDate = this.dateFormat(this.endDate);
+    this.form.value.meetingDate = this.dateFormat(this.startDate);
     // this.form.value.orgType = +this.orgType;
-    // this.form.value.orgCode = +this.orgCode;
+    this.form.value.stationCode = this.orgCode[0].data;
     // this.form.value.politicalStatus = +this.form.value.politicalStatus;
     // this.form.value.positionalTitle = +this.form.value.positionalTitle;
     // this.form.value.userId = '' + Math.round(1000 * Math.random());
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planAdd`, JSON.stringify(this.form.value), {
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/add`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
             .map(res => res.json())

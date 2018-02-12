@@ -13,15 +13,15 @@
           </div>
           <div class="form-item">
             <p>会议名称</p>
-            <input formControlName="hasDo">
+            <input formControlName="meetingName">
           </div>
           <div class="form-item">
             <p>开始日期</p>
-            <p-calendar [(ngModel)]="trainStartDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <p>结束日期</p>
-            <p-calendar [(ngModel)]="trainEndDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <button (click)="submit()" class="form-btn">查&nbsp;询</button>

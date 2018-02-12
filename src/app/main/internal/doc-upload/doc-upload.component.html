@@ -1,3 +1,110 @@
-<p>
-  doc-upload works!
-</p>
+<h1 class="page-title"><div class="page-title-icon"></div>重要基础文档上传</h1>
+<div *ngIf="isChosen" class="part-container">
+  <h1 class="part-title">重要基础文档录入</h1>
+  <div class="part-content">
+    <form [formGroup]="form">
+      <div class="form-item">
+        <p>设备类型</p>
+        <select formControlName="assetType">
+          <option value="收费站（设施设备）">收费站（设施设备）</option>
+          <option value="收费用品">收费用品</option>
+          <option value="收费站公示">收费站公示</option>
+          <option value="其他">其他</option>
+          <option value="收费站办公用品">收费站办公用品</option>
+          <option value="收费亭（设施设备）">收费亭（设施设备）</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>文件名称</p>
+        <input type="text" formControlName="fileName">
+      </div>
+      <div class="form-item">
+        <p>设备状态</p>
+        <select formControlName="assetState">
+          <option value="文明礼仪">封存</option>
+          <option value="稽查业务培训">维修</option>
+          <option value="机电培训">报废</option>
+          <option value="机电培训">在用</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>发文单位</p>
+        <div class="tree-container">
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+        </div>
+      </div>
+      <div class="form-item">
+        <p>发文文号</p>
+        <input type="text" formControlName="fileNum">
+      </div>
+      <div class="form-item">
+        <p>设备型号</p>
+        <input type="text" formControlName="assetModel">
+      </div>
+      <div class="form-item">
+        <p>设备编号</p>
+        <input type="text" formControlName="assetNo">
+      </div>
+      <div class="form-item">
+        <p>设备管理人</p>
+        <input type="text" formControlName="assetUser">
+      </div>
+      <div class="form-item">
+        <p>报废日期</p>
+        <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>购置日期</p>
+        <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>购置数量</p>
+        <input type="text" formControlName="buyNum">
+      </div>
+      <div class="form-btn-container">
+        <div class="form-item">
+          <button (click)="submit()" class="form-btn">保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="part-container">
+  <div class="staff-navbar">
+    <h1 class="part-title">收费设施设备录入</h1>
+    <div class="part-content clearfix">
+      <ul class="btn-list cleafix">
+        <li (click)="add()" class="btn-list-li">添加</li>
+        <li (click)="update()" class="btn-list-li">修改</li>
+        <li (click)="delete()" class="btn-list-li">删除</li>
+      </ul>
+      <div class="searchbar-container">
+        <div class="tree-container">
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)"></app-drop-org-tree>
+        </div>
+        <div (click)="search()">查询</div>
+      </div>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of deviceList">
+              <td><input type="checkbox" (click)="select(item.userId)" [checked]="check(item.userId)"></td>
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

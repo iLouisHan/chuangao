@@ -9,15 +9,11 @@ import 'rxjs/add/operator/map';
 })
 export class StationSearchComponent implements OnInit {
   form: FormGroup;
-  startTime: string;
-  endTime: string;
+  startDate: string;
+  endDate: string;
   count: number;
-  hasDo: number;
   orgList: Array<any>;
   planList: Array<any>;
-  trainWay: string;
-  trainType: string;
-  trainPlanName: string;
   page = 0;
   size = 15;
   hasData = false;
@@ -37,13 +33,9 @@ export class StationSearchComponent implements OnInit {
     private http: Http
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl('', Validators.nullValidator),
-      trainWay: new FormControl('', Validators.nullValidator),
-      trainType: new FormControl('', Validators.nullValidator),
-      trainPlanName: new FormControl('', Validators.nullValidator)
+      meetingName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'operateExecuteSituation', header: '查看明细' },
       { field: 'trainPlanName', header: '会议名称' },
       { field: 'trainOrgName', header: '会议地点' },
       { field: 'trainHasDo', header: '所属机构' },
@@ -81,9 +73,9 @@ export class StationSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
+    this.form.value.startDate = this.dateFormat(this.startDate);
+    this.form.value.endDate = this.dateFormat(this.endDate);
+    this.form.value.orgCode = this.orgList[0].data;
     const param = {
       page: page,
       size: size,
@@ -96,7 +88,7 @@ export class StationSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/StationMeeting/get', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -105,10 +97,6 @@ export class StationSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.trainPlanDataList.forEach(item => {
-                    item.operateExecuteSituation = '落实情况';
-                    item.operateExecuteContent = '培训内容';
-                  });
                   this.planList = res.data.trainPlanDataList;
                 }
               } else {

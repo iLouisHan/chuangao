@@ -13,12 +13,8 @@ export class TrainPlanSearchComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
-  hasDo: number;
   orgList: Array<any>;
   planList: Array<any>;
-  trainWay: string;
-  trainType: string;
-  trainPlanName: string;
   page = 0;
   size = 15;
   hasData = false;
@@ -44,9 +40,7 @@ export class TrainPlanSearchComponent implements OnInit {
       trainPlanName: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'operateExecuteSituation', header: '操作' },
-      { field: 'operateExecuteContent', header: '操作' },
-      { field: 'trainPlanName', header: '培训计划名称' },
+      { field: 'trainName', header: '培训计划名称' },
       { field: 'trainOrgName', header: '发起单位' },
       { field: 'trainHasDo', header: '落实情况' },
       { field: 'trainStartDate', header: '计划开始时间' },
@@ -93,6 +87,12 @@ export class TrainPlanSearchComponent implements OnInit {
     const param = {
       page: page,
       size: size,
+      hasDo: -1,
+      trainWay: '',
+      trainType: '',
+      trainPlanName: '',
+      trainStartDate: '',
+      trainEndDate: ''
     };
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
@@ -112,8 +112,7 @@ export class TrainPlanSearchComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   res.data.trainPlanDataList.forEach(item => {
-                    item.operateExecuteSituation = '落实情况';
-                    item.operateExecuteContent = '培训内容';
+                    item.trainHasDo = item.trainHasDo === 0 ? '未落实' : '已落实';
                   });
                   this.planList = res.data.trainPlanDataList;
                 }

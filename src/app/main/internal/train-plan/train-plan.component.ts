@@ -23,6 +23,8 @@ export class TrainPlanComponent implements OnInit {
   page = 0;
   size = 15;
   count: number;
+  exOrg: string;
+  planOrg: string;
   staffList: Array<any>;
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
@@ -35,7 +37,13 @@ export class TrainPlanComponent implements OnInit {
   initForm: any;
   param: any = {
     page: this.page,
-    size: this.size
+    size: this.size,
+    hasDo: -1,
+    trainWay: '',
+    trainType: '',
+    trainPlanName: '',
+    trainStartDate: '',
+    trainEndDate: ''
   };
   constructor(
     private http: Http,
@@ -43,10 +51,10 @@ export class TrainPlanComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       trainPlanName: new FormControl('', Validators.nullValidator),
-      trainPlanOrg: new FormControl('', Validators.nullValidator),
-      trainDoOrg: new FormControl('', Validators.nullValidator),
       trainStartDate: new FormControl('', Validators.nullValidator),
       trainTeacher: new FormControl('', Validators.nullValidator),
+      trainDoOrg: new FormControl('', Validators.nullValidator),
+      trainPlanOrg: new FormControl('', Validators.nullValidator),
       trainEndDate: new FormControl('', Validators.nullValidator),
       trainUnit: new FormControl('', Validators.nullValidator),
       trainTimeLong: new FormControl('', Validators.nullValidator),
@@ -67,7 +75,7 @@ export class TrainPlanComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'trainPlanName', header: '培训计划名称' },
+      { field: 'trainName', header: '培训计划名称' },
       { field: 'trainDoOrg', header: '落实单位' },
       { field: 'trainStartDate', header: '开始时间' },
       { field: 'trainEndDate', header: '结束时间' },
@@ -80,7 +88,6 @@ export class TrainPlanComponent implements OnInit {
     ];
     this.initForm = {
       trainPlanName: '',
-      trainPlanOrg: '',
       trainStartDate: '',
       trainTeacher: '',
       trainEndDate: '',
@@ -95,22 +102,32 @@ export class TrainPlanComponent implements OnInit {
 
   selectedOrg($event) {
     console.log($event);
-    this.searchOrg[0] = ($event);
+    this.planOrg = ($event)[0].data;
+  }
+  selectedEXOrg($event) {
+    console.log($event);
+    this.exOrg = ($event)[0].data;
+  }
+  selectedSearchOrg($event) {
+    console.log($event);
+    this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${staffId}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
                 this.data = res.data;
                 this.form.patchValue(res.data);
+                this.startDate = res.data.trainStartDate;
+                this.endDate = res.data.trainEndDate;
               } else {
                 alert(res.message);
               }
             });
   }
   getInfo() {
-    if (this.searchOrg.length !== 0 || this.searchOrg) {
+    if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     } else {
       this.param.orgList = ['00200119'];
@@ -126,6 +143,7 @@ export class TrainPlanComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
+                  this.staffList = [];
                   this.staffList = res.data.trainPlanDataList.map(el => {
                     return el;
                   });
@@ -140,7 +158,6 @@ export class TrainPlanComponent implements OnInit {
     this.filename = $event.target.files[0].name;
     this.file = $event.target.files[0];
   }
-
 
   dateFormat(date) {
     if (date) {
@@ -183,9 +200,9 @@ export class TrainPlanComponent implements OnInit {
 
   delete() {
     if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
+      this.deletePlan(this.selectedUser);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个计划');
     }
   }
 
@@ -197,9 +214,8 @@ export class TrainPlanComponent implements OnInit {
     return val === this.selectedUser;
   }
 
-  staffLeave(selectedUser) {
-    const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
+  deletePlan(selectedUser) {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planDelete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -215,7 +231,8 @@ export class TrainPlanComponent implements OnInit {
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
     this.form.value.trainEndDate = this.dateFormat(this.endDate);
     // this.form.value.orgType = +this.orgType;
-    // this.form.value.orgCode = +this.orgCode;
+    this.form.value.trainPlanOrg = '' + this.planOrg;
+    this.form.value.trainDoOrg = '' + this.exOrg;
     // this.form.value.politicalStatus = +this.form.value.politicalStatus;
     // this.form.value.positionalTitle = +this.form.value.positionalTitle;
     // this.form.value.userId = '' + Math.round(1000 * Math.random());
@@ -225,7 +242,11 @@ export class TrainPlanComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.toFirstPage();
+                if (this.file) {
+                  this.upload(res.data.id);
+                } else {
+                  this.toFirstPage();
+                }
               } else {
                 alert(res.message);
               }
@@ -235,20 +256,21 @@ export class TrainPlanComponent implements OnInit {
   updateStaff() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    this.form.value.trainPlanOrg = '' + this.planOrg;
+    this.form.value.trainDoOrg = '' + this.exOrg;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.politics = this.data.politics ? this.data.politics : 0;
-    this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.data.id = this.selectedUser;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planUpdate`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
                 if (this.file) {
-                  this.upload(this.data.userId);
+                  this.upload(this.selectedUser);
                 } else {
                   this.toFirstPage();
                 }
@@ -274,8 +296,8 @@ export class TrainPlanComponent implements OnInit {
   upload(userId) {
     const formdata = new FormData();
     formdata.append('file', this.file);
-    formdata.append('userId', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
+    formdata.append('id', userId);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/trainPlan`, formdata)
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
