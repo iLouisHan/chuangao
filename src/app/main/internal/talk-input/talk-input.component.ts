@@ -6,11 +6,11 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
-  selector: 'app-doc-upload',
-  templateUrl: './doc-upload.component.html',
-  styleUrls: ['./doc-upload.component.scss']
+  selector: 'app-talk-input',
+  templateUrl: './talk-input.component.html',
+  styleUrls: ['./talk-input.component.scss']
 })
-export class DocUploadComponent implements OnInit {
+export class TalkInputComponent implements OnInit {
   data: any = {};
   form: FormGroup;
   startDate: string;
@@ -26,33 +26,33 @@ export class DocUploadComponent implements OnInit {
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
+  staffList: Array<any>;
   isAdd: boolean;
   keys: Array<any>;
   file: any;
   filename: string;
-  selectedUser: string;
-  selectionMode = 'single';
+  selectedDevice: string;
+  selectionMode = 'checkbox';
+  selectionStaffMode = 'checkbox';
   searchOrg: Array<any>;
   initForm: any;
   param: any = {
     page: this.page,
-    size: this.size,
-    fileName: ''
+    size: this.size
   };
   constructor(
     private http: Http,
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      fileName: new FormControl('', Validators.nullValidator),
-      fileType: new FormControl('', Validators.nullValidator),
-      fileNum: new FormControl('', Validators.nullValidator),
-      fileUnit: new FormControl('', Validators.nullValidator),
-      browsePermission: new FormControl('', Validators.nullValidator),
-      keyWord: new FormControl('', Validators.nullValidator),
-      fileLevel: new FormControl('', Validators.nullValidator)
+      chatLeader: new FormControl('', Validators.nullValidator),
+      chatLoc: new FormControl('', Validators.nullValidator),
+      chatType: new FormControl('0', Validators.nullValidator),
+      chatPersonList: new FormControl('', Validators.nullValidator),
+      chatContent: new FormControl('', Validators.nullValidator)
     });
-    this.searchOrg = [];
+    this.orgList = [];
+    this.staffList = [];
     this.keys = Object.keys(this.form.value);
     this.en = {
       firstDayOfWeek: 0,
@@ -64,41 +64,45 @@ export class DocUploadComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'fileType', header: '文件类型' },
-      { field: 'fileName', header: '文件名称' },
-      { field: 'fileUnit', header: '发文单位' },
-      { field: 'fileNum', header: '发文文号' },
-      { field: 'fileLevel', header: '文件级别' },
-      { field: 'filePublishTime', header: '发文时间' },
-      { field: 'fileOwnerName', header: '发文单位' },
-      { field: 'keyWord', header: '关键字' }
+      { field: 'orgName', header: '单位名称' },
+      { field: 'chatType', header: '谈心类型' },
+      { field: 'chatLeader', header: '谈心人员' },
+      { field: 'chatUserName', header: '谈心对象' },
+      { field: 'chatLoc', header: '谈心地点' },
+      { field: 'chatDate', header: '谈心时间' },
+      { field: 'chatContent', header: '概要内容' }
     ];
     this.initForm = {
-      fileName: '',
-      fileUnit: '',
-      fileNum: '',
-      fileType: '',
-      fileLevel: '',
-      browsePermission: '',
-      keyWord: ''
+      chatLeader: '',
+      chatLoc: '',
+      chatType: '',
+      chatContent: '',
+      chatPersonList: ''
     };
   }
+  selectedOrg($event) {
+    this.orgList = ($event);
+  }
+  selectedStaff($event) {
+    this.staffList = ($event);
+    console.log(this.staffList);
+  }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-              } else {
-                alert(res.message);
-              }
-            });
+    this.deviceList.forEach(item => {
+      if (item.id === staffId) {
+        this.form.patchValue(item);
+        this.endDate = item.scrapDate;
+        this.startDate = item.buyDate;
+      }
+    });
   }
   getInfo() {
+    if (this.orgList.length !== 0) {
+      this.param.orgList = this.orgList.map(el => el.data);
+    }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/FileManager/get', JSON.stringify(this.param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Chat/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -107,7 +111,14 @@ export class DocUploadComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.deviceList = res.data.fileManagerDataList;
+                  res.data.chatDataList.forEach(item => {
+                    if (item.chatType === '0') {
+                      item.chatType = '一般谈心';
+                    } else {
+                      item.chatType = '重要谈心';
+                    }
+                  });
+                  this.deviceList = res.data.chatDataList;
                 }
               } else {
                 alert(res.message);
@@ -135,43 +146,38 @@ export class DocUploadComponent implements OnInit {
   }
 
   search() {
-    if (this.searchOrg && this.searchOrg.length !== 0) {
       this.getInfo();
       this.toFirstPage();
-    } else {
-      alert('请输入要查询的人员姓名！');
-    }
   }
 
   update() {
-    if (this.selectedUser) {
-      this.getStaffInfo(this.selectedUser);
+    if (this.selectedDevice) {
+      this.getStaffInfo(this.selectedDevice);
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个设备');
     }
   }
 
   delete() {
-    if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
+    if (this.selectedDevice) {
+      this.staffLeave(this.selectedDevice);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个设备');
     }
   }
 
   select(val) {
-    this.selectedUser = val === this.selectedUser ? '' : val;
+    this.selectedDevice = val === this.selectedDevice ? '' : val;
   }
 
   check(val) {
-    return val === this.selectedUser;
+    return val === this.selectedDevice;
   }
 
   staffLeave(selectedUser) {
-    const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/FileManager/delete?id=${selectedUser}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Chat/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -184,9 +190,10 @@ export class DocUploadComponent implements OnInit {
   addDevice() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.filePublishTime = this.dateFormat(this.endDate);
-    this.form.value.fileOwner = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/add`, JSON.stringify(this.form.value), {
+    this.form.value.chatDate = this.dateFormat(this.startDate);
+    this.form.value.orgCode = this.orgList[0].data;
+    this.form.value.chatPersonList = this.staffList.map(el => el.data);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Chat/add`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -210,17 +217,18 @@ export class DocUploadComponent implements OnInit {
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.id = this.selectedUser;
-    this.data.filePublishTime = this.dateFormat(this.endDate);
-    this.data.fileOwner = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.data.id = this.selectedDevice;
+    this.data.chatDate = this.dateFormat(this.startDate);
+    this.data.orgCode = this.orgList[0].data;
+    this.data.chatPersonList = this.staffList.map(el => el.data);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Chat/update`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
                 if (this.file) {
-                  this.upload(this.selectedUser);
+                  this.upload(this.selectedDevice);
                 } else {
                   this.toFirstPage();
                 }
@@ -243,6 +251,11 @@ export class DocUploadComponent implements OnInit {
     }
   }
 
+  toFirstPage() {
+    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    this.isChosen = false;
+    element.click();
+  }
   fileChange($event) {
     this.filename = $event.target.files[0].name;
     this.file = $event.target.files[0];
@@ -252,7 +265,7 @@ export class DocUploadComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('id', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/fileManager`, formdata)
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/chat`, formdata)
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
@@ -263,13 +276,6 @@ export class DocUploadComponent implements OnInit {
         this.toFirstPage();
       });
   }
-
-  toFirstPage() {
-    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
-    this.isChosen = false;
-    element.click();
-  }
-
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
@@ -279,4 +285,3 @@ export class DocUploadComponent implements OnInit {
     });
   }
 }
-

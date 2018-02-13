@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-train-plan-search',
@@ -15,6 +17,7 @@ export class TrainPlanSearchComponent implements OnInit {
   count: number;
   orgList: Array<any>;
   planList: Array<any>;
+  login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
   hasData = false;
@@ -31,7 +34,8 @@ export class TrainPlanSearchComponent implements OnInit {
   checkItem: number;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
     this.form = new FormGroup({
       hasDo: new FormControl('', Validators.nullValidator),
@@ -39,6 +43,7 @@ export class TrainPlanSearchComponent implements OnInit {
       trainType: new FormControl('', Validators.nullValidator),
       trainPlanName: new FormControl('', Validators.nullValidator)
     });
+    this.login = store.select('login');
     this.cols = [
       { field: 'trainName', header: '培训计划名称' },
       { field: 'trainOrgName', header: '发起单位' },
@@ -131,6 +136,12 @@ export class TrainPlanSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res && res.isAdmin) {
+        this.orgList = [{data: res.orgCode}];
+        this.getInfo(this.page, this.size);
+      }
+    });
   }
 
 }

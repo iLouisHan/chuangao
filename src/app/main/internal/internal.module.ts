@@ -18,6 +18,7 @@ import { StationSearchComponent } from './station-search/station-search.componen
 import { StationInputComponent } from './station-input/station-input.component';
 import { DeviceSearchComponent } from './device-search/device-search.component';
 import { DeviceInputComponent } from './device-input/device-input.component';
+import { TalkInputComponent } from './talk-input/talk-input.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,6 @@ import { DeviceInputComponent } from './device-input/device-input.component';
   ],
   declarations: [InternalComponent, TrainExecuteComponent, TrainExecuteSearchComponent,
     TrainPlanSearchComponent, TrainPlanComponent, TalkSearchComponent, TalkCountComponent, DocSearchComponent, DocUploadComponent,
-    StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent]
+    StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent, TalkInputComponent]
 })
 export class InternalModule { }

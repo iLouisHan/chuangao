@@ -1,6 +1,25 @@
 <h1 class="page-title"><div class="page-title-icon"></div>站务会查询</h1>
 <div class="main-container">
-  <div class="condition-container">
+    <div *ngIf="isChosen" class="infoContainer">
+        <div class="basic-info part-container">
+            <h1 class="part-title">计划信息</h1>
+            <div class="btn-center">
+              <button (click)="download('do')" *ngIf="doFilePath !== ''">下载文件/预览</button>
+              <button (click)="isChosen = !isChosen">返回</button>
+            </div>
+            <div class="basic-items part-content">
+                <ul class="clearfix">
+                    <li class="basic-info-item address"><span>会议地址</span>{{doData.meetingPlace}}</li>
+                    <li class="basic-info-item staff"><span>记录人</span>{{doData.meetingNote}}</li>
+                    <li class="basic-info-item staff"><span>主持人</span>{{doData.meetingHost  }}</li>
+                    <li class="basic-info-item date"><span>会议日期</span>{{doData.meetingDate}}</li>
+                    <li class="basic-last-item staff"><p>参会人员</p><div class="text">{{doData.meetingJoinPeople}}</div></li>
+                    <li class="basic-last-item abstract"><p>计划摘要</p><div class="text">{{doData.meetingContent}}</div></li>
+                  </ul>
+            </div>
+          </div>
+    </div>
+  <div class="condition-container" *ngIf="!isChosen">
     <div class="part-container">
       <h1 class="part-title">查询条件</h1>
       <div class="part-content clearfix">
@@ -30,7 +49,7 @@
       </div>
     </div>
   </div>
-  <div class="table-container">
+  <div class="table-container" *ngIf="!isChosen">
     <div class="part-container">
       <h1 class="part-title">站务会信息展示</h1>
       <div class="scroll-table-container">
@@ -39,11 +58,13 @@
             <table class="myTable">
               <thead>
                 <tr>
+                  <th>查看明细</th>
                   <th *ngFor="let field of cols">{{field.header}}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let item of planList">
+                  <th><span class="station" (click)="detail(item.id)">查看</span></th>
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>
               </tbody>

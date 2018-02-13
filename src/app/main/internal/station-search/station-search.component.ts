@@ -12,6 +12,9 @@ export class StationSearchComponent implements OnInit {
   startDate: string;
   endDate: string;
   count: number;
+  isChosen: boolean;
+  doData: any = {};
+  doFilePath: string;
   orgList: Array<any>;
   planList: Array<any>;
   page = 0;
@@ -35,13 +38,16 @@ export class StationSearchComponent implements OnInit {
     this.form = new FormGroup({
       meetingName: new FormControl('', Validators.nullValidator)
     });
+    this.isChosen = false;
     this.cols = [
-      { field: 'trainPlanName', header: '会议名称' },
-      { field: 'trainOrgName', header: '会议地点' },
+      { field: 'meetingName', header: '会议名称' },
+      { field: 'meetingPlace', header: '会议地点' },
       { field: 'trainHasDo', header: '所属机构' },
-      { field: 'trainStartDate', header: '会议时间' },
-      { field: 'trainEndDate', header: '主持人' },
-      { field: 'trainLoc', header: '记录人' }
+      { field: 'meetingDate', header: '会议时间' },
+      { field: 'meetingHost', header: '主持人' },
+      { field: 'meetingNote', header: '记录人' },
+      { field: 'meetingJoinPeople', header: '参与人员' },
+      { field: 'meetingContent', header: '会议内容' }
     ];
   }
 
@@ -75,16 +81,14 @@ export class StationSearchComponent implements OnInit {
   getInfo(page: number, size: number) {
     this.form.value.startDate = this.dateFormat(this.startDate);
     this.form.value.endDate = this.dateFormat(this.endDate);
-    this.form.value.orgCode = this.orgList[0].data;
+    this.form.value.orgList = this.orgList.map(el => el.data);
     const param = {
       page: page,
       size: size,
     };
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
-      if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
-      }
+      param[el] = this.form.value[el];
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -97,7 +101,7 @@ export class StationSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.planList = res.data.trainPlanDataList;
+                  this.planList = res.data.stationMeetingDataList;
                 }
               } else {
                 alert(res.message);
@@ -113,6 +117,20 @@ export class StationSearchComponent implements OnInit {
     return val === +this.checkItem;
   }
 
+  detail(id) {
+    this.isChosen = true;
+    this.planList.forEach(item => {
+      if (item.id === id) {
+        this.doData = item;
+        this.doFilePath = item.fileId;
+      }
+    });
+  }
+  download(type) {
+    if (type === 'do') {
+      window.open(this.doFilePath);
+    }
+  }
   ngOnInit() {
   }
 

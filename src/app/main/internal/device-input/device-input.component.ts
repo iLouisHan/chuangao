@@ -97,16 +97,13 @@ export class DeviceInputComponent implements OnInit {
     this.searchOrg[0] = ($event);
   }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-              } else {
-                alert(res.message);
-              }
-            });
+    this.deviceList.forEach(item => {
+      if (item.id === staffId) {
+        this.form.patchValue(item);
+        this.endDate = item.scrapDate;
+        this.startDate = item.buyDate;
+      }
+    });
   }
   getInfo() {
     if (this.searchOrg.length !== 0) {
@@ -175,7 +172,7 @@ export class DeviceInputComponent implements OnInit {
     if (this.selectedDevice) {
       this.staffLeave(this.selectedDevice);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个设备');
     }
   }
 
@@ -188,8 +185,7 @@ export class DeviceInputComponent implements OnInit {
   }
 
   staffLeave(selectedUser) {
-    const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -211,7 +207,7 @@ export class DeviceInputComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.deviceList.push(this.form.value);
+                // this.deviceList.push(this.form.value);
                 this.toFirstPage();
               } else {
                 alert(res.message);
@@ -226,9 +222,11 @@ export class DeviceInputComponent implements OnInit {
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.politics = this.data.politics ? this.data.politics : 0;
-    this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.data.id = this.selectedDevice;
+    this.data.buyDate = this.dateFormat(this.startDate);
+    this.data.scrapDate = this.dateFormat(this.endDate);
+    this.data.useOrg = this.orgList[0].data;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())

@@ -82,7 +82,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of staffList">
-              <td><input type="checkbox" (click)="select(item.userId)" [checked]="check(item.userId)"></td>
+              <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
             </tr>
           </tbody>

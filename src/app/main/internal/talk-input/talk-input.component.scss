@@ -81,7 +81,7 @@ form{
   
       &.form-textarea{
         width: 95%;
-  
+        display: none;
         textarea{
           width: calc(100% - 30px);
           height: 70px;
@@ -239,10 +239,13 @@ form{
     .container{
       width: 299px;
       float: left;
+      border: 1px solid #d9d9d9;
       border-right: 0;
       height: 38px;
       background: white;
       color: black;
+      border-radius: 5px 0 0 5px;
+      text-indent: 15px;
       input{
         width: 100%;
         padding-right: 15px;

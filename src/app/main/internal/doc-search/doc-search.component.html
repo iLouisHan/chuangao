@@ -7,40 +7,39 @@
         <form [formGroup]="form">
           <div class="form-item">
             <p>发文单位</p>
-            <div class="tree-container">
-              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
-            </div>
+            <input formControlName="fileUnit">
           </div>
           <div class="form-item">
             <p>发文文号</p>
-            <input formControlName="hasDo">
+            <input formControlName="fileNum">
           </div>
           <div class="form-item">
             <p>关键字</p>
-            <input formControlName="trainWay">
+            <input formControlName="keyWord">
           </div>
           <div class="form-item">
             <p>文件类型</p>
-            <select formControlName="trainType">
-              <option value="1">政策文件</option>
-              <option value="2">收费管理</option>
+            <select formControlName="fileType">
+              <option value="">所有类型</option>
+              <option value="政策文件">政策文件</option>
+              <option value="收费管理">收费管理</option>
             </select>
           </div>
           <div class="form-item">
             <p>文件级别</p>
-            <select formControlName="trainPlanName">
-              <option value="-1">所有级别</option>
-              <option value="1">二级</option>
-              <option value="2">一级</option>
+            <select formControlName="fileLevel">
+              <option value="">所有级别</option>
+              <option value="二级">二级</option>
+              <option value="一级">一级</option>
             </select>
           </div>
           <div class="form-item">
             <p>发文时间起</p>
-            <p-calendar [(ngModel)]="trainStartDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <p>发文时间止</p>
-            <p-calendar [(ngModel)]="trainEndDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <button (click)="submit()" class="form-btn">查&nbsp;询</button>

@@ -3,10 +3,11 @@
   <div *ngIf="isChosen" class="infoContainer">
       <div class="basic-info part-container">
           <h1 class="part-title">计划信息</h1>
-          <button (click)="download('do')">下载落实附件</button>
-          <button (click)="download('plan')">下载计划附件</button>
-          <button (click)="isChosen = !isChosen">返回</button>
-          
+          <div>
+            <button (click)="download('do')" *ngIf="doFilePath !== ''">下载落实附件</button>
+            <button (click)="download('plan')" *ngIf="planFilePath !== ''">下载计划附件</button>
+            <button (click)="isChosen = !isChosen">返回</button>
+          </div>
           <div class="basic-items part-content">
               <ul class="clearfix">
                   <li class="basic-info-item shortName"><span>计划名称</span>{{planData.trainType}}</li>

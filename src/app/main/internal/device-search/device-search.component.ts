@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
 
 @Component({
   selector: 'app-device-search',
@@ -18,6 +21,7 @@ export class DeviceSearchComponent implements OnInit {
   assetName: string;
   deviceStartDate: string;
   deviceEndDate: string;
+  login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
   hasData = false;
@@ -34,11 +38,13 @@ export class DeviceSearchComponent implements OnInit {
   checkItem: number;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
     this.form = new FormGroup({
       assetName: new FormControl('', Validators.nullValidator)
     });
+    this.login = store.select('login');
     this.cols = [
       { field: 'assetName', header: '资产名称' },
       { field: 'assetType', header: '资产类别' },
@@ -120,6 +126,12 @@ export class DeviceSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res && res.isAdmin) {
+        this.orgList = [{data: res.orgCode}];
+        this.getInfo(this.page, this.size);
+      }
+    });
   }
 
 }

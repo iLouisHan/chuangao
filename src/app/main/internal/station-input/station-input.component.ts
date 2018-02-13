@@ -35,7 +35,10 @@ export class StationInputComponent implements OnInit {
   initForm: any;
   param: any = {
     page: this.page,
-    size: this.size
+    size: this.size,
+    meetingName: '',
+    startDate: '',
+    endDate: ''
   };
   constructor(
     private http: Http,
@@ -61,15 +64,14 @@ export class StationInputComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'trainPlanName', header: '查看明细' },
-      { field: 'trainDoOrg', header: '会议名称' },
-      { field: 'trainStartDate', header: '会议地点' },
-      { field: 'trainEndDate', header: '所属机构' },
-      { field: 'trainWay', header: '会议时间' },
-      { field: 'trainType', header: '主持人' },
-      { field: 'trainTeacher', header: '记录人' },
-      { field: 'trainTimeLong', header: '参会人员' },
-      { field: 'trainContent', header: '会议内容' }
+      { field: 'meetingName', header: '会议名称' },
+      { field: 'meetingPlace', header: '会议地点' },
+      { field: 'meetingHost', header: '所属机构' },
+      { field: 'meetingDate', header: '会议时间' },
+      { field: 'meetingHost', header: '主持人' },
+      { field: 'meetingNote', header: '记录人' },
+      { field: 'meetingJoinPeople', header: '参会人员' },
+      { field: 'meetingContent', header: '会议内容' }
     ];
     this.initForm = {
       meetingName: '',
@@ -90,23 +92,18 @@ export class StationInputComponent implements OnInit {
     this.searchOrg[0] = ($event);
   }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-              } else {
-                alert(res.message);
-              }
-            });
+    this.staffList.forEach(item => {
+      if (item.id === staffId) {
+        this.form.patchValue(item);
+        this.startDate = item.meetingDate;
+      }
+    });
   }
   getInfo() {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     } else {
-      this.param.orgList = ['00200119'];
-      // this.param.meetingName = '斯蒂芬';
+      this.param.orgList = this.orgCode.map(el => el.data);
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -119,9 +116,7 @@ export class StationInputComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.trainPlanDataList.map(el => {
-                    return el;
-                  });
+                  this.staffList = res.data.stationMeetingDataList;
                 }
               } else {
                 alert(res.message);
@@ -160,7 +155,7 @@ export class StationInputComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的人员姓名！');
+      alert('请输入要查询的组织机构！');
     }
   }
 
@@ -170,7 +165,7 @@ export class StationInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个文件');
     }
   }
 
@@ -178,7 +173,7 @@ export class StationInputComponent implements OnInit {
     if (this.selectedUser) {
       this.staffLeave(this.selectedUser);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个文件');
     }
   }
 
@@ -191,8 +186,7 @@ export class StationInputComponent implements OnInit {
   }
 
   staffLeave(selectedUser) {
-    const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/StationMeeting/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -217,7 +211,11 @@ export class StationInputComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.toFirstPage();
+                if (this.file) {
+                  this.upload(res.data.id);
+                } else {
+                  this.toFirstPage();
+                }
               } else {
                 alert(res.message);
               }
@@ -231,16 +229,17 @@ export class StationInputComponent implements OnInit {
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.politics = this.data.politics ? this.data.politics : 0;
-    this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.data.meetingDate = this.dateFormat(this.startDate);
+    this.data.stationCode = this.orgCode[0].data;
+    this.data.id = this.selectedUser;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/update`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
                 if (this.file) {
-                  this.upload(this.data.userId);
+                  this.upload(this.selectedUser);
                 } else {
                   this.toFirstPage();
                 }
@@ -266,8 +265,8 @@ export class StationInputComponent implements OnInit {
   upload(userId) {
     const formdata = new FormData();
     formdata.append('file', this.file);
-    formdata.append('userId', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
+    formdata.append('id', userId);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/stationMeeting`, formdata)
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
@@ -288,6 +287,7 @@ export class StationInputComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.orgCode = [{data: res.orgCode}];
         this.getInfo();
       }
     });

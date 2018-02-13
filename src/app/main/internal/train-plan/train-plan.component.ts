@@ -129,8 +129,6 @@ export class TrainPlanComponent implements OnInit {
   getInfo() {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
-    } else {
-      this.param.orgList = ['00200119'];
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -144,9 +142,7 @@ export class TrainPlanComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   this.staffList = [];
-                  this.staffList = res.data.trainPlanDataList.map(el => {
-                    return el;
-                  });
+                  this.staffList = res.data.trainPlanDataList;
                 }
               } else {
                 alert(res.message);
@@ -318,6 +314,7 @@ export class TrainPlanComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.searchOrg = [{data: res.orgCode}];
         this.getInfo();
       }
     });

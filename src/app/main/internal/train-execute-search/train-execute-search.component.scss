@@ -6,16 +6,18 @@
       .basic-info{
         min-width: 550px;
         width: 100%;
-        button{
-          width: 120px;
-          height: 40px;
-          border: none;
-          border-radius: 20px;
-          background: #6c9cff;
-          cursor: pointer;
-          color: #fff;
-          font-size: 18px;
-          outline: none !important;
+        div{
+          button{
+            width: 120px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background: #6c9cff;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            outline: none !important;
+          }
         }
         .basic-items{
           min-height: calc(100% - 120px);
