@@ -13,172 +13,6 @@
   }
 }
 
-form{
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-
-  .form-item{
-    width: 100%;
-    margin-bottom: 20px;
-
-    p{
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 5px;
-
-      .form-required{
-        color: red;
-      }
-    }
-
-    .upload-photo{
-      width: calc(100% - 2px);
-      padding-right: 0px;
-      height: 40px;
-      border-radius: 5px;
-      box-shadow: none;
-      border: 1px solid #d9d9d9;
-
-      input{
-        display: none;
-      }
-
-      span{
-        display: inline-block;
-        line-height: 40px;
-        width: calc(100% - 125px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-indent: 15px;
-      }
-
-      .upload-photo-btn{
-        float: right;
-        margin: 5px;
-        height: 30px;
-        width: 100px;
-        text-align: center;
-        line-height: 30px;
-        background: #ffaf58;
-        color: #fff;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-      }
-    }
-
-    input{
-      width: calc(100% - 15px);
-      padding-right: 15px;
-      height: 38px;
-      text-indent: 15px;
-      border-radius: 5px;
-      box-shadow: none;
-      border: 1px solid #d9d9d9;
-
-      &:disabled{
-        background: #eee;
-      }
-    }
-
-    .tree-container{
-      width: 100%;
-      height: 38px;
-      border-radius: 5px;
-      border: 1px solid #d9d9d9;
-    }
-
-    select{
-      width: 100%;
-      height: 40px;
-      background: #fff;
-    }
-
-    &.form-textarea{
-      width: 95%;
-
-      textarea{
-        width: calc(100% - 30px);
-        height: 70px;
-        padding: 15px;
-        border-radius: 5px;
-        border: 1px solid #d9d9d9;
-        resize: none;
-      }
-    }
-
-    &.form-checkbox{
-      p{
-        display: inline-block;
-        line-height: 40px;
-      }
-    }
-
-    button{
-      width: 100%;
-      height: 40px;
-      border: none;
-      border-radius: 20px;
-      background: #6c9cff;
-      cursor: pointer;
-      margin-top: 27px;
-      color: #fff;
-      font-size: 18px;
-      outline: none !important;
-    }
-  }
-
-  .form-checkbox{
-    width: 100%;
-
-    p{
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 5px;
-      display: inline-block;
-      line-height: 40px;
-    }
-
-    >div {
-      height: 40px;
-      line-height: 40px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-
-      label{
-        font-size: 14px;
-        margin-right: 5px;
-        width: 33%;
-
-        div{
-          display: inline-block;
-          height: 18px;
-          width: 18px;
-          border: 1px solid #d9d9d9;
-          border-radius: 3px;
-          position: relative;
-          top: 6px;
-          margin-right: 5px;
-          border-radius: 10px;
-
-          &.checked{
-            border: 6px solid #6c9cff;
-            height: 8px;
-            width: 8px;
-          }
-        }
-
-        input{
-          display: none;
-        }
-      }
-    }
-
-  }
-}
-
 .scroll-table-container{
 
   .part-content{
@@ -233,6 +67,7 @@ form{
                 font-size: 14px;
                 height: 26px;
                 padding-top: 28px;
+                cursor: pointer;
 
                 &.team-day{
                   left: 0;
@@ -317,6 +152,79 @@ form{
       &.next-month{
         right: 0;
       }
+    }
+  }
+}
+
+.popup-container{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: rgba($color: #000000, $alpha: 0.5);
+  display: none;
+
+  &.show{
+    display: block;
+  }
+
+  .popup{
+    width: 640px;
+    height: 600px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+
+    h1{
+      font-size: 16px;
+      height: 40px;
+      background: #6097ff;
+      color: #fff;
+      line-height: 40px;
+      font-size: 16px;
+      text-indent: 10px;
+      font-weight: 300;
+    }
+
+    .staffList-container{
+      margin: 20px;
+
+      p{
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      div{
+        border: 1px solid #d9d9d9;
+        height: 58px;
+        padding: 5px 0 5px 20px;
+        overflow-y: scroll;
+
+        li{
+          width: 60px;
+          text-align: center;
+          margin-right: 20px;
+          height: 30px;
+          line-height: 30px;
+          float: left;
+        }
+      }
+    }
+
+    .close-button{
+      width: 58px;
+      display: block;
+      border: 1px solid #d9d9d9;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: auto;
     }
   }
 }

@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../store/translate';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-team-schedule-search',
@@ -16,8 +18,6 @@ export class TeamScheduleSearchComponent implements OnInit {
   count: number;
   staffList: Array<any>;
   orgList: Array<any>;
-  page = 0;
-  size = 15;
   hasData = false;
   selectionMode = 'single';
   en = {
@@ -37,11 +37,17 @@ export class TeamScheduleSearchComponent implements OnInit {
   _year = this.nowTime.getFullYear();
   secheduleList: any;
   list_group = list_group;
+  orgType: number;
+  orgCode: string;
+  orgName: string;
+  login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
     this.now = this.dateFormat(this.nowTime);
+    this.login = store.select('login');
     this.form = new FormGroup({
       teamsGroup: new FormControl('', Validators.nullValidator),
       shiftId: new FormControl('', Validators.nullValidator),
@@ -110,12 +116,12 @@ export class TeamScheduleSearchComponent implements OnInit {
       alert('请选择收费站');
     }else {
       this.calendarInit(this.now);
-      this.getInfo(this.page, this.size);
+      this.getInfo();
     }
   }
 
   paginate(event) {
-    this.getInfo(event.page, this.size);
+    this.getInfo();
   }
 
   bindSechedule() {
@@ -164,14 +170,11 @@ export class TeamScheduleSearchComponent implements OnInit {
     });
   }
 
-  getInfo(page: number, size: number) {
+  getInfo() {
     this.form.value.startTime = this.dateFormat(this.startTime);
     this.form.value.endTime = this.dateFormat(this.endTime);
     this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
-      page: page,
-      size: size
-    };
+    const param = {};
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       if (this.form.value[el] || this.form.value[el] === 0) {
@@ -237,6 +240,16 @@ export class TeamScheduleSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgType = res.orgType;
+        this.orgCode = res.orgCode;
+        this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+      }
+    })
   }
 
 }

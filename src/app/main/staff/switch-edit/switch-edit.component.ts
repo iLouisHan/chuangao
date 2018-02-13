@@ -39,6 +39,8 @@ export class SwitchEditComponent implements OnInit {
     page: this.page,
     size: this.size
   };
+  applyDate: string;
+  applyDateEnd: string;
   applyTeams: string;
   applyUserId: string;
   applyUserName: string;

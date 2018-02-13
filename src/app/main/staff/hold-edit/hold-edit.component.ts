@@ -18,7 +18,7 @@ export class HoldEditComponent implements OnInit {
   applyType = applyType;
   applyDate: string;
   applyDateEnd: string;
-  adminId: string;
+  checkUserId: string;
   en: any;
   changeTime: string;
   file: any;
@@ -187,7 +187,7 @@ export class HoldEditComponent implements OnInit {
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.dateFormat(this.applyDate);
     this.form.value.stationCode = this.orgCode;
-    this.form.value.adminId = this.adminId;
+    this.form.value.checkUserId = this.checkUserId;
     this.form.value.applyChangeType = 2;
     this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
               headers: myHeaders
@@ -264,7 +264,7 @@ export class HoldEditComponent implements OnInit {
     myHeaders.append('Content-Type', 'application/json');
     this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/checkLeave`, JSON.stringify({
       id: id,
-      checkUserId: this.adminId,
+      checkUserId: this.checkUserId,
       checkType: type
     }), {
       headers: myHeaders
@@ -282,7 +282,7 @@ export class HoldEditComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
-        this.adminId = res.userId;
+        this.checkUserId = res.userId;
         this.orgCode = res.orgCode;
         this.orgType = res.orgType;
         this.param.orgList = [res.orgCode];

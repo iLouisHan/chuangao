@@ -14,12 +14,10 @@
           <p class="hover-title"><span class="circle"></span><span>基础信息</span></p>
           <ul class="hover-ul clearfix">
             <li class="hover-li">
-              <a *ngIf="admin" routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
-              <a *ngIf="!admin" [routerLink]="['/main/staffDetail']" [queryParams]="{id: userId}">个人信息</a>
+              <a routerLink="tollStation">收费站信息</a>
             </li>
             <li class="hover-li">
-              <a *ngIf="admin" routerLink="{{orgLink}}">{{orgTypeStr}}信息</a>
-              <a *ngIf="!admin" [routerLink]="['/main/staffDetailInput']" [queryParams]="{id: userId}">个人信息录入</a>
+              <a routerLink="tollStationInput">收费站信息录入</a>
             </li>
           </ul>
         </div>
@@ -124,7 +122,7 @@
               <a routerLink="/main/staff/checkSearch">星评查询</a>
             </li>
             <li class="hover-li">
-              <a routerLink="">星评录入</a>
+              <a routerLink="/main/staff/checkEdit">星评录入</a>
             </li>
           </ul>
         </div>
@@ -134,7 +132,66 @@
       <div class="sidebar-item-show">
         <p>内务管理</p>
       </div>
-      <div class="sidebar-item-hover"></div>
+      <div class="sidebar-item-hover">
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>学习培训管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/internal/trainPlanSearch">培训计划查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/internal/trainPlan">培训计划</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/internal/trainExecuteSearch">培训落实查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/internal/trainExecute">培训落实</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>站务会管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/internal/stationSearch">站务会查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/internal/stationInput">站务会录入</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>谈心管理</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/internal/talkSearch">谈心查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/internal/talkCount">谈心统计</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>文档上传</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/internal/docSearch">文档查询</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>收费设备设施信息</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/main/internal/deviceSearch">收费设备设施查询</a>
+            </li>
+            <li class="hover-li">
+              <a routerLink="/main/internal/deviceInput">收费设备设施录入</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </li>
   </ul>
 </div>

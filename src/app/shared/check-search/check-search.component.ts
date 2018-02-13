@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-check-search',
@@ -13,7 +15,8 @@ export class CheckSearchComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
-  leaveDataList: Array<any>;
+  yearList: Array<number> = [];
+  dataList: Array<any>;
   orgList: Array<any>;
   page = 0;
   size = 15;
@@ -29,27 +32,35 @@ export class CheckSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  orgType: number;
+  orgCode: string;
+  orgName: string;
+  login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
+    const year = (new Date()).getFullYear();
+    for (let i = 0; i < 10; i++) {
+      this.yearList[i] = year - i;
+    }
     this.form = new FormGroup({
-      listGroup: new FormControl('', Validators.nullValidator),
-      userName: new FormControl('', Validators.nullValidator),
-      leaveType: new FormControl('', Validators.nullValidator)
+      year: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
       { field: 'orgName', header: '操作' },
       { field: 'userName', header: '收费员名称' },
-      { field: 'applyType', header: '考核年度' },
-      { field: 'applyDate', header: '综合考核' },
-      { field: 'applyDateEnd', header: '业务考核' },
-      { field: 'remark', header: '星评' },
-      { field: 'leaveTipDownload', header: '计算机等级' },
-      { field: 'leaveTipDownload', header: '计算机评定时间' },
-      { field: 'leaveTipDownload', header: '普通话等级' },
-      { field: 'leaveTipDownload', header: '普通话评定时间' },
-      { field: 'leaveTipDownload', header: '证书图片' }
+      { field: 'year', header: '考核年度' },
+      { field: 'compositScore', header: '综合考核' },
+      { field: 'examScore', header: '业务考核' },
+      { field: 'star', header: '星评' },
+      { field: 'computerLevel', header: '计算机等级' },
+      { field: 'computerLevelEvaluate', header: '计算机评定时间' },
+      { field: 'mandarinLevel', header: '普通话等级' },
+      { field: 'mandarinLevelEvaluate', header: '普通话评定时间' },
+      { field: 'picUrl', header: '证书图片' }
     ];
   }
 
@@ -96,17 +107,17 @@ export class CheckSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/getDetail', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.count = res.data.count;
-                this.leaveDataList = res.data.leaveDataList;
-                if (res.data.count > 0) {
+                // this.count = res.data.count;
+                this.dataList = res.data;
+                // if (res.data.count > 0) {
                   this.hasData = true;
-                }
+                // }
               }else {
                 alert(res.message);
               }
@@ -122,6 +133,16 @@ export class CheckSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgType = res.orgType;
+        this.orgCode = res.orgCode;
+        this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+      }
+    })
   }
 
 }
