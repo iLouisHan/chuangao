@@ -4,12 +4,18 @@
   <div class="part-content">
     <form [formGroup]="form">
       <div class="form-item">
+          <p>所属机构</p>
+          <div class="tree-container">
+            <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          </div>
+        </div>
+      <div class="form-item">
         <p>会议名称</p>
-        <input type="text" formControlName="trainPlanName">
+        <input type="text" formControlName="meetingName">
       </div>
       <div class="form-item">
         <p>会议地址</p>
-        <input type="text" formControlName="trainPlanOrg">
+        <input type="text" formControlName="meetingPlace">
       </div>
       <div class="form-item">
         <p>会议时间</p>
@@ -17,19 +23,19 @@
       </div>
       <div class="form-item">
         <p>主持人</p>
-        <input type="text" formControlName="trainTeacher">
+        <input type="text" formControlName="meetingHost">
       </div>
       <div class="form-item">
         <p>记录人</p>
-        <input type="text" formControlName="trainTimeLong">
+        <input type="text" formControlName="meetingNote">
       </div>
       <div class="form-item form-textarea">
         <p>参与人员</p>
-        <textarea type="text" formControlName="trainContent" placeholder="填写参会人员，用逗号隔开"></textarea>
+        <textarea type="text" formControlName="meetingJoinPeople" placeholder="填写参会人员，用逗号隔开"></textarea>
       </div>
       <div class="form-item form-textarea">
         <p>会议内容</p>
-        <textarea type="text" formControlName="trainContent"></textarea>
+        <textarea type="text" formControlName="meetingContent"></textarea>
       </div>
       <div class="form-item">
         <p>点击上传文件</p>
@@ -58,7 +64,7 @@
       </ul>
       <div class="searchbar-container">
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)"></app-drop-org-tree>
         </div>
         <div (click)="search()">查询</div>
       </div>
@@ -76,7 +82,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of staffList">
-              <td><input type="checkbox" (click)="select(item.userId)" [checked]="check(item.userId)"></td>
+              <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
             </tr>
           </tbody>

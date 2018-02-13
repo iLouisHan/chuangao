@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-train-plan-search',
@@ -13,12 +15,9 @@ export class TrainPlanSearchComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
-  hasDo: number;
   orgList: Array<any>;
   planList: Array<any>;
-  trainWay: string;
-  trainType: string;
-  trainPlanName: string;
+  login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
   hasData = false;
@@ -35,7 +34,8 @@ export class TrainPlanSearchComponent implements OnInit {
   checkItem: number;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
     this.form = new FormGroup({
       hasDo: new FormControl('', Validators.nullValidator),
@@ -43,10 +43,9 @@ export class TrainPlanSearchComponent implements OnInit {
       trainType: new FormControl('', Validators.nullValidator),
       trainPlanName: new FormControl('', Validators.nullValidator)
     });
+    this.login = store.select('login');
     this.cols = [
-      { field: 'operateExecuteSituation', header: '操作' },
-      { field: 'operateExecuteContent', header: '操作' },
-      { field: 'trainPlanName', header: '培训计划名称' },
+      { field: 'trainName', header: '培训计划名称' },
       { field: 'trainOrgName', header: '发起单位' },
       { field: 'trainHasDo', header: '落实情况' },
       { field: 'trainStartDate', header: '计划开始时间' },
@@ -93,6 +92,12 @@ export class TrainPlanSearchComponent implements OnInit {
     const param = {
       page: page,
       size: size,
+      hasDo: -1,
+      trainWay: '',
+      trainType: '',
+      trainPlanName: '',
+      trainStartDate: '',
+      trainEndDate: ''
     };
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
@@ -112,8 +117,7 @@ export class TrainPlanSearchComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   res.data.trainPlanDataList.forEach(item => {
-                    item.operateExecuteSituation = '落实情况';
-                    item.operateExecuteContent = '培训内容';
+                    item.trainHasDo = item.trainHasDo === 0 ? '未落实' : '已落实';
                   });
                   this.planList = res.data.trainPlanDataList;
                 }
@@ -132,6 +136,12 @@ export class TrainPlanSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res && res.isAdmin) {
+        this.orgList = [{data: res.orgCode}];
+        this.getInfo(this.page, this.size);
+      }
+    });
   }
 
 }

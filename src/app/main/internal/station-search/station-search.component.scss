@@ -1,7 +1,60 @@
 .main-container{
     display: flex;
     justify-content: space-between;
-  
+    .infoContainer{
+      flex: 1;
+      .basic-info{
+        min-width: 550px;
+        width: 100%;
+        .btn-center{
+          text-align: center;
+          button{
+            width: 120px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background: #6c9cff;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            outline: none !important;
+          }
+        }
+        .basic-items{
+          min-height: calc(100% - 120px);
+    
+          ul{
+            .basic-last-item{
+              float: left;
+              width: 100%;
+              padding-left: 25px;
+              font-size: 16px;
+              color: #999;
+              margin-bottom: 20px;
+              .text{
+                width: 90%;
+                border: 1px solid #999;
+                border-radius: 5px;
+                padding: 10px;
+              }
+            }
+            .basic-info-item{
+              float: left;
+              min-width: calc(34% - 40px);
+              padding-left: 25px;
+              font-size: 16px;
+              color: #999;
+              margin-bottom: 20px;
+    
+              span{
+                color: #333;
+                margin-right: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
     .condition-container{
       width: 25%;
       min-width: 315px;
@@ -221,4 +274,33 @@
       }
     }
   }
-  
+  .shortName{
+    background: url('/assets/images/basic-shortName.png') no-repeat 0 center;
+  }
+  .stationType{
+    background: url('/assets/images/icon-stationType.png') no-repeat 0 center;
+  }
+  .address{
+    background: url('/assets/images/basic-address.png') no-repeat 0 center;
+  }
+  .staff{
+    background: url('/assets/images/icon-staff.png') no-repeat 0 center;
+  }
+  .floorArea{
+    background: url('/assets/images/icon-floorArea.png') no-repeat 0 center;
+  }
+  .date{
+    background: url('/assets/images/staff-basic-birthday.png') no-repeat 0 center;
+  }
+  .unit{
+    background: url('/assets/images/basic-organizationCode.png') no-repeat 0 center;
+  }
+  .way{
+    background: url('/assets/images/basic-longitude.png') no-repeat 0 center;
+  }
+  .abstract{
+    background: url('/assets/images/basic-totalMileage.png') no-repeat 0 top;
+  }
+  .long{
+    background: url('/assets/images/icon-monitoring.png') no-repeat 0 top;
+  }

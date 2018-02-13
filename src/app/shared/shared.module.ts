@@ -17,6 +17,7 @@ import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedul
 import { SwitchSearchComponent } from './switch-search/switch-search.component';
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
 import { AttendanceCheckComponent } from './attendance-check/attendance-check.component';
+import { DropStaffTreeComponent } from './drop-staff-tree/drop-staff-tree.component';
 import { CheckSearchComponent } from './check-search/check-search.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 
@@ -45,6 +46,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     SwitchSearchComponent,
     LeaveSearchComponent,
     AttendanceCheckComponent,
+    DropStaffTreeComponent,
     CheckSearchComponent
   ],
   exports: [
@@ -61,6 +63,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     SwitchSearchComponent,
     LeaveSearchComponent,
     AttendanceCheckComponent,
+    DropStaffTreeComponent,
     CheckSearchComponent
   ]
 })

@@ -16,9 +16,6 @@ export class DocSearchComponent implements OnInit {
   hasDo: number;
   orgList: Array<any>;
   planList: Array<any>;
-  trainWay: string;
-  trainType: string;
-  trainPlanName: string;
   page = 0;
   size = 15;
   hasData = false;
@@ -38,20 +35,21 @@ export class DocSearchComponent implements OnInit {
     private http: Http
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl('', Validators.nullValidator),
-      trainWay: new FormControl('', Validators.nullValidator),
-      trainType: new FormControl('', Validators.nullValidator),
-      trainPlanName: new FormControl('', Validators.nullValidator)
+      fileNum: new FormControl('', Validators.nullValidator),
+      keyWord: new FormControl('', Validators.nullValidator),
+      fileType: new FormControl('', Validators.nullValidator),
+      fileLevel: new FormControl('', Validators.nullValidator),
+      fileUnit: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'trainPlanName', header: '文件名称' },
-      { field: 'trainOrgName', header: '发文单位' },
-      { field: 'trainHasDo', header: '发文文号' },
-      { field: 'trainStartDate', header: '文件类型' },
-      { field: 'trainEndDate', header: '文件级别' },
-      { field: 'trainWay', header: '发文时间' },
-      { field: 'trainType', header: '上传单位' },
-      { field: 'trainTeacher', header: '关键字' }
+      { field: 'fileType', header: '文件类型' },
+      { field: 'fileName', header: '文件名称' },
+      { field: 'fileUnit', header: '发文单位' },
+      { field: 'fileNum', header: '发文文号' },
+      { field: 'fileLevel', header: '文件级别' },
+      { field: 'filePublishTime', header: '发文时间' },
+      { field: 'fileOwnerName', header: '发文单位' },
+      { field: 'keyWord', header: '关键字' }
     ];
   }
 
@@ -71,11 +69,7 @@ export class DocSearchComponent implements OnInit {
   }
 
   submit() {
-    if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
-    } else {
-      this.getInfo(this.page, this.size);
-    }
+    this.getInfo(this.page, this.size);
   }
 
   paginate(event) {
@@ -83,22 +77,19 @@ export class DocSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
+    this.form.value.filePublishStartTime = this.dateFormat(this.startTime);
+    this.form.value.filePublishEndTime = this.dateFormat(this.endTime);
     const param = {
       page: page,
       size: size,
     };
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
-      if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
-      }
+      param[el] = this.form.value[el];
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/FileManager/get', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -107,11 +98,7 @@ export class DocSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.trainPlanDataList.forEach(item => {
-                    item.operateExecuteSituation = '落实情况';
-                    item.operateExecuteContent = '培训内容';
-                  });
-                  this.planList = res.data.trainPlanDataList;
+                  this.planList = res.data.fileManagerDataList;
                 }
               } else {
                 alert(res.message);

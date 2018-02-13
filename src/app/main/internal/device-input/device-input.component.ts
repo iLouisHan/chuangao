@@ -11,26 +11,24 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./device-input.component.scss']
 })
 export class DeviceInputComponent implements OnInit {
-
   data: any = {};
   form: FormGroup;
   startDate: string;
   endDate: string;
   en: any;
-  file: any;
-  filename: string;
   isChosen = false;
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
+  orgList: Array<any>;
   count: number;
-  staffList: Array<any>;
+  deviceList: Array<any>;
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
-  selectedUser = '';
   isAdd: boolean;
   keys: Array<any>;
+  selectedDevice: string;
   selectionMode = 'single';
   searchOrg: Array<any>;
   initForm: any;
@@ -43,18 +41,17 @@ export class DeviceInputComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      trainPlanName: new FormControl('', Validators.nullValidator),
-      trainPlanOrg: new FormControl('', Validators.nullValidator),
-      trainDoOrg: new FormControl('', Validators.nullValidator),
-      trainStartDate: new FormControl('', Validators.nullValidator),
-      trainTeacher: new FormControl('', Validators.nullValidator),
-      trainEndDate: new FormControl('', Validators.nullValidator),
-      trainUnit: new FormControl('', Validators.nullValidator),
-      trainTimeLong: new FormControl('', Validators.nullValidator),
-      trainType: new FormControl('', Validators.nullValidator),
-      trainWay: new FormControl('', Validators.nullValidator),
-      trainContent: new FormControl('', Validators.nullValidator),
-      trainLoc: new FormControl('', Validators.nullValidator)
+      assetName: new FormControl('', Validators.nullValidator),
+      assetType: new FormControl('', Validators.nullValidator),
+      assetState: new FormControl('', Validators.nullValidator),
+      useOrg: new FormControl('', Validators.nullValidator),
+      buyDate: new FormControl('', Validators.nullValidator),
+      buyNum: new FormControl('', Validators.nullValidator),
+      assetLife: new FormControl('', Validators.nullValidator),
+      assetModel: new FormControl('', Validators.nullValidator),
+      assetNo: new FormControl('', Validators.nullValidator),
+      assetUser: new FormControl('', Validators.nullValidator),
+      scrapDate: new FormControl('', Validators.nullValidator)
     });
     this.searchOrg = [];
     this.keys = Object.keys(this.form.value);
@@ -68,57 +65,55 @@ export class DeviceInputComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'trainPlanName', header: '培训计划名称' },
-      { field: 'trainDoOrg', header: '落实单位' },
-      { field: 'trainStartDate', header: '开始时间' },
-      { field: 'trainEndDate', header: '结束时间' },
-      { field: 'trainWay', header: '培训方式' },
-      { field: 'trainType', header: '培训类别' },
-      { field: 'trainTeacher', header: '培训讲师' },
-      { field: 'trainTimeLong', header: '培训课时' },
-      { field: 'trainLoc', header: '培训地点' },
-      { field: 'trainContent', header: '培训内容' }
+      { field: 'assetState', header: '设备类型' },
+      { field: 'assetName', header: '设备名称' },
+      { field: 'useOrg', header: '资产单位' },
+      { field: 'buyNum', header: '购置数量' },
+      { field: 'assetLife', header: '设备理论年限' },
+      { field: 'buyDate', header: '购置日起' },
+      { field: 'scrapDate', header: '报废日期' }
     ];
     this.initForm = {
-      trainPlanName: '',
-      trainPlanOrg: '',
-      trainStartDate: '',
-      trainTeacher: '',
-      trainEndDate: '',
-      trainUnit: '',
-      trainTimeLong: '',
-      trainType: '',
-      trainWay: '',
-      trainContent: '',
-      trainLoc: ''
+      assetName: '',
+      assetType: '',
+      assetState: '',
+      useOrg: '',
+      buyDate: '',
+      buyNum: '',
+      assetLife: '',
+      assetModel: '',
+      assetNo: '',
+      assetUser: '',
+      scrapDate: ''
     };
   }
-
   selectedOrg($event) {
+    console.log($event[0].data);
+    this.orgList = ($event);
+  }
+
+  selectedSearchOrg($event) {
     console.log($event);
     this.searchOrg[0] = ($event);
   }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-              } else {
-                alert(res.message);
-              }
-            });
+    this.deviceList.forEach(item => {
+      if (item.id === staffId) {
+        this.form.patchValue(item);
+        this.endDate = item.scrapDate;
+        this.startDate = item.buyDate;
+      }
+    });
   }
   getInfo() {
-    if (this.searchOrg.length !== 0 || this.searchOrg) {
+    if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     } else {
       this.param.orgList = ['00200119'];
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(this.param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -127,21 +122,13 @@ export class DeviceInputComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = res.data.trainPlanDataList.map(el => {
-                    return el;
-                  });
+                  this.deviceList = res.data.fixedAssetDataList;
                 }
               } else {
                 alert(res.message);
               }
             });
   }
-
-  fileChange($event) {
-    this.filename = $event.target.files[0].name;
-    this.file = $event.target.files[0];
-  }
-
 
   dateFormat(date) {
     if (date) {
@@ -158,7 +145,6 @@ export class DeviceInputComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(this.initForm);
     // this.form.patchValue({orgName: this.orgName});
-    this.filename = '';
     this.isChosen = true;
     this.isAdd = true;
   }
@@ -168,39 +154,38 @@ export class DeviceInputComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的人员姓名！');
+      alert('请输入要查询的设备！');
     }
   }
 
   update() {
-    if (this.selectedUser) {
-      this.getStaffInfo(this.selectedUser);
+    if (this.selectedDevice) {
+      this.getStaffInfo(this.selectedDevice);
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个设备');
     }
   }
 
   delete() {
-    if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
+    if (this.selectedDevice) {
+      this.staffLeave(this.selectedDevice);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个设备');
     }
   }
 
   select(val) {
-    this.selectedUser = val === this.selectedUser ? '' : val;
+    this.selectedDevice = val === this.selectedDevice ? '' : val;
   }
 
   check(val) {
-    return val === this.selectedUser;
+    return val === this.selectedDevice;
   }
 
   staffLeave(selectedUser) {
-    const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -210,22 +195,19 @@ export class DeviceInputComponent implements OnInit {
             });
   }
 
-  addStaff() {
+  addDevice() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.trainStartDate = this.dateFormat(this.startDate);
-    this.form.value.trainEndDate = this.dateFormat(this.endDate);
-    // this.form.value.orgType = +this.orgType;
-    // this.form.value.orgCode = +this.orgCode;
-    // this.form.value.politicalStatus = +this.form.value.politicalStatus;
-    // this.form.value.positionalTitle = +this.form.value.positionalTitle;
-    // this.form.value.userId = '' + Math.round(1000 * Math.random());
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planAdd`, JSON.stringify(this.form.value), {
+    this.form.value.buyDate = this.dateFormat(this.startDate);
+    this.form.value.scrapDate = this.dateFormat(this.endDate);
+    this.form.value.useOrg = this.orgList[0].data;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
+                // this.deviceList.push(this.form.value);
                 this.toFirstPage();
               } else {
                 alert(res.message);
@@ -233,26 +215,24 @@ export class DeviceInputComponent implements OnInit {
             });
   }
 
-  updateStaff() {
+  updateDevice() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.politics = this.data.politics ? this.data.politics : 0;
-    this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.data.id = this.selectedDevice;
+    this.data.buyDate = this.dateFormat(this.startDate);
+    this.data.scrapDate = this.dateFormat(this.endDate);
+    this.data.useOrg = this.orgList[0].data;
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                if (this.file) {
-                  this.upload(this.data.userId);
-                } else {
-                  this.toFirstPage();
-                }
+                this.toFirstPage();
               } else {
                 alert(res.message);
               }
@@ -266,26 +246,10 @@ export class DeviceInputComponent implements OnInit {
 
   submit() {
     if (this.isAdd) {
-      this.addStaff();
+      this.addDevice();
     } else {
-      this.updateStaff();
+      this.updateDevice();
     }
-  }
-
-  upload(userId) {
-    const formdata = new FormData();
-    formdata.append('file', this.file);
-    formdata.append('userId', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          alert(res.message);
-        } else {
-          alert(res.message);
-        }
-        this.toFirstPage();
-      });
   }
 
   toFirstPage() {

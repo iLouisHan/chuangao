@@ -9,11 +9,15 @@
       </div>
       <div class="form-item">
         <p>发起单位</p>
-        <input type="text" formControlName="trainPlanOrg">
+        <div class="tree-container">
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+        </div>
       </div>
       <div class="form-item">
         <p>落实单位</p>
-        <input type="text" formControlName="trainDoOrg">
+        <div class="tree-container">
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedEXOrg($event)"></app-drop-org-tree>
+        </div>
       </div>
       <div class="form-item">
         <p>开始日期</p>
@@ -68,6 +72,14 @@
         <p>培训纪要</p>
         <textarea type="text" formControlName="trainContent"></textarea>
       </div>
+      <div class="form-item">
+        <p>附件上传(仅支持pdf格式)</p>
+        <div class="upload-photo">
+          <input (change)="fileChange($event)" #photo type="file">
+          <span [title]="filename">{{filename}}</span>
+          <div class="upload-photo-btn" (click)="photo.click()">选择文件</div>
+        </div>
+      </div>
       <div class="form-btn-container">
         <div class="form-item">
           <button (click)="submit()" class="form-btn">保存</button>
@@ -87,7 +99,7 @@
       </ul>
       <div class="searchbar-container">
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)"></app-drop-org-tree>
         </div>
         <div (click)="search()">查询</div>
       </div>
@@ -105,7 +117,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of staffList">
-              <td><input type="checkbox" (click)="select(item.userId)" [checked]="check(item.userId)"></td>
+              <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
             </tr>
           </tbody>

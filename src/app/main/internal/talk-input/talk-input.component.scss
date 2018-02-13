@@ -81,7 +81,7 @@ form{
   
       &.form-textarea{
         width: 95%;
-  
+        display: none;
         textarea{
           width: calc(100% - 30px);
           height: 70px;
@@ -226,13 +226,6 @@ form{
             img{
               cursor: pointer;
             }
-            .station {
-              background: #61b3f2;
-              color: white;
-              padding: 5px;
-              border-radius: 5px;
-              cursor: pointer;
-            }
           }
         }
       }
@@ -240,42 +233,45 @@ form{
   }
   
   .searchbar-container{
-    width: 100%;
+    width: 400px;
     height: 40px;
-    form{
-      display: flex;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      .form-group{
-        display: inline-block;
-        margin-bottom: 0;
-        flex: 1;
-        vertical-align: middle;
-        label{
-          display: inline-block;
-          max-width: 100%;
-          margin-bottom: 5px;
-          min-width: 70px;
-        }
-        select{
-          width: calc(100% - 90px);
-          height: 35px;
-          background: #fff;
-        }
-      }
-      .searchBtn{
-        width: 100px;
-        float: right;
+  
+    .container{
+      width: 299px;
+      float: left;
+      border: 1px solid #d9d9d9;
+      border-right: 0;
+      height: 38px;
+      background: white;
+      color: black;
+      border-radius: 5px 0 0 5px;
+      text-indent: 15px;
+      input{
+        width: 100%;
+        padding-right: 15px;
         height: 40px;
-        color: #fff;
-        background: #6c9cff;
-        line-height: 40px;
+        text-indent: 15px;
         border-radius: 5px;
-        cursor: pointer;
-        text-indent: 40px;
-        font-size: 18px;
+        box-shadow: none;
+        border: 1px solid #d9d9d9;
+  
+        &:disabled{
+          background: #eee;
+        }
       }
     }
-    
+  
+    div{
+      width: 100px;
+      float: left;
+      height: 40px;
+      color: #fff;
+      background: #6c9cff;
+      line-height: 40px;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+      text-indent: 40px;
+      font-size: 18px;
+    }
   }
   
