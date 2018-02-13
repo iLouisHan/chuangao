@@ -17,12 +17,9 @@ import { TeamScheduleSearchComponent } from './team-schedule-search/team-schedul
 import { SwitchSearchComponent } from './switch-search/switch-search.component';
 import { LeaveSearchComponent } from './leave-search/leave-search.component';
 import { AttendanceCheckComponent } from './attendance-check/attendance-check.component';
-<<<<<<< HEAD
 import { DropStaffTreeComponent } from './drop-staff-tree/drop-staff-tree.component';
-=======
 import { CheckSearchComponent } from './check-search/check-search.component';
 import { NgxEchartsModule } from 'ngx-echarts';
->>>>>>> upstream/master
 
 @NgModule({
   imports: [
@@ -49,11 +46,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     SwitchSearchComponent,
     LeaveSearchComponent,
     AttendanceCheckComponent,
-<<<<<<< HEAD
-    DropStaffTreeComponent
-=======
+    DropStaffTreeComponent,
     CheckSearchComponent
->>>>>>> upstream/master
   ],
   exports: [
     DropOrgTreeComponent,
@@ -69,11 +63,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     SwitchSearchComponent,
     LeaveSearchComponent,
     AttendanceCheckComponent,
-<<<<<<< HEAD
-    DropStaffTreeComponent
-=======
+    DropStaffTreeComponent,
     CheckSearchComponent
->>>>>>> upstream/master
   ]
 })
 export class SharedModule { }
