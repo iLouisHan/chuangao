@@ -20,6 +20,8 @@ import { AttendanceCheckComponent } from './attendance-check/attendance-check.co
 import { DropStaffTreeComponent } from './drop-staff-tree/drop-staff-tree.component';
 import { CheckSearchComponent } from './check-search/check-search.component';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { ClothSearchComponent } from './cloth-search/cloth-search.component';
+import { ClothHistoryComponent } from './cloth-history/cloth-history.component';
 
 @NgModule({
   imports: [
@@ -47,7 +49,9 @@ import { NgxEchartsModule } from 'ngx-echarts';
     LeaveSearchComponent,
     AttendanceCheckComponent,
     DropStaffTreeComponent,
-    CheckSearchComponent
+    CheckSearchComponent,
+    ClothSearchComponent,
+    ClothHistoryComponent
   ],
   exports: [
     DropOrgTreeComponent,
@@ -64,7 +68,9 @@ import { NgxEchartsModule } from 'ngx-echarts';
     LeaveSearchComponent,
     AttendanceCheckComponent,
     DropStaffTreeComponent,
-    CheckSearchComponent
+    CheckSearchComponent,
+    ClothSearchComponent,
+    ClothHistoryComponent
   ]
 })
 export class SharedModule { }

@@ -6,11 +6,11 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 @Component({
-  selector: 'app-leave-search',
-  templateUrl: './leave-search.component.html',
-  styleUrls: ['./leave-search.component.scss']
+  selector: 'app-cloth-history',
+  templateUrl: './cloth-history.component.html',
+  styleUrls: ['./cloth-history.component.scss']
 })
-export class LeaveSearchComponent implements OnInit {
+export class ClothHistoryComponent implements OnInit {
   form: FormGroup;
   startTime: string;
   endTime: string;

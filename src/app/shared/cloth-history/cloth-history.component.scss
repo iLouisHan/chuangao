@@ -1,0 +1,232 @@
+.main-container{
+  display: flex;
+  justify-content: space-between;
+
+  .condition-container{
+    width: 25%;
+    min-width: 315px;
+  }
+
+  .table-container{
+    width: calc(75% - 20px);
+    max-width: calc(100% - 335px);
+  }
+}
+
+form{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  .form-item{
+    width: 100%;
+    margin-bottom: 20px;
+
+    p{
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 5px;
+
+      .form-required{
+        color: red;
+      }
+    }
+
+    .upload-photo{
+      width: calc(100% - 2px);
+      padding-right: 0px;
+      height: 40px;
+      border-radius: 5px;
+      box-shadow: none;
+      border: 1px solid #d9d9d9;
+
+      input{
+        display: none;
+      }
+
+      span{
+        display: inline-block;
+        line-height: 40px;
+        width: calc(100% - 125px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-indent: 15px;
+      }
+
+      .upload-photo-btn{
+        float: right;
+        margin: 5px;
+        height: 30px;
+        width: 100px;
+        text-align: center;
+        line-height: 30px;
+        background: #ffaf58;
+        color: #fff;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+    }
+
+    input{
+      width: calc(100% - 15px);
+      padding-right: 15px;
+      height: 38px;
+      text-indent: 15px;
+      border-radius: 5px;
+      box-shadow: none;
+      border: 1px solid #d9d9d9;
+
+      &:disabled{
+        background: #eee;
+      }
+    }
+
+    .tree-container{
+      width: 100%;
+      height: 38px;
+      border-radius: 5px;
+      border: 1px solid #d9d9d9;
+    }
+
+    select{
+      width: 100%;
+      height: 40px;
+      background: #fff;
+    }
+
+    &.form-textarea{
+      width: 95%;
+
+      textarea{
+        width: calc(100% - 30px);
+        height: 70px;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #d9d9d9;
+        resize: none;
+      }
+    }
+
+    &.form-checkbox{
+      p{
+        display: inline-block;
+        line-height: 40px;
+      }
+    }
+
+    button{
+      width: 100%;
+      height: 40px;
+      border: none;
+      border-radius: 20px;
+      background: #6c9cff;
+      cursor: pointer;
+      margin-top: 27px;
+      color: #fff;
+      font-size: 18px;
+      outline: none !important;
+    }
+  }
+
+  .form-checkbox{
+    width: 100%;
+
+    p{
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 5px;
+      display: inline-block;
+      line-height: 40px;
+    }
+
+    >div {
+      height: 40px;
+      line-height: 40px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+
+      label{
+        font-size: 14px;
+        margin-right: 5px;
+        width: 33%;
+
+        div{
+          display: inline-block;
+          height: 18px;
+          width: 18px;
+          border: 1px solid #d9d9d9;
+          border-radius: 3px;
+          position: relative;
+          top: 6px;
+          margin-right: 5px;
+          border-radius: 10px;
+
+          &.checked{
+            border: 6px solid #6c9cff;
+            height: 8px;
+            width: 8px;
+          }
+        }
+
+        input{
+          display: none;
+        }
+      }
+    }
+
+  }
+}
+
+.scroll-table-container{
+
+  .part-content{
+
+    >div {
+      overflow: scroll;
+      padding-bottom: 10px;
+
+      .myTable{
+        min-width: 100%;
+
+        th{
+          background: #e2ebff;
+          padding: 0 30px;
+          text-align: center;
+          border: 1px solid #fff;
+          font-size: 14px;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+          white-space: nowrap;
+        }
+
+        td{
+          padding: 0 30px;
+          white-space: nowrap;
+          text-align: center;
+          border: 1px solid #fff;
+          background: #ededed;
+          font-size: 14px;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+
+          img{
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+
+.orgName-container{
+  height: 40px;
+  width: 100%;
+  border: 1px solid #ddd;
+  line-height: 40px;
+  border-radius: 5px;
+  text-indent: 8px;
+}

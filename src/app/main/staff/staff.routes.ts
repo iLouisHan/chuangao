@@ -15,6 +15,9 @@ import { SwitchSearchComponent } from '../../shared/switch-search/switch-search.
 import { LeaveSearchComponent } from '../../shared/leave-search/leave-search.component';
 import { AttendanceCheckComponent } from '../../shared/attendance-check/attendance-check.component';
 import { CheckSearchComponent } from '../../shared/check-search/check-search.component';
+import { ClothAddComponent } from './cloth-add/cloth-add.component';
+import { ClothSearchComponent } from '../../shared/cloth-search/cloth-search.component';
+import { ClothHistoryComponent } from '../../shared/cloth-history/cloth-history.component';
 
 export const StaffRoutes: Routes = [
   {
@@ -96,6 +99,18 @@ export const StaffRoutes: Routes = [
       {
         path: 'checkEdit',
         loadChildren: './check-edit/check-edit.module#CheckEditModule'
+      },
+      {
+        path: 'clothAdd',
+        component: ClothAddComponent
+      },
+      {
+        path: 'clothSearch',
+        component: ClothSearchComponent
+      },
+      {
+        path: 'clothHistory',
+        component: ClothHistoryComponent
       }
     ]
   }

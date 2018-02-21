@@ -14,6 +14,7 @@ import { TeamScheduleSetComponent } from './team-schedule-set/team-schedule-set.
 import { AttendanceCompareComponent } from './attendance-compare/attendance-compare.component';
 import { AttendanceEditComponent } from './attendance-edit/attendance-edit.component';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { ClothAddComponent } from './cloth-add/cloth-add.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     LeaveEditComponent,
     TeamScheduleSetComponent,
     AttendanceCompareComponent,
-    AttendanceEditComponent
+    AttendanceEditComponent,
+    ClothAddComponent
   ]
 })
 export class StaffModule { }
