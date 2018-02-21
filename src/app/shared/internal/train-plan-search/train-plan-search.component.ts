@@ -32,6 +32,8 @@ export class TrainPlanSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  trainStartDate: string;
+  trainEndDate: string;
 
   constructor(
     private http: Http,

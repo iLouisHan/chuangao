@@ -84,6 +84,10 @@ export const AdminRoutes: Routes = [
             component: LeaveSearchComponent
           }
         ]
+      },
+      {
+        path: 'internal',
+        loadChildren: '../shared/internal/internal.module#InternalModule'
       }
     ]
   }

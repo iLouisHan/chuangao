@@ -17,6 +17,9 @@ export class CompositComponent implements OnInit {
   size = 15;
   compositList: Array<any>;
   hasData: boolean;
+  view = 0;
+  year: number;
+  yearList: Array<number> = [];
 
   constructor(
     private http: Http,
@@ -50,7 +53,7 @@ export class CompositComponent implements OnInit {
   }
 
   add() {
-
+    this.view = 1;
   }
 
   delete() {
@@ -68,6 +71,11 @@ export class CompositComponent implements OnInit {
         this.getInfo();
       }
     });
+    const year = (new Date()).getFullYear();
+    for (let i = 0; i < 10; i++) {
+      this.yearList[i] = year - i;
+    }
+    this.year = year;
   }
 
 }
