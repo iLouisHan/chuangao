@@ -48,6 +48,7 @@ export class AttendanceCheckComponent implements OnInit {
     if (!this.orgList || this.orgList.length <= 0) {
       alert('请选择机构！');
     }else if (this.orgList[0].orgType !== 3) {
+      console.log(this.orgList);
       alert('请选择收费站！');
     }else if (!this.year) {
       alert('请选择年份！');
@@ -199,10 +200,12 @@ export class AttendanceCheckComponent implements OnInit {
         this.orgCode = res.orgCode;
         this.orgName = res.orgName;
         this.orgList = [{
-          data: res.orgCode
+          data: res.orgCode,
+          orgType: this.orgType
         }];
+        this.getStaff();
       }
-    })
+    });
 
     const year = (new Date()).getFullYear();
     const xAxisData: any = [];
@@ -267,8 +270,7 @@ export class AttendanceCheckComponent implements OnInit {
       series: [{
         name: '正常上班',
         type: 'bar',
-        stack: 'one',
-        data: data1
+        stack: 'one'
       }, {
         name: '替班',
         type: 'bar',
