@@ -13,34 +13,26 @@
             <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
           </div>
           <div class="form-item">
-            <p>服装类别</p>
-            <select formControlName="leaveType">
+            <p>服装类型</p>
+            <select formControlName="clothesType">
               <option value="-1">请选择</option>
-              <option value="1">事假</option>
-              <option value="2">年休</option>
-              <option value="3">补休</option>
-              <option value="4">病假</option>
-              <option value="5">产假</option>
-              <option value="6">婚假</option>
-              <option value="7">其他</option>
+              <option value="1">冬装</option>
+              <option value="2">夏装</option>
+              <option value="3">头花</option>
+              <option value="4">春秋装</option>
             </select>
           </div>
           <div class="form-item">
-            <p>服装分类</p>
-            <select formControlName="leaveType">
+            <p>服装类别</p>
+            <select formControlName="clothesClassification">
               <option value="-1">请选择</option>
-              <option value="1">事假</option>
-              <option value="2">年休</option>
-              <option value="3">补休</option>
-              <option value="4">病假</option>
-              <option value="5">产假</option>
-              <option value="6">婚假</option>
-              <option value="7">其他</option>
+              <option value="1">管理（执法）类服装</option>
+              <option value="2">收费类服装</option>
             </select>
           </div>
           <div class="form-item">
             <p>到期时间开始</p>
-            <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+            <p-calendar [(ngModel)]="clothesChangeStartDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
           </div>
           <div class="form-item">
             <p>到期时间结束</p>

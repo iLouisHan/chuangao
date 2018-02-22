@@ -1,0 +1,23 @@
+<div class="switch-choose-container">
+    <div (click)="toggle()" class="switch-value">{{_username}}</div>
+    <div *ngIf="switchTableShow" class="switch-table-container">
+      <ul class="ul-header-container">
+        <li class="li-index"></li>
+        <li class="li-userName">服装类型</li>
+        <li class="li-scheduleDate">服装类别</li>
+        <li class="li-teamsGroup">性别</li>
+        <li class="li-shiftId">尺寸</li>
+      </ul>
+      <ul class="ul-body-container">
+        <li (click)="chooseCloth(cloth)" *ngFor="let cloth of clothList; index as i">
+          <ul class="ul-header-container">
+            <li class="li-index">{{i}}</li>
+            <li class="li-teamsGroup">{{clothesTypeList[cloth.clothesType]}}</li>
+            <li class="li-shiftId">{{clothesClassificationList[cloth.clothesClassification]}}</li>
+            <li class="li-userName">{{cloth.clothesSex}}</li>
+            <li class="li-scheduleDate">{{cloth.clothesSize}}</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>

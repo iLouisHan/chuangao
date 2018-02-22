@@ -4,43 +4,47 @@
   <div class="part-content">
     <form [formGroup]="form">
       <div class="form-item">
-        <p>顶班人所在班组</p>
-        <select formControlName="applyTeams">
-          <option value="-1">请选择</option>
-          <option value="1">一班</option>
-          <option value="2">二班</option>
-          <option value="3">三班</option>
-          <option value="4">四班</option>
-          <option value="5">五班</option>
-          <option value="6">六班</option>
-          <option value="7">机动班</option>
-          <option value="8">常白班</option>
-          <option value="100">站监控站</option>
-        </select>
+        <p>所属机构</p>
+        <div>{{orgName}}</div>
       </div>
       <div class="form-item">
-        <p>顶班日期</p>
-        <p-calendar [(ngModel)]="applyDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
-      </div>
-      <div class="form-item">
-        <p>顶班班次</p>
-        <select formControlName="shiftId">
-          <option value="-1">请选择</option>
-          <option value="1">白班</option>
-          <option value="2">夜班</option>
-          <option value="3">中班</option>
-        </select>
-      </div>
-      <div class="form-item">
-        <p>顶板申请人</p>
-        <select formControlName="applyUserId">
+        <p>收费员</p>
+        <select formControlName="userId">
           <option value="">请选择</option>
           <option *ngFor="let user of staffList" [value]="user.userId">{{user.userName}}</option>
         </select>
       </div>
-      <div class="form-item form-textarea">
-        <p>备注</p>
-        <textarea type="text" formControlName="remark"></textarea>
+      <div class="form-item">
+        <p>服装信息</p>
+        <app-cloth-choose (chosenCloth)="chosenCloth($event)"></app-cloth-choose>
+      </div>
+      <div class="form-item">
+        <p>服装类型</p>
+        <div>{{clothesTypeList[+clothesType]}}</div>
+      </div>
+      <div class="form-item">
+        <p>服装类别</p>
+        <div>{{clothesClassificationList[+clothesClassification]}}</div>
+      </div>
+      <div class="form-item">
+        <p>服装性别</p>
+        <div>{{clothesSex}}</div>
+      </div>
+      <div class="form-item">
+        <p>服装尺寸</p>
+        <input type="text" formControlName="clothesSize">
+      </div>
+      <div class="form-item">
+        <p>数量</p>
+        <input type="text" formControlName="clothesNum">
+      </div>
+      <div class="form-item">
+        <p>开始日期</p>
+        <p-calendar [(ngModel)]="clothesDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>结束日期</p>
+        <p-calendar [(ngModel)]="clothesChangeDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
       </div>
     </form>
     <div class="form-item">
@@ -50,23 +54,15 @@
 </div>
 <div class="part-container">
   <div class="staff-navbar">
-    <h1 class="part-title">顶班登记</h1>
+    <h1 class="part-title">服装登记</h1>
     <div class="part-content clearfix">
       <ul class="btn-list cleafix">
-        <li (click)="add()" class="btn-list-li">顶班</li>
+        <li (click)="add()" class="btn-list-li">添加</li>
         <li (click)="delete()" class="btn-list-li">删除</li>
       </ul>
       <div class="searchbar-container">
-        <span>顶班申请日期</span>
-        <span>开始日期</span>
-        <div class="calendar-container">
-          <p-calendar [(ngModel)]="applyDateEnd" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
-        </div>
-        <span>结束日期</span>
-        <div class="calendar-container">
-          <p-calendar [(ngModel)]="applyDateEnd" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
-        </div>
-        <div class="search-btn" (click)="search()">查询</div>
+        <input type="text" [(ngModel)]="searchName">
+        <div (click)="search()">查询</div>
       </div>
     </div>
   </div>
@@ -78,21 +74,12 @@
             <tr>
               <th></th>
               <th *ngFor="let field of cols">{{field.header}}</th>
-              <th>审核</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of holdList">
+            <tr *ngFor="let item of clothesDataList">
               <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
-              <td>
-                <div *ngIf="item.checkResult === 0">
-                  <button (click)="changeCheckStatus(item.id, 1)" class="btn btn-success">通过</button>
-                  <button (click)="changeCheckStatus(item.id, 2)" class="btn btn-danger">不通过</button>
-                </div>
-                <span *ngIf="item.checkResult === 1">通过</span>
-                <span *ngIf="item.checkResult === 2">未通过</span>
-              </td>
             </tr>
           </tbody>
         </table>

@@ -29,13 +29,15 @@ export class ClothAddComponent implements OnInit {
   page = 0;
   size = 15;
   count: number;
-  holdList: Array<any>;
+  clothesDataList: Array<any>;
   staffList: Array<any>;
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
-  selectedLeave = '';
+  selectedCloth = '';
   isAdd: boolean;
+  selectionMode = 'single';
+  orgName: string;
   keys: Array<any>;
   searchName: string;
   orgType: number;
@@ -45,16 +47,32 @@ export class ClothAddComponent implements OnInit {
     size: this.size,
     applyChangeType: 2
   };
+  cloth: any;
+  clothesTypeList = {
+    1: '冬装',
+    2: '春装',
+    3: '头花',
+    4: '春秋装',
+  };
+  clothesClassificationList = {
+    1: '管理（执法）类服装',
+    2: '收费类服装'
+  };
+  clothesSex: string;
+  clothesClassification: string;
+  clothesSize: string;
+  clothesType: string;
+  clothesDate: string;
+  clothesChangeDate: string;
 
   constructor(
     private http: Http,
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      applyUserId: new FormControl('', Validators.nullValidator),
-      applyTeams: new FormControl('', Validators.nullValidator),
-      shiftId: new FormControl('', Validators.nullValidator),
-      remark: new FormControl('', Validators.nullValidator)
+      clothesNum: new FormControl('', Validators.nullValidator),
+      userId: new FormControl('', Validators.nullValidator),
+      clothesSize: new FormControl('', Validators.nullValidator)
     });
     this.keys = Object.keys(this.form.value);
     this.en = {
@@ -67,10 +85,14 @@ export class ClothAddComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'orgName', header: '组织名称' },
-      { field: 'applyUserName', header: '顶班申请人' },
-      { field: 'applyTeams', header: '顶板班组' },
-      { field: 'applyDate', header: '顶板日期' }
+      { field: 'userName', header: '收费员名称' },
+      { field: 'clothesType', header: '服装类型' },
+      { field: 'clothesClassification', header: '服装类别' },
+      { field: 'clothesDate', header: '领用日期' },
+      { field: 'clothesChangeDate', header: '到期日期' },
+      { field: 'clothesSex', header: '性别' },
+      { field: 'clothesNum', header: '数量' },
+      { field: 'stationName', header: '收费站' }
     ];
     this.initForm = {
       applyUserId: '',
@@ -81,7 +103,7 @@ export class ClothAddComponent implements OnInit {
   }
 
   getLeaveInfo(leaveId) {
-    this.data = this.holdList.filter(el => el.id === leaveId)[0];
+    this.data = this.clothesDataList.filter(el => el.id === leaveId)[0];
     this.isChosen = true;
     this.form.patchValue(this.data);
     this.form.patchValue({applyUserId: this.data.userId});
@@ -92,7 +114,7 @@ export class ClothAddComponent implements OnInit {
   getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Clothes/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -101,19 +123,17 @@ export class ClothAddComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.holdList = res.data.shiftChangeDataList;
+                  this.clothesDataList = res.data.clothesDataList;
+                  this.clothesDataList.forEach(el => {
+                    el.clothesType = this.clothesTypeList[el.clothesType];
+                    el.clothesClassification = this.clothesClassificationList[el.clothesClassification];
+                  });
                 }
               }else {
                 alert(res.message);
               }
             });
   }
-
-  fileChange($event) {
-    this.filename = $event.target.files[0].name;
-    this.file = $event.target.files[0];
-  }
-
 
   dateFormat(date) {
     if (date) {
@@ -144,8 +164,8 @@ export class ClothAddComponent implements OnInit {
   }
 
   update() {
-    if (this.selectedLeave) {
-      this.getLeaveInfo(this.selectedLeave);
+    if (this.selectedCloth) {
+      this.getLeaveInfo(this.selectedCloth);
       this.isChosen = true;
       this.isAdd = false;
     }else {
@@ -154,24 +174,25 @@ export class ClothAddComponent implements OnInit {
   }
 
   delete() {
-    if (this.selectedLeave) {
-      this.deleteLeave(this.selectedLeave);
+    if (this.selectedCloth) {
+      this.deleteCloth(this.selectedCloth);
     }else {
-      alert('请选择一个人员');
+      alert('请选择一条记录！');
     }
   }
 
   select(val) {
-    this.selectedLeave = val === this.selectedLeave ? '' : val;
+    this.selectedCloth = val === this.selectedCloth ? '' : val;
+    console.log(this.selectedCloth);
   }
 
   check(val) {
-    return val === this.selectedLeave;
+    return val === this.selectedCloth;
   }
 
-  deleteLeave(selectedLeave) {
+  deleteCloth(selectedCloth) {
     const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Leave/deleteLeave?id=${selectedLeave}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Clothes/delete?id=${selectedCloth}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -182,24 +203,32 @@ export class ClothAddComponent implements OnInit {
             });
   }
 
-  addHold() {
+  addCloth() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.applyDate = this.dateFormat(this.applyDate);
-    this.form.value.stationCode = this.orgCode;
-    this.form.value.checkUserId = this.checkUserId;
-    this.form.value.applyChangeType = 2;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.toFirstPage();
-              }else {
-                alert(res.message);
-              }
-            });
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Clothes/add`, JSON.stringify({
+      userId: this.form.value.userId,
+      clothesId: this.cloth.id,
+      outOrgCode: this.orgCode,
+      clothesDate: this.dateFormat(this.clothesDate),
+      clothesChangeDate: this.dateFormat(this.clothesChangeDate),
+      clothesType: this.cloth.clothesType,
+      clothesClassification: this.cloth.clothesClassification,
+      clothesSex: this.cloth.clothesSex,
+      clothesSize: this.form.value.clothesSize,
+      clothesNum: this.form.value.clothesNum
+    }), {
+      headers: myHeaders
+    })
+    .map(res => res.json())
+    .subscribe(res => {
+      if (res.code) {
+        alert(res.message);
+        this.toFirstPage();
+      }else {
+        alert(res.message);
+      }
+    });
   }
 
   updateLeave() {
@@ -230,11 +259,12 @@ export class ClothAddComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addHold();
-    }else {
-      this.updateLeave();
-    }
+    // if (this.isAdd) {
+    //   this.addCloth();
+    // }else {
+    //   this.updateLeave();
+    // }
+    this.addCloth();
   }
 
   toFirstPage() {
@@ -279,12 +309,21 @@ export class ClothAddComponent implements OnInit {
     });
   }
 
+  chosenCloth($event) {
+    this.clothesType = $event.clothesType;
+    this.clothesClassification = $event.clothesClassification;
+    this.clothesSex = $event.clothesSex;
+    this.clothesSize = $event.clothesSize;
+    this.cloth = $event;
+  }
+
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
         this.checkUserId = res.userId;
         this.orgCode = res.orgCode;
         this.orgType = res.orgType;
+        this.orgName = res.orgName;
         this.param.orgList = [res.orgCode];
         this.form.value.orgName = res.orgName;
         this.getInfo();

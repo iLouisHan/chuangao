@@ -12,8 +12,8 @@ import { Store } from '@ngrx/store';
 })
 export class ClothSearchComponent implements OnInit {
   form: FormGroup;
-  startTime: string;
-  endTime: string;
+  clothesChangeStartDate: string;
+  clothesChangeEndDate: string;
   count: number;
   leaveDataList: Array<any>;
   orgList: Array<any>;
@@ -42,18 +42,19 @@ export class ClothSearchComponent implements OnInit {
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
-      listGroup: new FormControl('', Validators.nullValidator),
-      userName: new FormControl('', Validators.nullValidator),
-      leaveType: new FormControl('', Validators.nullValidator)
+      clothesType: new FormControl('', Validators.nullValidator),
+      clothesClassification: new FormControl('', Validators.nullValidator),
+      clothesSex: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'orgName', header: '组织机构' },
-      { field: 'userName', header: '请假人' },
-      { field: 'applyType', header: '请假类型' },
-      { field: 'applyDate', header: '开始请假时间' },
-      { field: 'applyDateEnd', header: '结束请假时间' },
-      { field: 'remark', header: '请假理由' },
-      { field: 'leaveTipDownload', header: '请假条下载' }
+      { field: 'userName', header: '收费员名称' },
+      { field: 'clothesType', header: '服装类型' },
+      { field: 'clothesClassification', header: '服装类别' },
+      { field: 'clothesDate', header: '领用日期' },
+      { field: 'clothesChangeDate', header: '到期日期' },
+      { field: 'clothesSex', header: '性别' },
+      { field: 'clothesNum', header: '数量' },
+      { field: 'stationName', header: '收费站' }
     ];
   }
 
@@ -85,8 +86,8 @@ export class ClothSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
+    this.form.value.clothesChangeStartDate = this.dateFormat(this.clothesChangeStartDate);
+    this.form.value.clothesChangeEndDate = this.dateFormat(this.clothesChangeEndDate);
     this.form.value.orgList = this.orgList.map(el => el.data);
     const param = {
       page: page,
@@ -100,7 +101,7 @@ export class ClothSearchComponent implements OnInit {
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Clothes/get', JSON.stringify(param) , {
               headers: myHeaders
             })
             .map(res => res.json())
