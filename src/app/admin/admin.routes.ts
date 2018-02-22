@@ -11,6 +11,7 @@ import { StaffEditComponent } from '../shared/staff-edit/staff-edit.component';
 import { TeamScheduleSearchComponent } from '../shared/team-schedule-search/team-schedule-search.component';
 import { SwitchSearchComponent } from '../shared/switch-search/switch-search.component';
 import { LeaveSearchComponent } from '../shared/leave-search/leave-search.component';
+import { StaffTransferComponent } from './staff-transfer/staff-transfer.component';
 
 export const AdminRoutes: Routes = [
   {
@@ -82,6 +83,10 @@ export const AdminRoutes: Routes = [
           {
             path: 'leaveSearch',
             component: LeaveSearchComponent
+          },
+          {
+            path: 'staffTransfer',
+            component: StaffTransferComponent
           }
         ]
       },

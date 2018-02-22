@@ -1,0 +1,88 @@
+<h1 class="page-title"><div class="page-title-icon"></div>人员调动</h1>
+<div class="popup-container" *ngIf="isChosen">
+  <div class="popup">
+    <h1>人员调动</h1>
+    <div>
+      <p>姓名</p>
+      <div class="staff-container has-border">
+        <span *ngFor="let staff of staffSelected">{{staff.userName}}</span>
+      </div>
+    </div>
+    <div>
+      <p>现属部门</p>
+      <div class="org-container has-border">
+        <span>{{staffSelected[0].orgName}}</span>
+      </div>
+    </div>
+    <div>
+      <p>调动部门</p>
+      <div class="tree-container2 has-border">
+        <app-drop-org-tree [selectionMode]="selectionMode2" (selectedOrg)="selectedOrg2($event)"></app-drop-org-tree>
+      </div>
+    </div>
+    <div>
+      <p>是否临时调动</p>
+      <div class="form-checkbox">
+        <label><div [class.checked]="test(0)"></div><input (click)="isTemporary($event)" [checked]="test(0)" value="0" type="checkbox"><span>启用</span></label>
+        <label><div [class.checked]="test(1)"></div><input (click)="isTemporary($event)" [checked]="test(1)" value="1" type="checkbox"><span>不启用</span></label>
+      </div>
+    </div>
+    <div>
+      <p *ngIf="test(1)">调动时间</p>
+      <p *ngIf="test(0)">开始时间</p>
+      <p-calendar [(ngModel)]="startTime" [locale]="en" [showIcon]="true" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+    </div>
+    <div *ngIf="test(0)">
+      <p>结束时间</p>
+      <p-calendar [(ngModel)]="endTime" [locale]="en" [showIcon]="true" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+    </div>
+    <div class="clearfix button-group">
+      <button (click)="staffSubmit()" class="button-submit">确定</button>
+      <button (click)="staffCancel()" class="button-cancel">取消</button>
+    </div>
+  </div>
+</div>
+<div class="part-container">
+  <div class="staff-navbar">
+    <h1 class="part-title">人员调动登记</h1>
+    <div class="part-content clearfix">
+      <ul class="btn-list cleafix">
+        <li (click)="add()" class="btn-list-li">批量调动</li>
+      </ul>
+      <div class="searchbar-container">
+        <div>
+          <span>隶属部门</span>
+          <div class="tree-container">
+            <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          </div>
+        </div>
+        <div>
+          <span>姓名</span>
+          <input type="text" [(ngModel)]="searchName">
+        </div>
+        <div class="search-btn" (click)="search()">查询</div>
+      </div>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of staffList">
+              <td><input type="checkbox" (click)="select(item)" [checked]="check(item.userId)"></td>
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

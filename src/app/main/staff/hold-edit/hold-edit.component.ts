@@ -294,4 +294,3 @@ export class HoldEditComponent implements OnInit {
   }
 
 }
-
