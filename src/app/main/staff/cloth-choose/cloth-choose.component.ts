@@ -16,6 +16,7 @@ export class ClothChooseComponent implements OnInit {
 
   clothList = [];
   switchTableShow = false;
+  _cloth: string;
   clothesTypeList = {
     1: '冬装',
     2: '春装',
@@ -34,6 +35,7 @@ export class ClothChooseComponent implements OnInit {
   }
 
   chooseCloth($event) {
+    this._cloth = this.clothesTypeList[$event.clothesType];
     this.chosenCloth.emit($event);
   }
 

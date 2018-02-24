@@ -13,7 +13,7 @@ export const work_post = {
   13: '川高公司中级管理人员',
   14: '川高公司一般管理人员',
   15: '收费班长',
-  16: '收费副班长',
+  16: '收费副班长'
 };
 
 export const educational = {

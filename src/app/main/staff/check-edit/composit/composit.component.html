@@ -15,11 +15,24 @@
           </select>
         </div>
       </div>
-      <table>
+      <table class="edit-table">
         <thead>
-
+          <tr>
+            <th>收费员</th>
+            <th>评分</th>
+          </tr>
         </thead>
+        <tbody>
+          <tr *ngFor="let staff of resultList">
+            <td>{{staff.userName}}</td>
+            <td (click)="staff.editable = true">
+              <span *ngIf="!staff.editable">{{staff.score}}</span>
+              <input (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <button (click)="addComposit()" class="btn">提&nbsp;交</button>
     </div>
   </div>
   <div class="staff-navbar">

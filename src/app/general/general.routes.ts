@@ -3,6 +3,9 @@ import { SelfDetailComponent } from './person/self-detail/self-detail.component'
 import { SelfEditComponent } from './person/self-edit/self-edit.component';
 import { HasLoginGuard } from '../guard/has-login.guard';
 import { GeneralComponent } from './general.component';
+import { HoldEditComponent } from './hold-edit/hold-edit.component';
+import { SwitchEditComponent } from './switch-edit/switch-edit.component';
+import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 
 export const GeneralRoute: Routes = [
   {
@@ -22,6 +25,22 @@ export const GeneralRoute: Routes = [
       {
         path: 'person-edit',
         component: SelfEditComponent
+      },
+      {
+        path: 'internal',
+        loadChildren: '../shared/internal/internal.module#InternalModule'
+      },
+      {
+        path: 'holdEdit',
+        component: HoldEditComponent
+      },
+      {
+        path: 'switchEdit',
+        component: SwitchEditComponent
+      },
+      {
+        path: 'leaveEdit',
+        component: LeaveEditComponent
       }
     ]
   }

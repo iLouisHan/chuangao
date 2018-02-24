@@ -10,6 +10,9 @@ import { GeneralSidebarComponent } from './general-sidebar/general-sidebar.compo
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/primeng';
+import { LeaveEditComponent } from './leave-edit/leave-edit.component';
+import { SwitchEditComponent } from './switch-edit/switch-edit.component';
+import { HoldEditComponent } from './hold-edit/hold-edit.component';
 
 @NgModule({
   imports: [
@@ -24,7 +27,10 @@ import { CalendarModule } from 'primeng/primeng';
     GeneralComponent,
     SelfDetailComponent,
     SelfEditComponent,
-    GeneralSidebarComponent
+    GeneralSidebarComponent,
+    LeaveEditComponent,
+    SwitchEditComponent,
+    HoldEditComponent
   ],
   providers: [
     HasLoginGuard

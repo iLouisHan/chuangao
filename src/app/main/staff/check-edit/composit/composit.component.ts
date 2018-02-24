@@ -20,6 +20,10 @@ export class CompositComponent implements OnInit {
   view = 0;
   year: number;
   yearList: Array<number> = [];
+  month: number;
+  monthList: Array<number> = [];
+  staffList: any;
+  resultList: any = [];
 
   constructor(
     private http: Http,
@@ -54,6 +58,7 @@ export class CompositComponent implements OnInit {
 
   add() {
     this.view = 1;
+    this.getStaff();
   }
 
   delete() {
@@ -62,6 +67,77 @@ export class CompositComponent implements OnInit {
 
   update() {
 
+  }
+
+  getStaff() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.staffList = res.data;
+                this.resultList = this.staffList.map(el => {
+                  return {
+                    userName: el.userName,
+                    userId: el.userId,
+                    score: '0.0',
+                    editable: false
+                  };
+                });
+                this.getData();
+              }else {
+                alert(res.message);
+              }
+            });
+  }
+
+  getData() {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Check/getCheckComposit`, JSON.stringify({
+      orgList: [this.orgCode],
+      page: 0,
+      size: this.staffList.length,
+      year: this.year,
+      month: this.month
+    }), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.resultList.forEach(el => {
+            const item = res.data.checkSingleDataList.filter(staff => staff.userId = el.userId);
+            if (item.length > 0) {
+              el.score = item.score;
+            }
+          });
+        }
+      });
+  }
+
+  addComposit() {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/setCheckComposit', JSON.stringify(
+      this.resultList.map(el => {
+        return {
+          userId: el.userId,
+          stationCode: this.orgCode,
+          year: this.year,
+          month: this.month,
+          score: el.score
+        };
+      })
+    ), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          alert(res.message);
+          this.view = 0;
+        }else {
+          alert(res.message);
+        }
+      });
   }
 
   ngOnInit() {
@@ -76,6 +152,11 @@ export class CompositComponent implements OnInit {
       this.yearList[i] = year - i;
     }
     this.year = year;
+    const month = (new Date()).getMonth() + 1;
+    for (let i = 1; i <= 12; i++) {
+      this.monthList[i] = i;
+    }
+    this.month = month;
   }
 
 }
