@@ -248,7 +248,9 @@ export class StaffEditComponent implements OnInit {
     this.form.value.orgCode = +this.orgCode;
     this.form.value.politicalStatus = +this.form.value.politicalStatus;
     this.form.value.positionalTitle = +this.form.value.positionalTitle;
-    // this.form.value.userId = '' + Math.round(1000 * Math.random());
+    if (this.orgType !== 3) {
+      delete this.form.value.listGroup;
+    }
     this.http.post(`http://119.29.144.125:8080/cgfeesys/StaffMag/addStaff`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post } from '../../store/translate';
+import { work_post, politicalStatus, positionalTitle } from '../../store/translate';
 
 @Component({
   selector: 'app-staff-detail',
@@ -15,6 +15,8 @@ export class StaffDetailComponent implements OnInit {
   educational = ['研究生', '本科', '专科', '中专', '高中'];
   work_post = work_post;
   now_date = new Date();
+  politicalStatus = politicalStatus;
+  positionalTitle = positionalTitle;
 
   constructor(
     private route: ActivatedRoute,

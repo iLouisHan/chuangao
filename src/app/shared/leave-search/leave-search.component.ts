@@ -132,7 +132,8 @@ export class LeaveSearchComponent implements OnInit {
         this.orgCode = res.orgCode;
         this.orgName = res.orgName;
         this.orgList = [{
-          data: res.orgCode
+          data: res.orgCode,
+          orgType: this.orgType
         }];
       }
     });

@@ -57,3 +57,17 @@ export const shiftId = {
   1: '早班',
   2: '晚班'
 };
+
+export const politicalStatus = {
+  1: '中共党员',
+  2: '共青团员',
+  3: '群众',
+  4: '其他党派'
+};
+
+export const positionalTitle = {
+  4: '初级',
+  3: '中级',
+  2: '高级',
+  6: '其他'
+};

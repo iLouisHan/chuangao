@@ -43,12 +43,13 @@ export class AttendanceEditComponent implements OnInit {
     this.myHeaders.append('Content-Type', 'application/json');
     this.attenceTypeToAdd = 0;
     this.shiftId = 0;
-    this.attendanceList = [];
-    this.initType = [
+    this.attendanceList = [
       {
         value: '1',
         label: '上班'
-      },
+      }
+    ];
+    this.initType = [
       {
         value: '2',
         label: '替班'
@@ -165,6 +166,23 @@ export class AttendanceEditComponent implements OnInit {
             });
   }
 
+  getWorkStaffs(day, shift) {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/getCompare`, JSON.stringify({
+      stationCode: this.orgCode,
+      date: this.dateFormat(day),
+      shiftId: shift
+    }), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.attendanceList[0].staff = res.data.planUserList;
+        }
+      });
+  }
+
   addAttendanceType() {
     if (this.attenceTypeToAdd) {
       const item = this.freeItemsList.filter(el => el.value === this.attenceTypeToAdd)[0];
@@ -213,6 +231,12 @@ export class AttendanceEditComponent implements OnInit {
     }
     this.isShow = false;
     this.staffList = [];
+  }
+
+  getNewWorkers() {
+    if (this.applyDate && this.shiftId) {
+      this.getWorkStaffs(this.applyDate, this.shiftId);
+    }
   }
 
   staffCancel() {

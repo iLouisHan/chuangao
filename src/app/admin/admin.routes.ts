@@ -12,6 +12,9 @@ import { TeamScheduleSearchComponent } from '../shared/team-schedule-search/team
 import { SwitchSearchComponent } from '../shared/switch-search/switch-search.component';
 import { LeaveSearchComponent } from '../shared/leave-search/leave-search.component';
 import { StaffTransferComponent } from './staff-transfer/staff-transfer.component';
+import { ClothSearchComponent } from '../shared/cloth-search/cloth-search.component';
+import { ClothHistoryComponent } from '../shared/cloth-history/cloth-history.component';
+import { CheckSearchComponent } from '../shared/check-search/check-search.component';
 
 export const AdminRoutes: Routes = [
   {
@@ -87,6 +90,18 @@ export const AdminRoutes: Routes = [
           {
             path: 'staffTransfer',
             component: StaffTransferComponent
+          },
+          {
+            path: 'clothSearch',
+            component: ClothSearchComponent
+          },
+          {
+            path: 'clothHistory',
+            component: ClothHistoryComponent
+          },
+          {
+            path: 'checkSearch',
+            component: CheckSearchComponent
           }
         ]
       },

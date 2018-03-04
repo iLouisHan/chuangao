@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post } from '../../../store/translate';
+import { work_post, politicalStatus, positionalTitle } from '../../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -16,6 +16,8 @@ export class SelfDetailComponent implements OnInit {
   educational = ['研究生', '本科', '专科', '中专', '高中'];
   work_post = work_post;
   now_date = new Date();
+  politicalStatus = politicalStatus;
+  positionalTitle = positionalTitle;
   login: Observable<any> = new Observable<any>();
 
   constructor(

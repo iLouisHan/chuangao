@@ -34,6 +34,18 @@
       </table>
       <button (click)="addComposit()" class="btn">提&nbsp;交</button>
     </div>
+    <div class="update-container" *ngIf="view === 2">
+      <form [formGroup]="form">
+        <div class="form-item">
+          <p>收费员编号</p>
+          <div>{{userId}}</div>
+        </div>
+        <div class="form-item">
+          <p>收费员</p>
+          <div>{{userName}}</div>
+        </div>
+      </form>
+    </div>
   </div>
   <div class="staff-navbar">
     <div class="part-content clearfix">

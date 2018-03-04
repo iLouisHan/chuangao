@@ -5,11 +5,11 @@
     <div class="clearfix">
       <div class="form-item">
         <p>出勤日期</p>
-        <p-calendar [(ngModel)]="applyDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p-calendar (onSelect)="getNewWorkers()" [(ngModel)]="applyDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>出勤班次</p>
-        <select [(ngModel)]="shiftId">
+        <select (change)="getNewWorkers()" [(ngModel)]="shiftId">
           <option value="0">请选择</option>
           <option value="1">白班</option>
           <option value="2">夜班</option>

@@ -53,6 +53,21 @@
           <li class="basic-info-item specialSkill">
             <span>特长：</span>{{data.specialSkill}}
           </li>
+          <li *ngIf="data.listGroup" class="basic-info-item specialSkill">
+            <span>班组：</span>{{data.listGroup}}
+          </li>
+          <li class="basic-info-item specialSkill">
+            <span>政治面貌：</span>{{politicalStatus[data.politicalStatus]}}
+          </li>
+          <li class="basic-info-item specialSkill">
+            <span>职称：</span>{{positionalTitle[data.positionalTitle]}}
+          </li>
+          <li class="basic-info-item specialSkill">
+            <span>紧急联系人：</span>{{data.emergencyContact}}
+          </li>
+          <li class="basic-info-item specialSkill">
+            <span>紧急联系人手机号：</span>{{data.emergencyPhone}}
+          </li>
         </ul>
       </div>
     </div>

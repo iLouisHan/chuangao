@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational } from '../../store/translate';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-staff-search',
@@ -11,9 +13,11 @@ import { work_post, politics, educational } from '../../store/translate';
 })
 export class StaffSearchComponent implements OnInit {
   form: FormGroup;
+  login: Observable<any> = new Observable<any>();
   birthday: string;
   hireDate: string;
   count: number;
+  initOrgName: string;
   work_post = work_post;
   politics = politics;
   educational = educational;
@@ -34,8 +38,10 @@ export class StaffSearchComponent implements OnInit {
   cols: any;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
       listGroup: new FormControl('', Validators.nullValidator),
@@ -125,6 +131,15 @@ export class StaffSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.initOrgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode,
+          orgType: res.orgType
+        }];
+      }
+    });
   }
 
 }

@@ -4,7 +4,6 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { work_post, politics, educational } from '../../../store/translate';
 
 @Component({
   selector: 'app-self-edit',
@@ -23,9 +22,6 @@ export class SelfEditComponent implements OnInit {
   filename: string;
   login: Observable<any> = new Observable<any>();
   orgCode: string;
-  work_post = work_post;
-  politics = politics;
-  educational = educational;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   keys: Array<any>;
   orgName: string;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -19,6 +20,8 @@ export class CompositComponent implements OnInit {
   hasData: boolean;
   view = 0;
   year: number;
+  selectedId: string;
+  form: FormGroup;
   yearList: Array<number> = [];
   month: number;
   monthList: Array<number> = [];
@@ -37,6 +40,11 @@ export class CompositComponent implements OnInit {
       { field: 'month', header: '考核月度' },
       { field: 'score', header: '考核分数' }
     ];
+    this.form = new FormGroup({
+      clothesNum: new FormControl('', Validators.nullValidator),
+      userId: new FormControl('', Validators.nullValidator),
+      clothesSize: new FormControl('', Validators.nullValidator)
+    });
   }
 
   getInfo() {
@@ -105,13 +113,21 @@ export class CompositComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           this.resultList.forEach(el => {
-            const item = res.data.checkSingleDataList.filter(staff => staff.userId = el.userId);
+            const item = res.data.checkSingleDataList.filter(staff => staff.userId === el.userId);
             if (item.length > 0) {
-              el.score = item.score;
+              el.score = item[0].score;
             }
           });
         }
       });
+  }
+
+  check(val) {
+    return this.selectedId === val;
+  }
+
+  select(id) {
+    this.selectedId = id === this.selectedId ? '' : id;
   }
 
   addComposit() {
@@ -153,8 +169,8 @@ export class CompositComponent implements OnInit {
     }
     this.year = year;
     const month = (new Date()).getMonth() + 1;
-    for (let i = 1; i <= 12; i++) {
-      this.monthList[i] = i;
+    for (let i = 0; i < 12; i++) {
+      this.monthList[i] = i + 1;
     }
     this.month = month;
   }
