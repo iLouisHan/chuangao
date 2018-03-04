@@ -1,4 +1,27 @@
 <div class="part-container">
+  <div *ngIf="view !== 0" class="view-container">
+    <div class="add-container" *ngIf="view === 1">
+      <div class="clearfix">
+        <div class="select-container">
+          <span>年份</span>
+          <select [(ngModel)]="year">
+            <option *ngFor="let year of yearList" [value]="year">{{year}}</option>
+          </select>
+        </div>
+        <div class="select-container">
+          <span>月份</span>
+          <select [(ngModel)]="month">
+            <option *ngFor="let month of monthList" [value]="month">{{month}}</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <thead>
+
+        </thead>
+      </table>
+    </div>
+  </div>
   <div class="staff-navbar">
     <div class="part-content clearfix">
       <ul class="btn-list cleafix">

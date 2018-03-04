@@ -1,0 +1,177 @@
+.basic-info-container{
+  margin-bottom: 20px;
+
+  .img-container{
+    width: 220px;
+    margin-right: 20px;
+    float: left;
+
+    img{
+      width: 100%;
+    }
+  }
+
+  .basic-info-div{
+    float: right;
+    width: calc(100% - 240px);
+
+    .basic-info-ul{
+      margin-top: 40px;
+
+      .basic-info-item{
+        float: left;
+        width: calc(25% - 30px);
+        margin-bottom: 40px;
+        height: 30px;
+        line-height: 30px;
+        padding-left: 30px;
+
+        span{
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+.other-container{
+  padding: 20px;
+  padding-top: 0;
+  display: flex;
+  justify-content: space-between;
+
+  &.not-toll-station{
+    >div{
+      width: calc(50% - 10px);
+
+      &:first-child{
+        display: none;
+      }
+    }
+  }
+
+  >div{
+    width: calc((100% - 40px)/3);
+
+    .score-container{
+      padding-bottom: 0;
+
+      div{
+        width: calc(50% - 10px);
+        height: 90px;
+        padding-top: 130px;
+        text-align: center;
+        line-height: 40px;
+        font-size: 18px;
+        margin-bottom: 20px;
+        background: #999;
+
+        .value{
+          width: 90%;
+          margin: auto;
+          color: #fff;
+        }
+
+        &:nth-child(odd){
+          float: left;
+        }
+
+        &:nth-child(even){
+          float: right;
+        }
+
+        &.comprehensive{
+          background: #cfdcff url('/assets/images/staff-detail-comprehensive.png') no-repeat center 20px;
+          .item{
+            color: #4f6ec7;
+          }
+          .value{
+            background: #4f6ec7;
+          }
+        }
+        &.business{
+          background: #f7eacc url('/assets/images/staff-detail-business.png') no-repeat center 20px;
+          .item{
+            color: #d69700;
+          }
+          .value{
+            background: #d69700;
+          }
+        }
+        &.level{
+          background: #fbd7c5 url('/assets/images/staff-detail-level.png') no-repeat center 20px;
+          .item{
+            color: #cc541a;
+          }
+          .value{
+            background: #cc541a;
+          }
+        }
+        &.star{
+          background: #fbd1d1 url('/assets/images/staff-detail-star.png') no-repeat center 20px;
+          .item{
+            color: #dc5252;
+          }
+          .value{
+            background: #dc5252;
+          }
+        }
+      }
+    }
+
+    .list-str{
+      min-height: calc(100% - 96px);
+    }
+  }
+}
+
+.part-content2{
+  background: #fff;
+  padding: 20px;
+}
+
+.userName{
+  background: url('/assets/images/staff-basic-userName.png') no-repeat 0 center;
+}
+.educational{
+  background: url('/assets/images/staff-basic-educational.png') no-repeat 0 center;
+}
+.userSex{
+  background: url('/assets/images/staff-basic-userSex.png') no-repeat 0 center;
+}
+.work_post{
+  background: url('/assets/images/staff-basic-work_post.png') no-repeat 0 center;
+}
+.userTel{
+  background: url('/assets/images/staff-basic-userTel.png') no-repeat 0 center;
+}
+.birthday{
+  background: url('/assets/images/staff-basic-birthday.png') no-repeat 0 center;
+}
+.age{
+  background: url('/assets/images/staff-basic-age.png') no-repeat 0 center;
+}
+.practitioner{
+  background: url('/assets/images/staff-basic-practitioner.png') no-repeat 0 center;
+}
+.UserId{
+  background: url('/assets/images/staff-basic-UserId.png') no-repeat 0 center;
+}
+.collectionSysId{
+  background: url('/assets/images/staff-basic-collectionSysId.png') no-repeat 0 center;
+}
+.orgName{
+  background: url('/assets/images/staff-basic-orgName.png') no-repeat 0 center;
+}
+.workLicense{
+  background: url('/assets/images/staff-basic-workLicense.png') no-repeat 0 center;
+}
+.hireDate{
+  background: url('/assets/images/staff-basic-hireDate.png') no-repeat 0 center;
+}
+.workyear{
+  background: url('/assets/images/staff-basic-workyear.png') no-repeat 0 center;
+}
+.specialSkill{
+  background: url('/assets/images/staff-basic-specialSkill.png') no-repeat 0 center;
+}

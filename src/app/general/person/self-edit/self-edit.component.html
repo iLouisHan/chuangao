@@ -1,0 +1,133 @@
+<h1 class="page-title"><div class="page-title-icon"></div>人员录入</h1>
+<div class="part-container">
+  <h1 class="part-title">用户基本信息填报</h1>
+  <div class="part-content">
+    <form [formGroup]="form">
+      <div class="form-item">
+        <p>组织名称</p>
+        <input type="text" disabled="true" formControlName="orgName">
+      </div>
+      <div class="form-item">
+        <p>人员姓名</p>
+        <input type="text" formControlName="userName">
+      </div>
+      <div class="form-item">
+        <p>性别</p>
+        <select formControlName="userSex">
+          <option value="">请选择</option>
+          <option value="男">男</option>
+          <option value="女">女</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>入职时间</p>
+        <p-calendar [(ngModel)]="hireDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>出生时间</p>
+        <p-calendar [(ngModel)]="birthday" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>学历</p>
+        <select formControlName="educational">
+          <option value="">请选择</option>
+          <option value="1">研究生</option>
+          <option value="2">本科</option>
+          <option value="3">专科</option>
+          <option value="4">中专</option>
+          <option value="5">高中</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>从业证书</p>
+        <input type="text" formControlName="practitionerCertificate">
+      </div>
+      <div class="form-item">
+        <p>变更时间</p>
+        <p-calendar [(ngModel)]="changeTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>手机号</p>
+        <input type="text" formControlName="userTel">
+      </div>
+      <div class="form-item">
+        <p>岗位</p>
+        <select formControlName="workPost">
+          <option value="">请选择</option>
+          <option value="2">其它</option>
+          <option value="3">收费站站长</option>
+          <option value="4">收费站副站长</option>
+          <option value="5">收费员</option>
+          <option value="6">管理处高级管理人员</option>
+          <option value="7">管理处中级管理人员</option>
+          <option value="8">管理处一般管理人员</option>
+          <option value="9">营运公司高级管理人员</option>
+          <option value="10">营运公司中级管理人员</option>
+          <option value="11">营运公司一般管理人员</option>
+          <option value="12">川高公司高级管理人员</option>
+          <option value="13">川高公司中级管理人员</option>
+          <option value="14">川高公司一般管理人员</option>
+          <option value="15">收费班长</option>
+          <option value="16">收费副班长</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>政治面貌</p>
+        <select formControlName="politicalStatus">
+          <option value="">请选择</option>
+          <option value="1">中共党员</option>
+          <option value="2">共青团员</option>
+          <option value="3">群众</option>
+          <option value="4">其他党派</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>职称</p>
+        <select formControlName="positionalTitle">
+          <option value="">请选择</option>
+          <option value="4">初级</option>
+          <option value="3">中级</option>
+          <option value="2">高级</option>
+          <option value="6">其他</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>紧急联系人</p>
+        <input type="text" formControlName="emergencyContact">
+      </div>
+      <div class="form-item">
+        <p>紧急联系电话</p>
+        <input type="text" formControlName="emergencyPhone">
+      </div>
+      <div class="form-item">
+        <p>邮箱</p>
+        <input type="text" formControlName="userMail">
+      </div>
+      <div class="form-item">
+        <p>照片上传(png/jpg/jpeg)</p>
+        <div class="upload-photo">
+          <input (change)="fileChange($event)" #photo type="file">
+          <span [title]="filename">{{filename}}</span>
+          <div class="upload-photo-btn" (click)="photo.click()">选择文件</div>
+        </div>
+      </div>
+      <div class="form-item form-textarea">
+        <p>工作履历</p>
+        <textarea type="text" formControlName="jobDetail"></textarea>
+      </div>
+      <div class="form-item form-textarea">
+        <p>奖惩情况</p>
+        <textarea type="text" formControlName="awardDetail"></textarea>
+      </div>
+      <div class="form-item form-textarea">
+        <p>特长</p>
+        <textarea type="text" formControlName="specialSkill"></textarea>
+      </div>
+      <div class="form-btn-container">
+        <div class="form-item">
+          <button (click)="submit()" class="form-btn">保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

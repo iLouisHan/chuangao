@@ -67,6 +67,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(1);
     this.getCookie();
   }
 

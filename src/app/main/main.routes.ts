@@ -45,7 +45,7 @@ export const MainRoutes: Routes = [
       },
       {
         path: 'internal',
-        loadChildren: './internal/internal.module#InternalModule'
+        loadChildren: '../shared/internal/internal.module#InternalModule'
       }
     ]
   }
