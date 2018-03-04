@@ -48,21 +48,23 @@ export class SwitchEditComponent implements OnInit {
   backUserName: string;
   backUserId: string;
   applyInfo: any;
-  backInfo: any;
   applyChangeType = 1;
   userId: string;
   shiftChangeDataList: Array<any>;
+  shiftChangeDataList2: Array<any>;
+  returnDate: string;
+  backDate: string;
 
   constructor(
     private http: Http,
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      applyUserId: new FormControl('', Validators.nullValidator),
-      backUserId: new FormControl('', Validators.nullValidator),
       remark: new FormControl('', Validators.nullValidator),
       applyTeams: new FormControl('', Validators.nullValidator),
-      backTeams: new FormControl('', Validators.nullValidator)
+      backTeams: new FormControl('', Validators.nullValidator),
+      backShift: new FormControl('', Validators.nullValidator),
+      returnShift: new FormControl('', Validators.nullValidator)
     });
     this.en = {
       firstDayOfWeek: 0,
@@ -90,12 +92,15 @@ export class SwitchEditComponent implements OnInit {
       applyUserId: '-1',
       applyTeams: '-1',
       backUserId: '-1',
-      backTeams: '-1'
+      backTeams: '-1',
+      backShift: '0',
+      returnShift: '0'
     };
   }
 
   getSwitchInfo(leaveId) {
-    this.data = this.shiftChangeDataList.filter(el => el.id === leaveId)[0];
+    this.data = this.shiftChangeDataList2.filter(el => el.id === leaveId)[0];
+    console.log(this.data);
     this.isChosen = true;
     this.applyTeams = this.data.applyTeams;
     this.applyUserName = this.data.applyUserName;
@@ -108,10 +113,6 @@ export class SwitchEditComponent implements OnInit {
     this.applyInfo = {
       scheduleDate: this.data.applyDate,
       shiftId: this.data.applyShift
-    };
-    this.backInfo = {
-      scheduleDate: this.data.backDate,
-      shiftId: this.data.backShift
     };
     this.getStaff(this.applyTeams, 1);
     this.getStaff(this.backTeams, 2);
@@ -129,7 +130,8 @@ export class SwitchEditComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList;
+                  this.shiftChangeDataList = res.data.shiftChangeDataList.concat([]);
+                  this.shiftChangeDataList2 = res.data.shiftChangeDataList.concat([]);
                   this.shiftChangeDataList.forEach(el => {
                     el.applyTeams = this.list_group[el.applyTeams];
                     el.backTeams = this.list_group[el.backTeams];
@@ -185,7 +187,7 @@ export class SwitchEditComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     }else {
-      alert('请选择一个请假信息！');
+      alert('请选择一个换班信息！');
     }
   }
 
@@ -225,10 +227,12 @@ export class SwitchEditComponent implements OnInit {
     this.form.value.applyShift = this.applyInfo.shiftId;
     this.form.value.applyTeams = +this.form.value.applyTeams;
     this.form.value.applyChangeType = this.applyChangeType;
-    this.form.value.backShift = this.backInfo.shiftId;
-    this.form.value.backDate = this.backInfo.scheduleDate;
     this.form.value.backTeams = +this.form.value.backTeams;
     this.form.value.checkUserId = this.userId;
+    this.form.value.applyUserId = this.applyUserId;
+    this.form.value.backUserId = this.backUserId;
+    this.form.value.backDate = this.dateFormat(this.backDate);
+    this.form.value.returnDate = this.dateFormat(this.returnDate);
     this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
@@ -251,8 +255,6 @@ export class SwitchEditComponent implements OnInit {
     this.form.value.applyShift = this.applyInfo.shiftId;
     this.form.value.applyTeams = +this.form.value.applyTeams;
     this.form.value.applyChangeType = this.applyChangeType;
-    this.form.value.backShift = this.backInfo.shiftId;
-    this.form.value.backDate = this.backInfo.scheduleDate;
     this.form.value.backTeams = +this.form.value.backTeams;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
@@ -280,6 +282,9 @@ export class SwitchEditComponent implements OnInit {
   submit() {
     if (this.isAdd) {
       this.addSwitch();
+      this.applyInfo = {};
+      this.returnDate = '';
+      this.backDate = '';
     }else {
       this.updateLeave();
     }
@@ -313,10 +318,6 @@ export class SwitchEditComponent implements OnInit {
 
   chooseApplySchedule($event) {
     this.applyInfo = $event;
-  }
-
-  chooseBackSchedule($event) {
-    this.backInfo = $event;
   }
 
   changeCheckStatus(id, type) {

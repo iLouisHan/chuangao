@@ -38,13 +38,28 @@
       <form [formGroup]="form">
         <div class="form-item">
           <p>收费员编号</p>
-          <div>{{userId}}</div>
+          <input type="text" formControlName="userId">
         </div>
         <div class="form-item">
-          <p>收费员</p>
-          <div>{{userName}}</div>
+          <p>收费员职位</p>
+          <div><span>{{workPost[_select.workPost]}}</span></div>
+        </div>
+        <div class="form-item">
+          <p>考核年度</p>
+          <input type="text" formControlName="year">
+        </div>
+        <div class="form-item">
+          <p>考核月度</p>
+          <input type="text" formControlName="month">
+        </div>
+        <div class="form-item">
+          <p>综合得分</p>
+          <input type="text" formControlName="score">
         </div>
       </form>
+      <div class="form-item">
+        <button (click)="updateComposit()" class="form-btn">提&nbsp;交</button>
+      </div>
     </div>
   </div>
   <div class="staff-navbar">

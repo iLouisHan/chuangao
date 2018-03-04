@@ -3,6 +3,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { work_post } from '../../../../store/translate';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-level',
@@ -12,59 +14,58 @@ import { Observable } from 'rxjs/Observable';
 export class LevelComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   orgCode: string;
-  cols: Array<any>;
-  page = 0;
-  size = 15;
-  compositList: Array<any>;
+  levelList: Array<any>;
   hasData: boolean;
+  workPost = work_post;
+  form: FormGroup;
+  staffList: any;
+  data: any;
 
   constructor(
     private http: Http,
     private store: Store<any>
   ) {
     this.login = store.select('login');
-    this.cols = [
-      { field: 'userId', header: '收费员编号' },
-      { field: 'userName', header: '收费员名称' },
-      { field: 'year', header: '考核年度' },
-      { field: 'score', header: '考核得分' }
-    ];
-  }
-
-  getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Check/getCheckStar`, JSON.stringify({
-      orgList: [this.orgCode],
-      page: this.page,
-      size: this.size
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.compositList = res.data.checkSingleDataList;
-        }
-      });
+    this.form = new FormGroup({
+      userId: new FormControl('', Validators.nullValidator),
+      year: new FormControl('', Validators.nullValidator),
+      score: new FormControl('', Validators.nullValidator)
+    });
   }
 
   add() {
 
   }
 
-  delete() {
-
+  getInfo() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Check/getCheckSkill?userId=${this.form.value.userId}`)
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          console.log(res);
+        }else {
+          alert(res.message);
+        }
+      });
   }
 
-  update() {
-
+  getStaff() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.staffList = res.data;
+              }else {
+                alert(res.message);
+              }
+            });
   }
 
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
         this.orgCode = res.orgCode;
-        this.getInfo();
+        this.getStaff();
       }
     });
   }

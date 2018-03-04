@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { work_post } from '../../../../store/translate';
 
 @Component({
   selector: 'app-composit',
@@ -27,6 +28,8 @@ export class CompositComponent implements OnInit {
   monthList: Array<number> = [];
   staffList: any;
   resultList: any = [];
+  _select: any;
+  workPost = work_post;
 
   constructor(
     private http: Http,
@@ -41,9 +44,10 @@ export class CompositComponent implements OnInit {
       { field: 'score', header: '考核分数' }
     ];
     this.form = new FormGroup({
-      clothesNum: new FormControl('', Validators.nullValidator),
       userId: new FormControl('', Validators.nullValidator),
-      clothesSize: new FormControl('', Validators.nullValidator)
+      year: new FormControl('', Validators.nullValidator),
+      month: new FormControl('', Validators.nullValidator),
+      score: new FormControl('', Validators.nullValidator)
     });
   }
 
@@ -70,11 +74,55 @@ export class CompositComponent implements OnInit {
   }
 
   delete() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Check/deleteCheck?id=${this.selectedId}&type=0`)
+      .map(res => res.json())
+      .subscribe(res => {
+        alert(res.message);
+        if (res.code) {
+          this.toFirstPage();
+        }
+      });
+  }
 
+  toFirstPage() {
+    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    if (element) {
+      element.click();
+    }else {
+      this.getInfo();
+    }
+  }
+
+  updateComposit() {
+    this.form.value.id = this._select.id;
+    this.form.value.stationCode = this.orgCode;
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/setCheckComposit', JSON.stringify(
+      [this.form.value]
+    ), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          alert(res.message);
+          this.view = 0;
+          this.toFirstPage();
+          this.selectedId = '';
+        }else {
+          alert(res.message);
+        }
+      });
   }
 
   update() {
-
+    if (this.selectedId) {
+      this.view = 2;
+      this._select = this.compositList.filter(el => el.id === this.selectedId)[0];
+      this.form.patchValue(this._select);
+    }else {
+      alert('请选择一个记录');
+    }
   }
 
   getStaff() {

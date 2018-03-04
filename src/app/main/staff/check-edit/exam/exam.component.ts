@@ -3,6 +3,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { work_post } from '../../../../store/translate';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-exam',
@@ -15,13 +17,17 @@ export class ExamComponent implements OnInit {
   cols: Array<any>;
   page = 0;
   size = 15;
-  compositList: Array<any>;
+  examList: Array<any>;
   hasData: boolean;
   resultList: any;
   staffList: any;
   year: number;
   yearList: Array<number> = [];
   view = 0;
+  selectedId: string;
+  _select: any;
+  workPost = work_post;
+  form: FormGroup;
 
   constructor(
     private http: Http,
@@ -34,6 +40,11 @@ export class ExamComponent implements OnInit {
       { field: 'year', header: '考核年度' },
       { field: 'score', header: '考核得分' }
     ];
+    this.form = new FormGroup({
+      userId: new FormControl('', Validators.nullValidator),
+      year: new FormControl('', Validators.nullValidator),
+      score: new FormControl('', Validators.nullValidator)
+    });
   }
 
   getInfo() {
@@ -48,7 +59,7 @@ export class ExamComponent implements OnInit {
     }).map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          this.compositList = res.data.checkSingleDataList;
+          this.examList = res.data.checkSingleDataList;
         }
       });
   }
@@ -103,11 +114,41 @@ export class ExamComponent implements OnInit {
   }
 
   delete() {
-
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Check/deleteCheck?id=${this.selectedId}&type=1`)
+      .map(res => res.json())
+      .subscribe(res => {
+        alert(res.message);
+        if (res.code) {
+          this.toFirstPage();
+        }
+      });
   }
 
   update() {
+    if (this.selectedId) {
+      this.view = 2;
+      this._select = this.examList.filter(el => el.id === this.selectedId)[0];
+      this.form.patchValue(this._select);
+    }else {
+      alert('请选择一个记录');
+    }
+  }
 
+  toFirstPage() {
+    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    if (element) {
+      element.click();
+    }else {
+      this.getInfo();
+    }
+  }
+
+  check(val) {
+    return this.selectedId === val;
+  }
+
+  select(id) {
+    this.selectedId = id === this.selectedId ? '' : id;
   }
 
   addExam() {
@@ -129,6 +170,28 @@ export class ExamComponent implements OnInit {
         if (res.code) {
           alert(res.message);
           this.view = 0;
+        }else {
+          alert(res.message);
+        }
+      });
+  }
+
+  updateExam() {
+    this.form.value.id = this._select.id;
+    this.form.value.stationCode = this.orgCode;
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/setCheckExam', JSON.stringify(
+      [this.form.value]
+    ), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          alert(res.message);
+          this.view = 0;
+          this.selectedId = '';
+          this.toFirstPage();
         }else {
           alert(res.message);
         }

@@ -12,6 +12,8 @@ import { Observable } from 'rxjs/Observable';
 export class TollStationImagesComponent implements OnInit {
   login: Observable<any>;
   imgArr: Array<any> = [];
+  bigNewsImgArr: Array<any> = [];
+  hisHorImgArr: Array<any> = [];
   orgCode: string;
 
   constructor(
@@ -54,17 +56,49 @@ export class TollStationImagesComponent implements OnInit {
               if (res.code) {
                 alert(res.message);
                 this.getImages(this.orgCode);
+                this.getInfo();
               } else {
                 alert(res.message);
               }
             });
   }
 
+  getInfo() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${this.orgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.bigNewsImgArr = res.data.stationImg1;
+                this.hisHorImgArr = res.data.stationImg2;
+              }else {
+                alert(res.message);
+              }
+            });
+  }
+
+  uploadImgArr($event, type) {
+    const formdata = new FormData();
+    formdata.append('file', $event.target.files[0]);
+    formdata.append('stationCode', this.orgCode);
+    formdata.append('type', type);
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/station`, formdata)
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          alert(res.message);
+          this.getInfo();
+        }else {
+          alert(res.message);
+        }
+      });
+  }
+
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.orgType === 1) {
+      if (res) {
         this.orgCode = res.orgCode;
         this.getImages(res.orgCode);
+        this.getInfo();
       }
     });
   }

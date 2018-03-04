@@ -33,7 +33,7 @@
     </form>
     <form [formGroup]="form">
       <div class="form-item">
-        <p>换班人所在班组</p>
+        <p>替班人所在班组</p>
         <select (change)="backTeamsChange($event)" formControlName="backTeams">
           <option value="-1">请选择</option>
           <option value="1">一班</option>
@@ -52,12 +52,30 @@
         <app-input-select (selectUser)="backUserChoose($event)" [staffList]="backStaffList" [initUser]="backUserName"></app-input-select>
       </div>
       <div class="form-item">
-        <p>替班信息</p>
-        <app-switch-choose [userName]="backUserName" (chosenSchedule)="chooseBackSchedule($event)" [userId]="backUserId" [teams]="backTeams"></app-switch-choose>
+        <p>替班日期</p>
+        <p-calendar [(ngModel)]="backDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
       </div>
-      <div *ngIf="backInfo" class="form-item">
-        <p>换班详细信息</p>
-        <span>换班日期：{{backInfo.scheduleDate}}&nbsp;换班班次：{{shiftId[backInfo.shiftId]}}</span>
+      <div class="form-item">
+        <p>替班班次</p>
+        <select formControlName="backShift">
+          <option value="0">请选择</option>
+          <option value="1">白班</option>
+          <option value="2">夜班</option>
+          <option value="3">中班</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>还班日期</p>
+        <p-calendar [(ngModel)]="returnDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>还班班次</p>
+        <select formControlName="returnShift">
+          <option value="0">请选择</option>
+          <option value="1">白班</option>
+          <option value="2">夜班</option>
+          <option value="3">中班</option>
+        </select>
       </div>
       <div class="form-item form-textarea">
         <p>备注</p>

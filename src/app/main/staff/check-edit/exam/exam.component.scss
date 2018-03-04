@@ -154,4 +154,111 @@
       outline: none !important;
     }
   }
+
+  .update-container{
+    background: #fff;
+    padding: 20px;
+  }
+}
+
+form{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  .form-checkbox{
+    width: 20%;
+    margin-right: 5%;
+
+    p{
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 5px;
+      display: inline-block;
+      line-height: 40px;
+    }
+
+    label{
+      font-size: 14px;
+      margin-right: 5px;
+
+      div{
+        display: inline-block;
+        height: 22px;
+        width: 22px;
+        border: 1px solid #d9d9d9;
+        border-radius: 3px;
+        position: relative;
+        top: 7px;
+        margin-right: 5px;
+
+        &.checked{
+          background: #6c9cff url('/assets/images/checked.png') no-repeat center center;
+          border: none;
+          height: 24px;
+          width: 24px;
+        }
+      }
+
+      input{
+        display: none;
+      }
+    }
+  }
+}
+
+.form-item{
+  width: 20%;
+  margin-right: 5%;
+  margin-bottom: 20px;
+
+  p{
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+
+    .form-required{
+      color: red;
+    }
+  }
+
+  input{
+    width: calc(100% - 15px);
+    padding-right: 15px;
+    height: 40px;
+    text-indent: 15px;
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #d9d9d9;
+
+    &:disabled{
+      background: #eee;
+    }
+  }
+
+  select{
+    width: 100%;
+    height: 40px;
+    background: #fff;
+  }
+
+  button{
+    width: 120px;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background: #6c9cff;
+    cursor: pointer;
+    color: #fff;
+    font-size: 18px;
+    outline: none !important;
+  }
+
+  div{
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    height: 40px;
+    line-height: 40px;
+    text-indent: 15px;
+  }
 }

@@ -26,19 +26,30 @@
           </tr>
         </tbody>
       </table>
-      <button (click)="addComposit()" class="btn">提&nbsp;交</button>
+      <button (click)="addExam()" class="btn">提&nbsp;交</button>
     </div>
     <div class="update-container" *ngIf="view === 2">
       <form [formGroup]="form">
         <div class="form-item">
           <p>收费员编号</p>
-          <div>{{userId}}</div>
+          <input type="text" formControlName="userId">
         </div>
         <div class="form-item">
-          <p>收费员</p>
-          <div>{{userName}}</div>
+          <p>收费员职位</p>
+          <div><span>{{workPost[_select.workPost]}}</span></div>
+        </div>
+        <div class="form-item">
+          <p>考核年度</p>
+          <input type="text" formControlName="year">
+        </div>
+        <div class="form-item">
+          <p>综合得分</p>
+          <input type="text" formControlName="score">
         </div>
       </form>
+      <div class="form-item">
+        <button (click)="updateExam()" class="form-btn">提&nbsp;交</button>
+      </div>
     </div>
   </div>
   <div class="staff-navbar">
@@ -61,7 +72,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of compositList">
+            <tr *ngFor="let item of examList">
               <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
             </tr>

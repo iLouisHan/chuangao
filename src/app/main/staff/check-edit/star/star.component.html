@@ -1,32 +1,85 @@
 <div class="part-container">
-    <div class="staff-navbar">
-      <div class="part-content clearfix">
-        <ul class="btn-list cleafix">
-          <li (click)="add()" class="btn-list-li">增加</li>
-          <li (click)="update()" class="btn-list-li">修改</li>
-          <li (click)="delete()" class="btn-list-li">删除</li>
-        </ul>
-      </div>
-    </div>
-    <div class="table-container">
-      <div class="part-content">
-        <div>
-          <table class="myTable">
-            <thead>
-              <tr>
-                <th></th>
-                <th *ngFor="let field of cols">{{field.header}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of compositList">
-                <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
-                <td *ngFor="let field of cols">{{item[field.field]}}</td>
-              </tr>
-            </tbody>
-          </table>
+  <div *ngIf="view !== 0" class="view-container">
+    <div class="add-container" *ngIf="view === 1">
+      <div class="clearfix">
+        <div class="select-container">
+          <span>年份</span>
+          <select [(ngModel)]="year">
+            <option *ngFor="let year of yearList" [value]="year">{{year}}</option>
+          </select>
         </div>
-        <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+      </div>
+      <table class="edit-table">
+        <thead>
+          <tr>
+            <th>收费员</th>
+            <th>评分</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let staff of resultList">
+            <td>{{staff.userName}}</td>
+            <td (click)="staff.editable = true">
+              <span *ngIf="!staff.editable">{{staff.score}}</span>
+              <input (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button (click)="addStar()" class="btn">提&nbsp;交</button>
+    </div>
+    <div class="update-container" *ngIf="view === 2">
+      <form [formGroup]="form">
+        <div class="form-item">
+          <p>收费员编号</p>
+          <input type="text" formControlName="userId">
+        </div>
+        <div class="form-item">
+          <p>收费员职位</p>
+          <div><span>{{workPost[_select.workPost]}}</span></div>
+        </div>
+        <div class="form-item">
+          <p>考核年度</p>
+          <input type="text" formControlName="year">
+        </div>
+        <div class="form-item">
+          <p>综合得分</p>
+          <input type="text" formControlName="score">
+        </div>
+      </form>
+      <div class="form-item">
+        <button (click)="updateExam()" class="form-btn">提&nbsp;交</button>
       </div>
     </div>
   </div>
+  <div class="staff-navbar">
+    <div class="part-content clearfix">
+      <ul class="btn-list cleafix">
+        <li (click)="add()" class="btn-list-li">增加</li>
+        <li (click)="update()" class="btn-list-li">修改</li>
+        <li (click)="delete()" class="btn-list-li">删除</li>
+      </ul>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of starList">
+              <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

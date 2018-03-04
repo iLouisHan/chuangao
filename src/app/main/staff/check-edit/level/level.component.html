@@ -1,33 +1,30 @@
 <div class="part-container">
-    <div class="staff-navbar">
-      <div class="part-content clearfix">
-        <ul class="btn-list cleafix">
-          <li (click)="add()" class="btn-list-li">增加</li>
-          <li (click)="update()" class="btn-list-li">修改</li>
-          <li (click)="delete()" class="btn-list-li">删除</li>
-        </ul>
-      </div>
-    </div>
-    <div class="table-container">
-      <div class="part-content">
-        <div>
-          <table class="myTable">
-            <thead>
-              <tr>
-                <th></th>
-                <th *ngFor="let field of cols">{{field.header}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of compositList">
-                <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
-                <td *ngFor="let field of cols">{{item[field.field]}}</td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="staff-navbar">
+    <div class="part-content clearfix">
+      <form [formGroup]="form">
+        <div class="form-item">
+          <p>收费员</p>
+          <select formControlName="userId" (change)="getInfo()">
+            <option value="">请选择</option>
+            <option *ngFor="let user of staffList" [value]="user.userId">{{user.userName}}</option>
+          </select>
         </div>
-        <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+        <div class="form-item">
+          <p>收费员职位</p>
+          <!-- <div><span>{{workPost[data.workPost]}}</span></div> -->
+        </div>
+        <div class="form-item">
+          <p>考核年度</p>
+          <input type="text" formControlName="year">
+        </div>
+        <div class="form-item">
+          <p>综合得分</p>
+          <input type="text" formControlName="score">
+        </div>
+      </form>
+      <div class="form-item">
+        <button (click)="updateExam()" class="form-btn">提&nbsp;交</button>
       </div>
     </div>
   </div>
-          
+</div>

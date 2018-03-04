@@ -28,9 +28,9 @@ export class CheckEditComponent implements OnInit {
         return 0;
       }else if (/exam/.test(url)) {
         return 1;
-      }else if (/level/.test(url)) {
-        return 2;
       }else if (/star/.test(url)) {
+        return 2;
+      }else if (/level/.test(url)) {
         return 3;
       }else {
         return 0;
