@@ -1,4 +1,46 @@
 <div class="part-container">
+  <div *ngIf="view !== 0" class="view-container">
+    <div class="add-container" *ngIf="view === 1">
+      <div class="clearfix">
+        <div class="select-container">
+          <span>年份</span>
+          <select [(ngModel)]="year">
+            <option *ngFor="let year of yearList" [value]="year">{{year}}</option>
+          </select>
+        </div>
+      </div>
+      <table class="edit-table">
+        <thead>
+          <tr>
+            <th>收费员</th>
+            <th>评分</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let staff of resultList">
+            <td>{{staff.userName}}</td>
+            <td (click)="staff.editable = true">
+              <span *ngIf="!staff.editable">{{staff.score}}</span>
+              <input (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button (click)="addComposit()" class="btn">提&nbsp;交</button>
+    </div>
+    <div class="update-container" *ngIf="view === 2">
+      <form [formGroup]="form">
+        <div class="form-item">
+          <p>收费员编号</p>
+          <div>{{userId}}</div>
+        </div>
+        <div class="form-item">
+          <p>收费员</p>
+          <div>{{userName}}</div>
+        </div>
+      </form>
+    </div>
+  </div>
   <div class="staff-navbar">
     <div class="part-content clearfix">
       <ul class="btn-list cleafix">

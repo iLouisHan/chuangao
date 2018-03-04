@@ -17,6 +17,11 @@ export class ExamComponent implements OnInit {
   size = 15;
   compositList: Array<any>;
   hasData: boolean;
+  resultList: any;
+  staffList: any;
+  year: number;
+  yearList: Array<number> = [];
+  view = 0;
 
   constructor(
     private http: Http,
@@ -48,8 +53,53 @@ export class ExamComponent implements OnInit {
       });
   }
 
-  add() {
+  getStaff() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.staffList = res.data;
+                this.resultList = this.staffList.map(el => {
+                  return {
+                    userName: el.userName,
+                    userId: el.userId,
+                    score: '0.0',
+                    editable: false
+                  };
+                });
+                this.getData();
+              }else {
+                alert(res.message);
+              }
+            });
+  }
 
+  getData() {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Check/getCheckExam`, JSON.stringify({
+      orgList: [this.orgCode],
+      page: 0,
+      size: this.staffList.length,
+      year: this.year
+    }), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.resultList.forEach(el => {
+            const item = res.data.checkSingleDataList.filter(staff => staff.userId === el.userId);
+            if (item.length > 0) {
+              el.score = item[0].score;
+            }
+          });
+        }
+      });
+  }
+
+  add() {
+    this.view = 1;
+    this.getStaff();
   }
 
   delete() {
@@ -60,6 +110,31 @@ export class ExamComponent implements OnInit {
 
   }
 
+  addExam() {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/setCheckExam', JSON.stringify(
+      this.resultList.map(el => {
+        return {
+          userId: el.userId,
+          stationCode: this.orgCode,
+          year: this.year,
+          score: el.score
+        };
+      })
+    ), {
+      headers: myHeaders
+    }).map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          alert(res.message);
+          this.view = 0;
+        }else {
+          alert(res.message);
+        }
+      });
+  }
+
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
@@ -67,6 +142,10 @@ export class ExamComponent implements OnInit {
         this.getInfo();
       }
     });
+    const year = (new Date()).getFullYear();
+    for (let i = 0; i < 10; i++) {
+      this.yearList[i] = year - i;
+    }
+    this.year = year;
   }
-
 }

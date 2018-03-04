@@ -76,3 +76,82 @@
     }
   }
 }
+
+.view-container{
+  padding: 20px;
+  padding-bottom: 0;
+
+  .add-container{
+    background: #fff;
+    padding: 20px;
+
+    .select-container{
+      display: inline-block;
+
+      span{
+        font-size: 14px;
+        line-height: 40px;
+        color: #333;
+        margin: 0 15px;
+        float: left;
+      }
+
+      select{
+        min-width: 200px;
+        height: 40px;
+      }
+    }
+
+    .edit-table{
+      margin-top: 20px;
+      width: 300px;
+      text-align: center;
+
+      thead{
+        th{
+          background: #e2ebff;
+          text-align: center;
+          border: 1px solid #e6e6e6;
+          font-size: 14px;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+          white-space: nowrap;
+        }
+      }
+
+      tbody{
+        td{
+          white-space: nowrap;
+          text-align: center;
+          border: 1px solid #e6e6e6;
+          background: #ededed;
+          font-size: 14px;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+          width: 150px;
+
+          input{
+            text-indent: 10px;
+            width: 60px;
+          }
+        }
+      }
+
+    }
+
+    button {
+      margin-top: 20px;
+      width: 120px;
+      height: 40px;
+      border: none;
+      border-radius: 20px;
+      background: #6c9cff;
+      cursor: pointer;
+      color: #fff;
+      font-size: 18px;
+      outline: none !important;
+    }
+  }
+}
