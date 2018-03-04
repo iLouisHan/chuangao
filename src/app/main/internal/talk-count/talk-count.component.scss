@@ -1,88 +1,174 @@
 .searchbar-container{
 
-    >div {
-      width: 1000px;
-      margin: auto;
-  
-      div{
+  >div {
+    width: 1000px;
+    margin: auto;
+
+    div{
+      float: left;
+      margin-right: 20px;
+
+      .tree-container{
+        width: 200px;
+        display: inline-block;
+        height: 38px;
+        border-radius: 5px;
+        border: 1px solid #d9d9d9;
+      }
+
+      span{
+        font-size: 14px;
+        line-height: 40px;
+        color: #333;
+        margin: 0 15px;
         float: left;
-        margin-right: 20px;
-  
-        span{
-          font-size: 14px;
-          line-height: 40px;
-          color: #333;
-          margin: 0 15px;
+      }
+
+      select{
+        min-width: 200px;
+        height: 40px;
+      }
+
+      &.search-btn{
+        width: 100px;
+        float: left;
+        height: 40px;
+        color: #fff;
+        background: #6c9cff;
+        line-height: 40px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-indent: 40px;
+        font-size: 18px;
+        margin-right: 0;
+      }
+    }
+  }
+}
+.dialogContainer{
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  position: fixed;
+  top: 61px;
+  left: 100px;
+  font-size: 17px;
+  background: rgba(0,0,0,0.3);
+  .dialogContent{
+    width: 300px;
+    margin: 200px auto;
+    background: white;
+    .dialogHeader {
+      height: 40px;
+      background: #6c9cff;
+      line-height: 40px;
+      text-align: center;
+      color: white;
+      font-size: 20px;
+    }
+    .dialogBody {
+      padding: 10px 10px;
+      p {
+        line-height: 30px;
+      }
+      input {
+        line-height: 30px;
+        border-radius: 8px;
+        display: inline-block;
+        border: 1px solid #999;
+        width: 100%;
+        text-indent: 5px;
+      }
+      textarea{
+        height: 100px;
+        display: inline-block;
+        width: 100%;
+        border-radius: 8px;
+        text-indent: 5px;
+        padding: 5px 0;
+      }
+    }
+    .dialogFooter {
+      padding: 15px;
+      text-align: center;
+      .btn {
+        border-radius: 8px;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        border: 1px solid transparent;
+      }
+      .btn-default{
+        background-color: #f4f4f4;
+        color: #444;
+        border-color: #ddd;
+      }
+      .btn-save{
+        background-color: #6c9cff;
+        color: white;
+      }
+    }
+  }
+}
+.table-container{
+
+  .part-content{
+
+    .talkNum{
+      line-height: 60px;
+      font-size: 16px;
+      margin-left: 10px;
+      color: black;
+      padding-left: 50px;
+      background: url('/assets/images/user.png') no-repeat 0 center;
+    }
+    .talkList {
+      border: 1px solid #999;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .oneTalk {
+        width: 10%;
+        padding: 10px 1.25%;
+
+        .talkName{
+          background: url('/assets/images/icon-staff.png') no-repeat 10% center;
+          font-size: 16px;
+          text-align: center;
+          line-height: 30px;
         }
-  
-        select{
-          min-width: 200px;
-          height: 40px;
-        }
-  
-        &.search-btn{
-          width: 100px;
-          float: left;
-          height: 40px;
-          color: #fff;
-          background: #6c9cff;
-          line-height: 40px;
-          border-radius: 5px;
+        .orangeState{
+          border: 1px solid #ff966d;
+          border-radius: 30px;
+          line-height: 30px;
+          color: #ff966d;
+          text-align: center;
+          max-width: 80%;
+          margin: 0 auto;
           cursor: pointer;
-          text-indent: 40px;
-          font-size: 18px;
-          margin-right: 0;
+        }
+        .blueState {
+          border: 1px solid #6c9cff;
+          border-radius: 30px;
+          line-height: 30px;
+          text-align: center;
+          color: #6c9cff;
+          max-width: 80%;
+          cursor: pointer;
         }
       }
     }
   }
-  
-  .table-container{
-  
-    .part-content{
-  
-      >div {
-        overflow: scroll;
-        padding-bottom: 10px;
-  
-        .myTable{
-          min-width: 100%;
-  
-          th{
-            background: #e2ebff;
-            padding: 0 30px;
-            text-align: center;
-            border: 1px solid #fff;
-            font-size: 14px;
-            height: 40px;
-            line-height: 40px;
-            color: #666;
-            white-space: nowrap;
-          }
-  
-          td{
-            padding: 0 30px;
-            white-space: nowrap;
-            text-align: center;
-            border: 1px solid #fff;
-            background: #ededed;
-            font-size: 14px;
-            height: 40px;
-            line-height: 40px;
-            color: #666;
-  
-            img{
-              cursor: pointer;
-            }
-  
-            div{
-              button{
-                padding: 2px 10px;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
+}
+
+.orgName-container{
+  width: 200px;
+  display: inline-block;
+  height: 38px;
+  border-radius: 5px;
+  border: 1px solid #d9d9d9;
+  line-height: 38px;
+  border-radius: 5px;
+  text-indent: 8px;
+  font-size: 16px;
+}

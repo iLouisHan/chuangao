@@ -61,41 +61,37 @@
     <form [formGroup]="form">
       <div class="form-item">
         <p>计划名称</p>
-        <input type="text" formControlName="trainPlanName">
+        <input type="text" disabled="true" formControlName="trainPlanName">
       </div>
       <div class="form-item">
         <p>发起单位</p>
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          <input type="text" disabled="true" formControlName="trainOrgName">
         </div>
       </div>
       <div class="form-item">
         <p>开始日期</p>
-        <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p-calendar disabled="true" [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>结束日期</p>
-        <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p-calendar disabled="true" [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>培训讲师</p>
-        <input type="text" formControlName="trainTeacher">
+        <input type="text" formControlName="trainTeacher" disabled="true">
       </div>
       <div class="form-item">
         <p>培训课时</p>
-        <input type="text" formControlName="trainTimeLong">
+        <input type="text" formControlName="trainTimeLong" disabled="true">
       </div>
       <div class="form-item">
         <p>培训地点</p>
-        <input type="text" formControlName="trainLoc">
-      </div>
-      <div class="form-item">
-        <p>发起人</p>
-        <input type="text" formControlName="trainLoc">
+        <input type="text" formControlName="trainLoc" disabled="true">
       </div>
       <div class="form-item">
         <p>培训类别</p>
-        <select formControlName="trainType">
+        <select formControlName="trainType" disabled="true">
           <option value="文明礼仪">文明礼仪</option>
           <option value="稽查业务培训">稽查业务培训</option>
           <option value="机电培训">机电培训</option>
@@ -108,7 +104,7 @@
       </div>
       <div class="form-item">
         <p>培训方式</p>
-        <select formControlName="trainWay">
+        <select formControlName="trainWay" disabled="true">
           <option value="委外">委外</option>
           <option value="自主">自主</option>
           <option value="参与">参与</option>
@@ -116,14 +112,14 @@
       </div>
       <div class="form-item">
         <p>培训单位</p>
-        <input type="text" formControlName="trainUnit">
+        <input type="text" formControlName="trainUnit" disabled="true">
       </div>
       <div class="form-item form-textarea">
         <p>培训纪要</p>
-        <textarea type="text" formControlName="trainContent"></textarea>
+        <textarea type="text" formControlName="trainContent" disabled="true"></textarea>
       </div>
       <div class="form-item">
-        <p (click)="downloadFile('plan')" *ngIf="planFilePath !== ''">附件下载</p>
+        <button (click)="downloadFile('plan')" *ngIf="planFilePath && planFilePath !== ''" class="download">附件下载</button>
       </div>
     </form>
   </div>
@@ -183,7 +179,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of staffList">
-              <td><span (click)='getStaffInfo(item["doId"])' class="station">落实</span></td>
+              <td><span (click)='getStaffInfo(item["doId"],item["planId"])' class="station">落实</span></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
             </tr>
           </tbody>

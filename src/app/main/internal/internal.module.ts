@@ -19,6 +19,7 @@ import { StationInputComponent } from './station-input/station-input.component';
 import { DeviceSearchComponent } from './device-search/device-search.component';
 import { DeviceInputComponent } from './device-input/device-input.component';
 import { TalkInputComponent } from './talk-input/talk-input.component';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { TalkInputComponent } from './talk-input/talk-input.component';
     CalendarModule,
     SharedModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgxEchartsModule
   ],
   declarations: [InternalComponent, TrainExecuteComponent, TrainExecuteSearchComponent,
     TrainPlanSearchComponent, TrainPlanComponent, TalkSearchComponent, TalkCountComponent, DocSearchComponent, DocUploadComponent,

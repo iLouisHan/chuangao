@@ -3,9 +3,9 @@
   <div *ngIf="isChosen" class="infoContainer">
       <div class="basic-info part-container">
           <h1 class="part-title">计划信息</h1>
-          <div>
-            <button (click)="download('do')" *ngIf="doFilePath !== ''">下载落实附件</button>
-            <button (click)="download('plan')" *ngIf="planFilePath !== ''">下载计划附件</button>
+          <div class="flexBox">
+            <button (click)="download('do')" *ngIf="doFilePath && doFilePath !== ''">下载落实附件</button>
+            <button (click)="download('plan')" *ngIf="planFilePath &&planFilePath !== ''">下载计划附件</button>
             <button (click)="isChosen = !isChosen">返回</button>
           </div>
           <div class="basic-items part-content">
@@ -45,13 +45,13 @@
           <div class="form-item">
             <p>发起单位</p>
             <div class="tree-container">
-              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)" [initOrgName]="orgList[0].label"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">
             <p>落实单位</p>
             <div class="tree-container">
-              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedExOrg($event)"></app-drop-org-tree>
+              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedExOrg($event)" [initOrgName]="orgList[0].label"></app-drop-org-tree>
             </div>
           </div>
           <div class="form-item">

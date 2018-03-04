@@ -50,7 +50,7 @@ export class TrainExecuteComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       trainPlanName: new FormControl('', Validators.nullValidator),
-      trainPlanOrg: new FormControl('', Validators.nullValidator),
+      trainOrgName: new FormControl('', Validators.nullValidator),
       trainDoOrg: new FormControl('', Validators.nullValidator),
       trainStartDate: new FormControl('', Validators.nullValidator),
       trainTeacher: new FormControl('', Validators.nullValidator),
@@ -128,7 +128,7 @@ export class TrainExecuteComponent implements OnInit {
   selectedOrg($event) {
     this.searchOrg[0] = ($event);
   }
-  getStaffInfo(staffId) {
+  getStaffInfo(staffId, planId) {
     this.selectedUser  = staffId;
     this.isChosen = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/doGetById?id=${staffId}`)
@@ -144,7 +144,7 @@ export class TrainExecuteComponent implements OnInit {
                 alert(res.message);
               }
             });
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${staffId}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${planId}`)
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
@@ -216,15 +216,15 @@ export class TrainExecuteComponent implements OnInit {
     this.toFirstPage();
   }
 
-  update() {
-    if (this.selectedUser) {
-      this.getStaffInfo(this.selectedUser);
-      this.isChosen = true;
-      this.isAdd = false;
-    } else {
-      alert('请选择一个人员');
-    }
-  }
+  // update() {
+  //   if (this.selectedUser) {
+  //     this.getStaffInfo(this.selectedUser);
+  //     this.isChosen = true;
+  //     this.isAdd = false;
+  //   } else {
+  //     alert('请选择一个人员');
+  //   }
+  // }
 
   // delete() {
   //   if (this.selectedUser) {
