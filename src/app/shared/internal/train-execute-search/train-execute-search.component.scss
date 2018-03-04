@@ -6,7 +6,10 @@
       .basic-info{
         min-width: 550px;
         width: 100%;
-        div{
+        .flexBox{
+          display: flex;
+          justify-content: center;
+          align-items: center;
           button{
             width: 120px;
             height: 40px;
@@ -273,6 +276,7 @@
               color: white;
               padding: 5px;
               border-radius: 5px;
+              cursor: pointer;
             }
           }
         }

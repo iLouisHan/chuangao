@@ -4,6 +4,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import 'rxjs/add/operator/switchMap';
 
 @Component({
   selector: 'app-train-execute-search',
@@ -41,6 +43,8 @@ export class TrainExecuteSearchComponent implements OnInit {
 
   constructor(
     private http: Http,
+    private route: ActivatedRoute,
+    private router: Router,
     private store: Store<any>
   ) {
     this.form = new FormGroup({
@@ -137,7 +141,7 @@ export class TrainExecuteSearchComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   res.data.trainDoDataList.forEach(item => {
-                    item.hasDo = item.hasDo === '0' ? '未落实' : '已落实';
+                    item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
                   });
                   this.staffList = res.data.trainDoDataList;
                 }
@@ -182,8 +186,9 @@ export class TrainExecuteSearchComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
-        this.orgList = [{data: res.orgCode}];
-        this.trainDoOrgList = [{data: res.orgCode}];
+        this.orgList = [{data: res.orgCode, label: res.orgName}];
+        this.trainDoOrgList = [{data: res.orgCode, label: res.orgName}];
+        this.form.value.trainPlanName = this.route.snapshot.queryParamMap.get('planName');
         this.getInfo(this.page, this.size);
       }
     });

@@ -1,4 +1,21 @@
-<h1 class="page-title"><div class="page-title-icon"></div>谈心统计</h1>
+<h1 class="page-title"><div class="page-title-icon"></div>出勤考核</h1>
+<div *ngIf = "isChoose" class="dialogContainer">
+  <div class="dialogContent">
+    <div class="dialogHeader">
+      未谈心原因
+    </div>
+    <div class="dialogBody">
+      <p>未谈心对象</p>
+      <input type="text" [value]="staff.userName" disabled="true">
+      <p>未谈心原因</p>
+      <textarea placeholder="请输入未谈心原因" [value] = "staff.reason" [(ngModel)]="staff.reason"></textarea>
+    </div>
+    <div class="dialogFooter">
+      <button type="button" class="btn btn-default" (click)="isChoose = false">关闭</button>
+      <button type="button" class="btn btn-save" (click)= "saveReason()">保存</button>
+    </div>
+  </div>
+</div>
 <div class="part-container">
   <div class="main-container">
     <div class="condition-container">
@@ -8,20 +25,24 @@
           <div>
             <div>
               <span>收费站</span>
-              <select>
-                <option value=""></option>
+              <div class="tree-container">
+                <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)" [initOrgName]="orgList[0].label"></app-drop-org-tree>
+              </div>
+              <!-- <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div> -->
+            </div>
+            <div>
+              <span>年份</span>
+              <select [(ngModel)]="year">
+                <option *ngFor="let year of yearList" [value]="year">{{year}}</option>
               </select>
             </div>
             <div>
               <span>季度</span>
-              <select>
-                <option value=""></option>
-              </select>
-            </div>
-            <div>
-              <span>年份</span>
-              <select>
-                <option value=""></option>
+              <select [(ngModel)]="quarter">
+                <option value="1">第一季度</option>
+                <option value="2">第二季度</option>
+                <option value="3">第三季度</option>
+                <option value="4">第四季度</option>
               </select>
             </div>
             <div class="search-btn" (click)="search()">查询</div>
@@ -31,24 +52,27 @@
     </div>
     <div class="chart-container">
       <div class="part-content">
-        <img src="/assets/images/attendance-check.png" alt="">
+        <div class="echart-container">
+          <div echarts [options]="options" [merge]="updateOptions"></div>
+        </div>
       </div>
     </div>
     <div class="table-container">
+      <h1 class="part-title">未谈心人员</h1>
       <div class="part-content">
-        <div>
-          <table class="myTable">
-            <thead>
-              <tr>
-                <th *ngFor="let field of cols">{{field.header}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- <tr *ngFor="let item of leaveList">
-                <td *ngFor="let field of cols">{{item[field.field]}}</td>
-              </tr> -->
-            </tbody>
-          </table>
+        <div class="talkNum">未谈心人员：{{staffList.length}}</div>
+        <div class="talkList">
+          <div class="oneTalk" *ngFor = "let item of staffList">
+            <div class="talkName">
+              {{item.userName}}
+            </div>
+            <div class="orangeState" *ngIf="item['reason'] && item['reason'].length" (click)="show(item)">
+              <span>已填写原因</span>
+            </div>
+            <div class="blueState" *ngIf="!item['reason']" (click)="show(item)">
+              <span>未填写原因</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

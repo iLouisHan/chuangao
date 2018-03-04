@@ -39,7 +39,7 @@ export class DropOrgTreeComponent implements OnInit {
         orgType: node.orgType,
         children: []
       });
-    }else if (arr.children.length > 0) {
+    } else if (arr.children.length > 0) {
       arr.children.forEach(el => {
         this.addChild(el, node);
       });
@@ -54,7 +54,7 @@ export class DropOrgTreeComponent implements OnInit {
           this.treeNodes.forEach(element => {
             this.addChild(element, el);
           });
-        }else {
+        } else {
           this.treeNodes.push({
             label: el.orgName,
             data: el.orgCode,
@@ -74,7 +74,7 @@ export class DropOrgTreeComponent implements OnInit {
   nodeSelect($event) {
     if (this.selectionMode === 'checkbox') {
       this.selected = this.selectedFiles2.map(el => el.label).join(', ');
-    }else {
+    } else {
       this.selectedFiles2 = [$event.node];
       this.selected = this.selectedFiles2[0].label;
     }
@@ -87,7 +87,7 @@ export class DropOrgTreeComponent implements OnInit {
               .subscribe(res => {
                 if (res.code) {
                   this.toTreeNode(res.data);
-                }else {
+                } else {
                   alert(res.message);
                 }
               });

@@ -47,13 +47,13 @@ export class AttendanceCheckComponent implements OnInit {
   search() {
     if (!this.orgList || this.orgList.length <= 0) {
       alert('请选择机构！');
-    }else if (this.orgList[0].orgType !== 3) {
+    } else if (this.orgList[0].orgType !== 3) {
       alert('请选择收费站！');
-    }else if (!this.year) {
+    } else if (!this.year) {
       alert('请选择年份！');
-    }else if (!this.staff) {
+    } else if (!this.staff) {
       alert('请选择人员！');
-    }else {
+    } else {
       this.getInfo();
     }
   }
@@ -87,7 +87,7 @@ export class AttendanceCheckComponent implements OnInit {
         const index = type + smallType + 4;
         const num = this.attendanceList[mon][index];
         this.attendanceList[mon][index] = num ? num + 1 : 1;
-      }else {
+      } else {
         const num = this.attendanceList[mon][type];
         this.attendanceList[mon][type] = num ? num + 1 : 1;
       }
@@ -202,7 +202,7 @@ export class AttendanceCheckComponent implements OnInit {
           data: res.orgCode
         }];
       }
-    })
+    });
 
     const year = (new Date()).getFullYear();
     const xAxisData: any = [];

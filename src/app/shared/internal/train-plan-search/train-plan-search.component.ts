@@ -4,6 +4,7 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-train-plan-search',
@@ -20,7 +21,9 @@ export class TrainPlanSearchComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
+  planData: any;
   hasData = false;
+  isChosen: boolean;
   selectionMode = 'single';
   en = {
     firstDayOfWeek: 0,
@@ -37,14 +40,16 @@ export class TrainPlanSearchComponent implements OnInit {
 
   constructor(
     private http: Http,
+    private router: Router,
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl('', Validators.nullValidator),
+      hasDo: new FormControl('-1', Validators.nullValidator),
       trainWay: new FormControl('', Validators.nullValidator),
       trainType: new FormControl('', Validators.nullValidator),
       trainPlanName: new FormControl('', Validators.nullValidator)
     });
+    this.isChosen = false;
     this.login = store.select('login');
     this.cols = [
       { field: 'trainName', header: '培训计划名称' },
@@ -129,10 +134,17 @@ export class TrainPlanSearchComponent implements OnInit {
             });
   }
 
-  check($event) {
-    this.checkItem = $event.target.value;
+  select(obj) {
+    this.planData = obj;
+    this.isChosen = true;
   }
-
+  linkTo(url, param) {
+    this.router.navigate([`${url}`], {
+      queryParams: {
+        planName: param
+      }
+    });
+  }
   test(val) {
     return val === +this.checkItem;
   }
@@ -140,7 +152,7 @@ export class TrainPlanSearchComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
-        this.orgList = [{data: res.orgCode}];
+        this.orgList = [{data: res.orgCode, label: res.orgName}];
         this.getInfo(this.page, this.size);
       }
     });

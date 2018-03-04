@@ -253,6 +253,9 @@
             line-height: 40px;
             color: #666;
             white-space: nowrap;
+            .station{
+              cursor: pointer;
+            }
           }
   
           td{
