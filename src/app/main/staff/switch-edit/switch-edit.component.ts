@@ -20,7 +20,6 @@ export class SwitchEditComponent implements OnInit {
   adminId: string;
   en: any;
   file: any;
-  isChosen = false;
   login: Observable<any> = new Observable<any>();
   orgCode: string;
   page = 0;
@@ -51,9 +50,12 @@ export class SwitchEditComponent implements OnInit {
   applyChangeType = 1;
   userId: string;
   shiftChangeDataList: Array<any>;
-  shiftChangeDataList2: Array<any>;
   returnDate: string;
+  _returnDate: string;
+  _returnShift: string;
   backDate: string;
+  view = 0;
+  _select: any;
 
   constructor(
     private http: Http,
@@ -78,14 +80,14 @@ export class SwitchEditComponent implements OnInit {
     this.cols = [
       { field: 'orgName', header: '组织名称' },
       { field: 'applyUserName', header: '换/顶班申请人' },
-      { field: 'applyTeams', header: '换/顶班班组' },
+      { field: 'applyTeamsCN', header: '换/顶班班组' },
       { field: 'applyDate', header: '换/顶班日期' },
-      { field: 'applyShift', header: '换/顶班班次' },
+      { field: 'applyShiftCN', header: '换/顶班班次' },
       { field: 'applyChangeType', header: '排班类型' },
       { field: 'backUserName', header: '替班收费员' },
-      { field: 'backTeams', header: '替班班组' },
+      { field: 'backTeamsCN', header: '替班班组' },
       { field: 'backDate', header: '替班日期' },
-      { field: 'backShift', header: '替班班次' },
+      { field: 'backShiftCN', header: '替班班次' },
       { field: 'remark', header: '备注' }
     ];
     this.initForm = {
@@ -99,15 +101,16 @@ export class SwitchEditComponent implements OnInit {
   }
 
   getSwitchInfo(leaveId) {
-    this.data = this.shiftChangeDataList2.filter(el => el.id === leaveId)[0];
-    console.log(this.data);
-    this.isChosen = true;
+    this.data = this.shiftChangeDataList.filter(el => el.id === leaveId)[0];
+    this.view = 1;
     this.applyTeams = this.data.applyTeams;
     this.applyUserName = this.data.applyUserName;
     this.backUserName = this.data.backUserName;
     this.backTeams = this.data.backTeams;
     this.applyUserId = this.data.applyUserId;
     this.backUserId = this.data.backUserId;
+    this.backDate = this.data.backDate;
+    this.returnDate = this.data.returnDate;
     this.form.patchValue(this.data);
     this.form.patchValue({applyUserId: this.data.userId});
     this.applyInfo = {
@@ -115,7 +118,9 @@ export class SwitchEditComponent implements OnInit {
       shiftId: this.data.applyShift
     };
     this.getStaff(this.applyTeams, 1);
-    this.getStaff(this.backTeams, 2);
+    if (this.backTeams) {
+      this.getStaff(this.backTeams, 2);
+    }
   }
 
   getInfo() {
@@ -130,13 +135,12 @@ export class SwitchEditComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList.concat([]);
-                  this.shiftChangeDataList2 = res.data.shiftChangeDataList.concat([]);
+                  this.shiftChangeDataList = res.data.shiftChangeDataList;
                   this.shiftChangeDataList.forEach(el => {
-                    el.applyTeams = this.list_group[el.applyTeams];
-                    el.backTeams = this.list_group[el.backTeams];
-                    el.applyShift = this.shiftId[el.applyShift];
-                    el.backShift = this.shiftId[el.backShift];
+                    el.applyTeamsCN = this.list_group[el.applyTeams];
+                    el.backTeamsCN = this.list_group[el.backTeams];
+                    el.applyShiftCN = this.shiftId[el.applyShift];
+                    el.backShiftCN = this.shiftId[el.backShift];
                   });
                 }
               }else {
@@ -156,9 +160,29 @@ export class SwitchEditComponent implements OnInit {
     }
   }
 
+  returnSubmit() {
+    this._select.returnDate = this.dateFormat(this._returnDate);
+    this._select.returnShift = +this._returnShift;
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/update`, JSON.stringify(this._select), {
+              headers: myHeaders
+            })
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                alert(res.message);
+                this.toFirstPage();
+                this._select = '';
+              }else {
+                alert(res.message);
+              }
+            });
+  }
+
   add() {
     this.form.patchValue(this.initForm);
-    this.isChosen = true;
+    this.view = 1;
     this.isAdd = true;
   }
 
@@ -184,7 +208,7 @@ export class SwitchEditComponent implements OnInit {
   update() {
     if (this.selectedSwitch) {
       this.getSwitchInfo(this.selectedSwitch);
-      this.isChosen = true;
+      this.view = 1;
       this.isAdd = false;
     }else {
       alert('请选择一个换班信息！');
@@ -199,12 +223,19 @@ export class SwitchEditComponent implements OnInit {
     }
   }
 
+  return() {
+    if (this.selectedSwitch) {
+      this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitch)[0];
+      this.view = 2;
+    }
+  }
+
   select(val) {
     this.selectedSwitch = val === this.selectedSwitch ? '' : val;
   }
 
   check(val) {
-    // return val === this.selectedLeave;
+    return val === this.selectedSwitch;
   }
 
   deleteLeave(selectedSwitch) {
@@ -240,7 +271,7 @@ export class SwitchEditComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 alert(res.message);
-                this.isChosen = false;
+                this.view = 0;
                 this.toFirstPage();
               }else {
                 alert(res.message);
@@ -256,6 +287,7 @@ export class SwitchEditComponent implements OnInit {
     this.form.value.applyTeams = +this.form.value.applyTeams;
     this.form.value.applyChangeType = this.applyChangeType;
     this.form.value.backTeams = +this.form.value.backTeams;
+    this.form.value.checkUserId = this.userId;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
@@ -293,7 +325,7 @@ export class SwitchEditComponent implements OnInit {
   toFirstPage() {
     const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
     if (element) {
-      this.isChosen = false;
+      this.view = 0;
       element.click();
     }else {
       this.getInfo();

@@ -9,10 +9,11 @@ import { HasLoginGuard } from '../guard/has-login.guard';
 import { GeneralSidebarComponent } from './general-sidebar/general-sidebar.component';
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { CalendarModule } from 'primeng/primeng';
+import { CalendarModule, PaginatorModule } from 'primeng/primeng';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 import { SwitchEditComponent } from './switch-edit/switch-edit.component';
 import { HoldEditComponent } from './hold-edit/hold-edit.component';
+import { ReturnEditComponent } from './return-edit/return-edit.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { HoldEditComponent } from './hold-edit/hold-edit.component';
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
-    CalendarModule
+    CalendarModule,
+    PaginatorModule
   ],
   declarations: [
     GeneralComponent,
@@ -30,7 +32,8 @@ import { HoldEditComponent } from './hold-edit/hold-edit.component';
     GeneralSidebarComponent,
     LeaveEditComponent,
     SwitchEditComponent,
-    HoldEditComponent
+    HoldEditComponent,
+    ReturnEditComponent
   ],
   providers: [
     HasLoginGuard

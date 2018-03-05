@@ -1,0 +1,57 @@
+<h1 class="page-title"><div class="page-title-icon"></div>还班登记</h1>
+<div *ngIf="view === 1" class="part-container">
+  <h1 class="part-title">还班信息填报</h1>
+  <div class="part-content">
+    <div>
+      <form>
+        <div class="form-item">
+          <p>还班日期</p>
+          <p-calendar [(ngModel)]="_returnDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        </div>
+        <div class="form-item">
+          <p>还班班次</p>
+          <select [(ngModel)]="_returnShift"  [ngModelOptions]="{standalone: true}">
+            <option value="0">请选择</option>
+            <option value="1">白班</option>
+            <option value="2">夜班</option>
+            <option value="3">中班</option>
+          </select>
+        </div>
+      </form>
+      <div class="form-item">
+        <button (click)="returnSubmit()" class="form-btn">提&nbsp;交</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="part-container">
+  <div class="staff-navbar">
+    <h1 class="part-title">还班登记</h1>
+    <div class="part-content clearfix">
+      <ul class="btn-list cleafix">
+        <li (click)="return()" class="btn-list-li">还班</li>
+      </ul>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of shiftChangeDataList">
+              <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

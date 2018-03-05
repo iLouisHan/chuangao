@@ -6,6 +6,7 @@ import { GeneralComponent } from './general.component';
 import { HoldEditComponent } from './hold-edit/hold-edit.component';
 import { SwitchEditComponent } from './switch-edit/switch-edit.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
+import { ReturnEditComponent } from './return-edit/return-edit.component';
 
 export const GeneralRoute: Routes = [
   {
@@ -41,6 +42,10 @@ export const GeneralRoute: Routes = [
       {
         path: 'leaveEdit',
         component: LeaveEditComponent
+      },
+      {
+        path: 'returnEdit',
+        component: ReturnEditComponent
       }
     ]
   }

@@ -11,19 +11,38 @@
         </div>
         <div class="form-item">
           <p>收费员职位</p>
-          <!-- <div><span>{{workPost[data.workPost]}}</span></div> -->
+          <div><span *ngIf="data&&data.workPost">{{workPost[data.workPost]}}</span></div>
         </div>
         <div class="form-item">
-          <p>考核年度</p>
-          <input type="text" formControlName="year">
+          <p>普通话等级</p>
+          <select formControlName="mandarinLevel">
+            <option value="1">三乙</option>
+            <option value="2">三甲</option>
+            <option value="3">二乙</option>
+            <option value="4">二甲</option>
+            <option value="5">一乙</option>
+            <option value="6">一甲</option>
+          </select>
         </div>
         <div class="form-item">
-          <p>综合得分</p>
-          <input type="text" formControlName="score">
+          <p>普通话等级评定时间</p>
+          <p-calendar [(ngModel)]="mandarinLevelEvaluate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        </div>
+        <div class="form-item">
+          <p>计算机等级</p>
+          <select formControlName="computerLevel">
+            <option value="3">其他</option>
+            <option value="1">一级</option>
+            <option value="2">二级</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>计算机等级评定时间</p>
+          <p-calendar [(ngModel)]="computerLevelEvaluate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
         </div>
       </form>
       <div class="form-item">
-        <button (click)="updateExam()" class="form-btn">提&nbsp;交</button>
+        <button class="form-btn" (click)="add()">提&nbsp;交</button>
       </div>
     </div>
   </div>
