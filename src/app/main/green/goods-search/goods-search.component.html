@@ -1,0 +1,45 @@
+<h1 class="page-title"><div class="page-title-icon"></div>货物分类查询</h1>
+<div class="part-container">
+  <h1 class="part-title">打印客户端</h1>
+  <div class="scroll-table-container">
+    <div class="part-content">
+      <table>
+        <thead>
+          <tr>
+            <td colspan="2">类别</td>
+            <td>常见品种示例</td>
+            <td>免费品种</td>
+            <td>不免费品种</td>
+            <td>备注</td>
+          </tr>
+        </thead>
+        <tbody *ngIf="dataArr && dataArr[0]">
+          <tr *ngFor="let item of dataArr[0].children; index as i">
+            <td *ngIf="i === 0" [attr.rowspan]="dataArr[0].children.length">{{dataArr[0].name}}</td>
+            <td *ngFor="let field of cols">{{item[field]}}</td>
+          </tr>
+          <tr *ngFor="let item of dataArr[1].children; index as i">
+            <td *ngIf="i === 0" [attr.rowspan]="dataArr[1].children.length">{{dataArr[1].name}}</td>
+            <td *ngFor="let field of cols">{{item[field]}}</td>
+          </tr>
+          <tr *ngFor="let item of dataArr[2].children; index as i">
+            <td *ngIf="i === 0" [attr.rowspan]="dataArr[2].children.length">{{dataArr[2].name}}</td>
+            <td *ngFor="let field of cols">{{item[field]}}</td>
+          </tr>
+          <tr *ngFor="let item of dataArr[3].children; index as i">
+            <td *ngIf="i === 0" [attr.rowspan]="dataArr[3].children.length">{{dataArr[3].name}}</td>
+            <td *ngFor="let field of cols">{{item[field]}}</td>
+          </tr>
+          <tr *ngFor="let item of dataArr[4].children; index as i">
+            <td *ngIf="i === 0" [attr.rowspan]="dataArr[4].children.length">{{dataArr[4].name}}</td>
+            <td *ngFor="let field of cols">{{item[field]}}</td>
+          </tr>
+          <tr *ngFor="let item of dataArr[5].children; index as i">
+            <td *ngIf="i === 0" [attr.rowspan]="dataArr[5].children.length">{{dataArr[5].name}}</td>
+            <td *ngFor="let field of cols">{{item[field]}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

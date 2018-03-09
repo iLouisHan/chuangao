@@ -1,0 +1,53 @@
+<h1 class="page-title"><div class="page-title-icon"></div>绿通流水查询</h1>
+<div class="part-container">
+  <h1 class="part-title">绿通流水查询</h1>
+  <div class="part-content">
+    <form>
+      <div class="form-item">
+        <p>车牌号</p>
+        <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="carNo">
+      </div>
+      <div class="form-item">
+        <p>起始时间</p>
+        <p-calendar [(ngModel)]="startDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <p>截止时间</p>
+        <p-calendar [(ngModel)]="endDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+      <div class="form-item">
+        <button (click)="getInfo()" class="form-btn">查&nbsp;询</button>
+      </div>
+    </form>
+  </div>
+  <div class="flex-container">
+    <div class="middle-container">
+      <h1 class="part-title">平均吨位</h1>
+      <div>
+        <span></span>
+      </div>
+    </div>
+    <div class="middle-container">
+      <h1 class="part-title">车辆运输次数统计</h1>
+      <div></div>
+    </div>
+  </div>
+  <div class="flex-container">
+    <div class="bottom-container">
+      <h1 class="part-title">常走路线</h1>
+      <div class="commonLine">
+        <span>{{data.commonLine}}</span>
+      </div>
+    </div>
+    <div class="bottom-container">
+      <h1 class="part-title">常运货物</h1>
+      <div></div>
+    </div>
+    <div class="bottom-container">
+      <h1 class="part-title">常运重量</h1>
+      <div></div>
+    </div>
+  </div>
+</div>
+<div class="part-container">
+</div>

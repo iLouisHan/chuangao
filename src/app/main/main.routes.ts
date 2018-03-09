@@ -32,6 +32,10 @@ export const MainRoutes: Routes = [
         loadChildren: './staff/staff.module#StaffModule'
       },
       {
+        path: 'green',
+        loadChildren: './green/green.module#GreenModule'
+      },
+      {
         path: 'staffDetail',
         component: StaffDetailComponent
       },

@@ -16,12 +16,12 @@ export function LoginReducer(
   }
 }
 
-export function OrgInfoReducer(
+export function GreenReducer(
   state: any,
   action: collection.Actions
 ) {
   switch (action.type) {
-    case collection.SAVEORGINFO: {
+    case collection.SAVEGREENINFO: {
       state = action.payload;
       return state;
     }

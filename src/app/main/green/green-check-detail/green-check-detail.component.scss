@@ -1,0 +1,109 @@
+.basic-container{
+  .part-content{
+    margin: 0 20px;
+    padding: 15px;
+  }
+
+  .flex-container{
+    display: flex;
+    justify-content: space-between;
+    height: 800px;
+
+    .company-des{
+      width: calc((100% - 120px)/2);
+      margin: 0 20px;
+
+      .info-container{
+        background: #fff;
+        padding: 15px;
+        margin-bottom: 20px;
+
+        .data-title{
+          color: #6c9cff;
+          font-size: 20px;
+          margin-bottom: 20px;
+        }
+
+        > div {
+
+          .data-item{
+            float: left;
+            min-width: 33%;
+            margin-bottom: 10px;
+
+            &.data-item2{
+              min-width: 50%;
+            }
+
+            span{
+              display: inline-block;
+            }
+
+            .item-name{
+              min-width: 60px;
+              text-align: justify;
+              margin-right: 10px;
+            }
+
+            .item-value{
+              color: #999;
+            }
+          }
+        }
+      }
+    }
+    .basic-info{
+      height: 750px;
+      width: calc((100% - 140px)/2);
+
+      .basic-items{
+
+        .info-container{
+          background: #fff;
+          padding: 15px;
+          margin-bottom: 20px;
+
+          .data-title{
+            color: #6c9cff;
+            font-size: 20px;
+            margin-bottom: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.button-group{
+  width: 260px;
+  height: 40px;
+  margin: auto;
+  margin-bottom: 20px;
+
+  .button-submit{
+    width: 120px;
+    height: 40px;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 40px;
+    color: #fff;
+    font-size: 18px;
+    float: left;
+    background: #6c9cff;
+    cursor: pointer;
+  }
+
+  .button-cancel{
+    width: 120px;
+    height: 40px;
+    border: 1px solid #6c9cff;
+    color: #6c9cff;
+    font-size: 18px;
+    float: right;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+  }
+}
+

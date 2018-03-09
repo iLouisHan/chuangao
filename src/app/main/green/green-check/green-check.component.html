@@ -1,0 +1,65 @@
+<h1 class="page-title"><div class="page-title-icon"></div>绿通流水查询</h1>
+<div class="part-container">
+  <h1 class="part-title">绿通流水查询</h1>
+  <div class="part-content">
+    <form [formGroup]="form">
+      <div class="form-item">
+        <p>管理机构</p>
+        <div>{{orgName}}</div>
+      </div>
+      <div class="form-item">
+        <p>班次</p>
+        <select formControlName="shift">
+          <option value="-1">请选择</option>
+          <option value="1">早班</option>
+          <option value="2">夜班</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>检查结果</p>
+        <select formControlName="firstCheck">
+          <option value="-1">请选择</option>
+          <option value="0">未检</option>
+          <option value="1">合格</option>
+          <option value="2">不合格</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <p>车牌号</p>
+        <input type="text" formControlName="carNo">
+      </div>
+      <div class="form-item">
+        <p>时间</p>
+        <p-calendar [(ngModel)]="dateTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+      </div>
+    </form>
+    <div class="form-item">
+      <button (click)="getInfo()" class="form-btn">查&nbsp;询</button>
+    </div>
+  </div>
+</div>
+<div class="part-container">
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <!-- <th></th> -->
+              <th>操作</th>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of carCheckHisDataList">
+              <!-- <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td> -->
+              <td><a [routerLink]="['../checkDetail']" [queryParams]="{id: item.id}">详情</a></td>
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

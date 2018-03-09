@@ -1,0 +1,79 @@
+<h1 class="page-title"><div class="page-title-icon"></div>货物分类管理</h1>
+<div class="main-container">
+  <div class="condition-container">
+    <div class="part-container">
+      <h1 class="part-title">货物分类</h1>
+      <div class="part-content clearfix">
+        <p-tree class="tree"
+          (onNodeSelect)="nodeSelect($event)"
+          (onNodeUnselect)="nodeSelect($event)"
+          [value]="treeNodes"
+          [class.show]="isShow"
+          selectionMode="single"
+          [(selection)]="selectedFiles2"
+          [propagateSelectionUp]="false"
+          [propagateSelectionDown]="false"></p-tree>
+      </div>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="part-container">
+      <h1 class="part-title">货物分类明细查询</h1>
+      <div class="part-content">
+        <div class="clearfix">
+          <ul class="btn-list">
+            <li (click)="add()" class="btn-list-li">增加</li>
+            <li (click)="delete()" class="btn-list-li">删除</li>
+          </ul>
+        </div>
+      </div>
+      <div class="part-content">
+        <form [formGroup]="form">
+          <div class="form-item">
+            <p>上级结构代码</p>
+            <input type="text" formControlName="pCode">
+          </div>
+          <div class="form-item">
+            <p>上级代码名称</p>
+            <input type="text" formControlName="pName">
+          </div>
+          <div class="form-item">
+            <p>结构代码</p>
+            <input type="text" formControlName="code">
+          </div>
+          <div class="form-item">
+            <p>结构名称</p>
+            <input type="text" formControlName="name">
+          </div>
+          <div class="form-item">
+            <p>排序值</p>
+            <input type="text" formControlName="sort">
+          </div>
+          <div class="form-item">
+            <p>货物名称拼音首字母大写</p>
+            <input type="text" formControlName="upperName">
+          </div>
+          <div class="form-item">
+            <p>小类货物明细（用分号隔开）</p>
+            <input type="text" formControlName="itemDetail">
+          </div>
+          <div class="form-item">
+            <p>免费货物明细（用分号隔开）</p>
+            <input type="text" formControlName="freeItem">
+          </div>
+          <div class="form-item">
+            <p>不免费货物明细（用分号隔开）</p>
+            <input type="text" formControlName="noFreeItem">
+          </div>
+          <div class="form-item">
+            <p>备注</p>
+            <input type="text" formControlName="remark">
+          </div>
+        </form>
+        <div class="form-item">
+          <button (click)="submit()" class="form-btn">保&nbsp;存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

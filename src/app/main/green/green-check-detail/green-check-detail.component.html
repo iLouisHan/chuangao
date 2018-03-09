@@ -1,0 +1,70 @@
+<h1 class="page-title"><div class="page-title-icon"></div>绿通流水审核</h1>
+<div class="basic-container part-container">
+  <h1 class="part-title">绿通档案审批</h1>
+  <div class="flex-container clearfix">
+    <div class="company-des">
+      <div class="info-container">
+        <p class="data-title">车辆信息</p>
+        <div class="clearfix">
+          <p class="data-item"><span class="item-name">车牌号</span><span class="item-value">{{data.carNo}}</span></p>
+          <p class="data-item"><span class="item-name">车型</span><span class="item-value">{{data.carTypeCN}}</span></p>
+          <p class="data-item"><span class="item-name">货箱类型</span><span class="item-value">{{data.boxTypeCN}}</span></p>
+          <p class="data-item"><span class="item-name">车主姓名</span><span class="item-value">{{data.carOwnerName}}</span></p>
+          <p class="data-item"><span class="item-name">车主电话</span><span class="item-value">{{data.carOwnerPhone}}</span></p>
+          <p class="data-item"><span class="item-name">出口称重（吨）</span><span class="item-value">{{data.goodsWeight}}</span></p>
+          <p class="data-item"><span class="item-name">运送货物</span><span class="item-value">{{data.goods}}</span></p>
+        </div>
+      </div>
+      <div class="info-container">
+        <p class="data-title">行驶路线</p>
+        <div class="clearfix">
+          <p class="data-item data-item2"><span class="item-name">{{data.entryName}}/{{data.entryStation}}->{{data.exportName}}/{{data.exportStation}}</span></p>
+          <p class="data-item data-item2"><span class="item-name">出站时间</span><span class="item-value">{{data.dateTime}}</span></p>
+        </div>
+      </div>
+      <div class="info-container">
+        <p class="data-title">出站信息</p>
+        <div class="clearfix">
+          <p class="data-item"><span class="item-name">车类情况</span><span class="item-value">{{data.runTypeCN}}</span></p>
+          <p class="data-item"><span class="item-name">处理结果</span><span class="item-value">{{data.dealResultCN}}</span></p>
+          <p class="data-item"><span class="item-name">免/缴金额</span><span class="item-value">{{data.money}}</span></p>
+          <p class="data-item"><span class="item-name">备注</span><span class="item-value">{{data.remark}}</span></p>
+        </div>
+      </div>
+      <div class="info-container">
+        <p class="data-title">检查信息</p>
+        <div class="clearfix">
+          <p class="data-item"><span class="item-name">初检结果</span><span class="item-value">{{data.firstCheckCN}}</span></p>
+          <p class="data-item"><span class="item-name">批注</span><span class="item-value">{{data.remark}}</span></p>
+        </div>
+      </div>
+      <div class="info-container">
+        <p class="data-title">当班信息</p>
+        <div class="clearfix">
+          <p class="data-item"><span class="item-name">班次</span><span class="item-value">{{data.shiftCN}}</span></p>
+          <p class="data-item"><span class="item-name">车道</span><span class="item-value">{{data.shiftCar}}</span></p>
+          <p class="data-item"><span class="item-name">当班站管</span><span class="item-value">{{data.shiftStationManager}}</span></p>
+          <p class="data-item"><span class="item-name">班长</span><span class="item-value">{{data.shiftMonitor}}</span></p>
+          <p class="data-item"><span class="item-name">副班长</span><span class="item-value">{{data.shiftViceMonitor}}</span></p>
+          <p class="data-item"><span class="item-name">检察人1</span><span class="item-value">{{data.shiftCheck1}}</span></p>
+          <p class="data-item"><span class="item-name">检查人2</span><span class="item-value">{{data.shiftCheck2}}</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="basic-info part-content">
+      <div class="basic-items">
+        <div class="info-container">
+          <p class="data-title">检查图片</p>
+          <div class="clearfix">
+            <p class="data-item"><span class="item-name">班次</span><span class="item-value">{{data.shiftCN}}</span></p>
+            <p class="data-item"><span class="item-name">车道</span><span class="item-value">{{data.shiftCar}}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="button-group">
+    <button (click)="passSubmit()" class="button-submit">合格</button>
+    <button (click)="notpassSubmit()" class="button-cancel">不合格</button>
+  </div>
+</div>
