@@ -153,6 +153,12 @@ form{
 
   .bottom-container{
     width: calc((100% - 40px) / 3);
+
+    .flex-col-container{
+      // display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
   }
 
   .part-title{
@@ -162,8 +168,71 @@ form{
   > div > div{
     height: 250px;
     background: #fff;
-  }
 
+    &.echarts-container{
+      overflow: hidden;
+    }
+
+    &.average-container{
+      background: #fff url('/assets/images/green-his-back.png') no-repeat center center;
+      position: relative;
+
+      .abs-text1{
+        position: absolute;
+        top: 85px;
+        left: 0;
+        right: 0;
+        color: #6c9cff;
+        font-size: 20px;
+        display: block;
+        width: 100px;
+        text-align: center;
+        margin: auto;
+      }
+
+      .abs-text2{
+        position: absolute;
+        top: 135px;
+        left: 0;
+        right: 0;
+        color: #ffc382;
+        font-size: 20px;
+        display: block;
+        width: 100px;
+        margin: auto;
+        text-align: center;
+      }
+
+      .abs-circle1{
+        position: absolute;
+        top: 95px;
+        left: calc(50% - 120px);
+        color: #fff;
+        font-size: 20px;
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+        border-radius: 30px;
+        background: #6c9cff;
+        text-align: center;
+        font-size: 28px;
+      }
+
+      .abs-circle2{
+        position: absolute;
+        top: 85px;
+        left: calc(50% + 60px);
+        color: #fff;
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        border-radius: 40px;
+        background: #ffc382;
+        text-align: center;
+        font-size: 32px;
+      }
+    }
+  }
 
   .commonLine span{
     font-size: 40px;
@@ -171,5 +240,56 @@ form{
     text-align: center;
     width: 100%;
     display: block;
+  }
+}
+
+.my-chart-container{
+  display: flex;
+  align-items: center;
+
+  span{
+    width: 90px;
+    line-height: 100%;
+    text-indent: 1em;
+  }
+
+  .chart-background-container{
+    width: calc(100% - 110px);
+    height: 30px;
+    background: #ddd;
+
+    .chart-data{
+      background: #6c9cff;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: #fff;
+    }
+  }
+}
+
+.my-chart-weight-container{
+  height: 62.5px;
+  display: flex;
+  align-items: center;
+
+  span{
+    width: 90px;
+    line-height: 100%;
+    text-indent: 1em;
+  }
+
+  .chart-background-container{
+    width: calc(100% - 110px);
+    height: 30px;
+    background: #ddd;
+
+    .chart-data{
+      background: #6c9cff;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: #fff;
+    }
   }
 }

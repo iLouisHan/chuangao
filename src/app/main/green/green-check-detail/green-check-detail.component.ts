@@ -53,6 +53,19 @@ export class GreenCheckDetailComponent implements OnInit {
         });
   }
 
+  notpassSubmit() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/carCheck?id=${this.id}&check=2`)
+        .map(res => res.json())
+        .subscribe(res => {
+          if (res.code) {
+            alert(res.message);
+            this.router.navigate(['/main/green/check']);
+          }else {
+            alert(res.message);
+          }
+        });
+  }
+
   ngOnInit() {
     this.id = this.route.snapshot.queryParams['id'];
     this.getInfo();

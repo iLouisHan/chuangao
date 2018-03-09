@@ -20,19 +20,24 @@
       </div>
     </form>
   </div>
-  <div class="flex-container">
+  <div class="flex-container" *ngIf="data.commonGoods">
     <div class="middle-container">
       <h1 class="part-title">平均吨位</h1>
-      <div>
-        <span></span>
+      <div class="average-container">
+        <span class="abs-text1">波动区间</span>
+        <span class="abs-text2">（吨）</span>
+        <div class="abs-circle1">{{data.avgMin}}</div>
+        <div class="abs-circle2">{{data.avgMax}}</div>
       </div>
     </div>
     <div class="middle-container">
       <h1 class="part-title">车辆运输次数统计</h1>
-      <div></div>
+      <div class="echarts-container">
+        <div echarts [options]="options" [initOpts]="initOptions" [merge]="updateOptions"></div>
+      </div>
     </div>
   </div>
-  <div class="flex-container">
+  <div class="flex-container" *ngIf="data.commonGoods">
     <div class="bottom-container">
       <h1 class="part-title">常走路线</h1>
       <div class="commonLine">
@@ -41,11 +46,57 @@
     </div>
     <div class="bottom-container">
       <h1 class="part-title">常运货物</h1>
-      <div></div>
+      <div class="flex-col-container">
+        <ul >
+          <li *ngFor="let item of data.commonGoods; index as i">
+            <div class="my-chart-container" [style.height]="250/(data.commonGoods.length) + 'px'">
+              <span>{{item}}</span>
+              <div class="chart-background-container">
+                <div class="chart-data" [style.width]="getWidth(data.commonGoodsCount[i])">{{data.commonGoodsCount[i]}}</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="bottom-container">
       <h1 class="part-title">常运重量</h1>
-      <div></div>
+      <div>
+        <ul>
+          <li>
+            <div class="my-chart-weight-container">
+              <span>0-6</span>
+              <div class="chart-background-container">
+                <div class="chart-data" [style.width]="getWeightWidth(data.commonWeight[0])">{{data.commonWeight[0]}}</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="my-chart-weight-container">
+              <span>6-12</span>
+              <div class="chart-background-container">
+                <div class="chart-data" [style.width]="getWeightWidth(data.commonWeight[1])">{{data.commonWeight[1]}}</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="my-chart-weight-container">
+              <span>12-18</span>
+              <div class="chart-background-container">
+                <div class="chart-data" [style.width]="getWeightWidth(data.commonWeight[2])">{{data.commonWeight[2]}}</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="my-chart-weight-container">
+              <span>18-24</span>
+              <div class="chart-background-container">
+                <div class="chart-data" [style.width]="getWeightWidth(data.commonWeight[3])">{{data.commonWeight[3]}}</div>
+              </div>
+            </div>
+            </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

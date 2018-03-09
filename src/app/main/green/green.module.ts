@@ -4,6 +4,7 @@ import { GreenRoutes } from './green.routes';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, PaginatorModule, TreeModule } from 'primeng/primeng';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 import { GreenCheckComponent } from './green-check/green-check.component';
 import { GreenHistoryComponent } from './green-history/green-history.component';
@@ -21,7 +22,8 @@ import { GreenComponent } from './green.component';
     ReactiveFormsModule,
     CalendarModule,
     PaginatorModule,
-    TreeModule
+    TreeModule,
+    NgxEchartsModule
   ],
   declarations: [
     GreenCheckComponent,
