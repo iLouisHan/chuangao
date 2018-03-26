@@ -30,6 +30,11 @@
   }
 }
 
+.tree-container{
+  max-height: 500px;
+  overflow: scroll;
+}
+
 form{
   display: flex;
   justify-content: flex-start;
