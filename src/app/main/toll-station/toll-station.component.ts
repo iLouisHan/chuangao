@@ -15,6 +15,9 @@ export class TollStationComponent implements OnInit {
   data: any = {};
   login: Observable<any>;
   workTrans = work_post;
+  activedImg = 0;
+  imgArrLength1: number;
+  imgArrLength2: number;
 
   constructor(
     private http: Http,
@@ -31,10 +34,24 @@ export class TollStationComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 this.data = res.data;
+                this.imgArrLength1 = res.data.stationImg1.length;
+                this.imgArrLength2 = res.data.stationImg2.length;
               }else {
                 alert(res.message);
               }
             });
+  }
+
+  isActiveImg1(i) {
+    if (this.imgArrLength1) {
+      return this.activedImg % this.imgArrLength1 === i;
+    }
+  }
+
+  isActiveImg2(i) {
+    if (this.imgArrLength2) {
+      return this.activedImg % this.imgArrLength2 === i;
+    }
   }
 
   ngOnInit() {
@@ -45,6 +62,9 @@ export class TollStationComponent implements OnInit {
         this.getInfo(this.route.snapshot.queryParams['orgCode']);
       }
     });
+    setInterval(() => {
+      this.activedImg++;
+    }, 3000);
   }
 
 }

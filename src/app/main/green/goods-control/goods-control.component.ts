@@ -14,6 +14,7 @@ export class GoodsControlComponent implements OnInit {
   form: FormGroup;
   selected: any;
   initForm: any;
+  view = 0;
 
   constructor(
     private http: Http
@@ -60,7 +61,8 @@ export class GoodsControlComponent implements OnInit {
                 child.level = 2;
                 child.children = child.itemDetail.split(';').map(item => {
                   return {
-                    label: item
+                    label: item,
+                    selectable: false
                   };
                 });
               });
@@ -73,15 +75,23 @@ export class GoodsControlComponent implements OnInit {
   nodeSelect($event) {
     this.form.patchValue($event.node);
     this.selected = $event.node;
+    if (this.selected.level === 2) {
+      this.view = 1;
+    }else {
+      this.view = 0;
+    }
   }
 
   add() {
-    if (this.selected.level === 1) {
+    if (this.selected && this.selected.level === 1) {
       this.form.patchValue(this.initForm);
       this.form.patchValue({
         pCode: this.selected.code,
         pName: this.selected.name
       });
+      this.view = 1;
+    }else {
+      alert('请选择一个大类！');
     }
   }
 
@@ -93,8 +103,11 @@ export class GoodsControlComponent implements OnInit {
             alert(res.message);
             if (res.code) {
               this.getBaseGoods();
+              this.view = 0;
             }
           });
+    }else {
+      alert('请选择一个小类！');
     }
   }
 
@@ -109,6 +122,7 @@ export class GoodsControlComponent implements OnInit {
         alert(res.message);
         if (res.code) {
           this.getBaseGoods();
+          this.view = 0;
         }
       });
   }

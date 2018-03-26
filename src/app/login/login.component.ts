@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
   orgType: number;
-  isAdmin: boolean;
+  isAdmin: number;
 
   getCookie(): void {
     const cookie = document.cookie.split(';');
@@ -54,10 +54,12 @@ export class LoginComponent implements OnInit {
           this.isAdmin = res.data.isAdmin;
           if (this.orgType === 1 || this.orgType === 2) {
             this.router.navigate(['/admin']);
-          }else if (this.orgType === 3 && this.isAdmin) {
+          }else if (this.orgType === 3 && this.isAdmin === 1) {
             this.router.navigate(['/main']);
           }else if (this.orgType === 3 && !this.isAdmin) {
             this.router.navigate(['/general']);
+          }else if (this.isAdmin === 2) {
+            this.router.navigate(['/super']);
           }
           document.cookie = `login=${JSON.stringify(res.data)}`;
         }else {

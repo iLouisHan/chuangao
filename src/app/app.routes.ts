@@ -21,5 +21,9 @@ export const AppRoutes: Routes = [
   {
     path: 'general',
     loadChildren: './general/general.module#GeneralModule'
+  },
+  {
+    path: 'super',
+    loadChildren: './super/super.module#SuperModule'
   }
 ];

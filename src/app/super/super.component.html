@@ -1,0 +1,77 @@
+<app-navbar></app-navbar>
+<div class="main-container">
+  <h1 class="page-title"><div class="page-title-icon"></div>组织机构管理</h1>
+  <div class="main-container">
+    <div class="condition-container">
+      <div class="part-container">
+        <h1 class="part-title">组织机构列表</h1>
+        <div class="part-content clearfix">
+          <p-tree class="tree"
+            (onNodeSelect)="nodeSelect($event)"
+            (onNodeUnselect)="nodeSelect($event)"
+            [value]="treeNodes"
+            selectionMode="single"
+            [(selection)]="selectedFiles2"
+            [propagateSelectionUp]="false"
+            [propagateSelectionDown]="false"></p-tree>
+        </div>
+      </div>
+    </div>
+    <div class="table-container">
+      <div class="part-container">
+        <h1 class="part-title">组织机构管理</h1>
+        <div class="part-content">
+          <div class="clearfix">
+            <ul class="btn-list">
+              <li (click)="add()" class="btn-list-li">增加</li>
+              <li (click)="delete()" class="btn-list-li">删除</li>
+            </ul>
+          </div>
+        </div>
+        <div *ngIf="view === 1" class="part-content">
+          <form [formGroup]="form">
+            <div class="form-item">
+              <p>机构名称</p>
+              <input type="text" formControlName="orgName">
+            </div>
+            <div class="form-item">
+              <p>机构代码</p>
+              <input type="text" formControlName="orgCode">
+            </div>
+            <div class="form-item">
+              <p>组织机构类型</p>
+              <select disabled="disabled" formControlName="orgType">
+                <option value="-1">请选择</option>
+                <option value="1">路公司</option>
+                <option value="2">管理处</option>
+                <option value="3">收费站</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <p>机构管理员姓名</p>
+              <input type="text" formControlName="adminName">
+            </div>
+            <div class="form-item">
+              <p>父机构代码</p>
+              <input type="text" disabled="disabled" formControlName="pOrgCode">
+            </div>
+          </form>
+          <div class="form-item">
+            <button (click)="submit()" class="form-btn">保&nbsp;存</button>
+          </div>
+        </div>
+        <div *ngIf="view === 2" class="part-content">
+          <h1>机构管理员列表</h1>
+          <ul class="staffList clearfix">
+            <li class="staffList-li" *ngFor="let user of staffList; index as i">
+              <label><input (click)="changeIsAdmin(i)" [checked]="user.isAdmin" type="checkbox"><span>{{user.adminName}}</span></label>
+            </li>
+          </ul>
+          <div class="form-item">
+            <button (click)="addAdmin()" class="form-btn">保&nbsp;存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

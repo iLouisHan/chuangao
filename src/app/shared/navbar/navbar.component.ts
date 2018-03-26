@@ -12,7 +12,7 @@ import * as Actions from '../../store/cacheStore.actions';
 export class NavbarComponent implements OnInit {
   login: Observable<any>;
   role = '';
-  orgLevel = ['路公司', '管理处', '收费站'];
+  orgLevel = ['超级', '路公司', '管理处', '收费站'];
 
   logout(): void {
     this.store.dispatch(new Actions.SaveLogin(''));
@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
-        this.role = `${this.orgLevel[res.orgType - 1]}${res.isAdmin ? '管理员' : '普通'}账号`;
+        this.role = `${this.orgLevel[res.orgType]}${res.isAdmin ? '管理员' : '普通'}账号`;
       }
     });
   }

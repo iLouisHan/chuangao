@@ -10,7 +10,7 @@ export class HasLoginGuard implements CanActivate {
   login: Observable<any>;
   hasLogin = false;
   orgType: number;
-  isAdmin: boolean;
+  isAdmin: number;
 
   constructor(
     private router: Router,
@@ -51,10 +51,12 @@ export class HasLoginGuard implements CanActivate {
       if (this.hasLogin) {
         if (this.orgType === 1 || this.orgType === 2) {
           this.router.navigate(['/admin']);
-        }else if (this.orgType === 3 && this.isAdmin) {
+        }else if (this.orgType === 3 && this.isAdmin === 1) {
           this.router.navigate(['/main']);
         }else if (this.orgType === 3 && !this.isAdmin) {
           this.router.navigate(['/general']);
+        }else if (this.isAdmin === 2) {
+          this.router.navigate(['/super']);
         }
         return false;
       }else {

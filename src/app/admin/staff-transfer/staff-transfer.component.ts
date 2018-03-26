@@ -108,7 +108,11 @@ export class StaffTransferComponent implements OnInit {
   }
 
   add() {
-    this.isChosen = true;
+    if (this.staffSelected.length > 0) {
+      this.isChosen = true;
+    }else {
+      alert('请选择员工！');
+    }
   }
 
   search() {
@@ -121,7 +125,7 @@ export class StaffTransferComponent implements OnInit {
   select(item) {
     const index = this.staffSelected.findIndex(el => el.userId === item.userId);
     if (index > -1) {
-      this.staffSelected.slice(index, 1);
+      this.staffSelected.splice(index, 1);
     }else {
       this.staffSelected.push(item);
     }

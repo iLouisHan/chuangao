@@ -15,6 +15,7 @@ import { StaffTransferComponent } from './staff-transfer/staff-transfer.componen
 import { ClothSearchComponent } from '../shared/cloth-search/cloth-search.component';
 import { ClothHistoryComponent } from '../shared/cloth-history/cloth-history.component';
 import { CheckSearchComponent } from '../shared/check-search/check-search.component';
+import { AttendanceCheckComponent } from '../shared/attendance-check/attendance-check.component';
 
 export const AdminRoutes: Routes = [
   {
@@ -102,6 +103,10 @@ export const AdminRoutes: Routes = [
           {
             path: 'checkSearch',
             component: CheckSearchComponent
+          },
+          {
+            path: 'attendanceCheck',
+            component: AttendanceCheckComponent
           }
         ]
       },

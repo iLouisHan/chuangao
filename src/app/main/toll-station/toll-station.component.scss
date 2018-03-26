@@ -201,11 +201,29 @@
   p{
     text-indent: 2em;
     text-align: justify;
+    position: relative;
   }
+
   img{
-    float: right;
     width: 270px;
+    height: 150px;
     margin-left: 15px;
+    float: right;
+    position: relative;
+    z-index: -1;
+
+    &.company-img{
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 9;
+      transition: opacity 0.5s linear;
+      opacity: 0;
+
+      &.actived{
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -221,10 +239,27 @@
     text-indent: 2em;
     text-align: justify;
   }
+
   img{
-    float: right;
     width: 270px;
+    height: 150px;
     margin-left: 15px;
+    float: right;
+    position: relative;
+    z-index: -1;
+
+    &.company-img{
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 9;
+      transition: opacity 0.5s linear;
+      opacity: 0;
+
+      &.actived{
+        opacity: 1;
+      }
+    }
   }
 }
 

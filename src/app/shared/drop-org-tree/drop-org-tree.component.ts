@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, DoCheck } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
   templateUrl: './drop-org-tree.component.html',
   styleUrls: ['./drop-org-tree.component.scss']
 })
-export class DropOrgTreeComponent implements OnInit {
+export class DropOrgTreeComponent implements OnInit, DoCheck {
   @Output()
   selectedOrg: EventEmitter<any> = new EventEmitter();
   @Input()
@@ -22,6 +22,7 @@ export class DropOrgTreeComponent implements OnInit {
   selectedFiles2: any;
   isShow = false;
   selected: string;
+  hasClicked = false;
 
   constructor(
     private http: Http,
@@ -102,4 +103,13 @@ export class DropOrgTreeComponent implements OnInit {
     this.selected = this.initOrgName || '';
   }
 
+  ngDoCheck() {
+    if (!this.hasClicked && this.initOrgName) {
+      const element = document.getElementsByClassName('ui-treenode-label')[0] as HTMLElement;
+      if (element) {
+        element.click();
+        this.hasClicked = true;
+      }
+    }
+  }
 }

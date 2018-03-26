@@ -26,7 +26,7 @@
           </ul>
         </div>
       </div>
-      <div class="part-content">
+      <div *ngIf="view === 1" class="part-content">
         <form [formGroup]="form">
           <div class="form-item">
             <p>上级结构代码</p>

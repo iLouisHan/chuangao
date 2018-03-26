@@ -47,7 +47,7 @@ export class CheckSearchComponent implements OnInit {
       this.yearList[i] = year - i;
     }
     this.form = new FormGroup({
-      year: new FormControl('', Validators.nullValidator)
+      year: new FormControl('-1', Validators.nullValidator)
     });
     this.cols = [
       { field: 'orgName', header: '操作' },
@@ -114,7 +114,7 @@ export class CheckSearchComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 // this.count = res.data.count;
-                this.dataList = res.data;
+                this.dataList = res.data.checkDetailDataList;
                 // if (res.data.count > 0) {
                   this.hasData = true;
                 // }
@@ -144,6 +144,11 @@ export class CheckSearchComponent implements OnInit {
         }];
       }
     });
+    const year = (new Date()).getFullYear();
+
+    for (let i = 0; i < 10; i++) {
+      this.yearList[i] = year - i;
+    }
   }
 
 }

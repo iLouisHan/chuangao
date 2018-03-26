@@ -172,7 +172,8 @@
     <h1 class="part-title">收费站历史荣誉</h1>
     <div class="part-content company-briefIntro clearfix">
       <p>
-        <img class="company-img" src="/assets/images/history.png" alt="">
+        <img *ngIf="data.stationImg1 && data.stationImg1.length" src="/assets/images/bignews.png" alt="">
+        <img *ngFor="let img of data.stationImg1; index as i" class="company-img" [class.actived]="isActiveImg1(i)" [src]="img.filePath" alt="">
         {{data.stationHorstoryHonor}}
       </p>
     </div>
@@ -181,7 +182,8 @@
     <h1 class="part-title">收费站大事记</h1>
     <div class="part-content company-briefIntro clearfix">
       <p>
-        <img class="company-img" src="/assets/images/bignews.png" alt="">
+        <img *ngIf="data.stationImg2 && data.stationImg2.length" src="/assets/images/bignews.png" alt="">
+        <img *ngFor="let img of data.stationImg1; index as i" class="company-img" [class.actived]="isActiveImg2(i)" [src]="img.filePath" alt="">
         {{data.stationEventHistory}}
       </p>
     </div>

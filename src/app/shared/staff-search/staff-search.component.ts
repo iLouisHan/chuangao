@@ -36,6 +36,7 @@ export class StaffSearchComponent implements OnInit {
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
   cols: any;
+  numberArr: Array<string> = ['workPost', 'userSex', 'politicalStatus', 'educational', 'listGroup'];
 
   constructor(
     private http: Http,
@@ -104,6 +105,11 @@ export class StaffSearchComponent implements OnInit {
     keys.forEach(el => {
       if (this.form.value[el] || this.form.value[el] === 0) {
         param[el] = this.form.value[el];
+      }
+    });
+    this.numberArr.forEach(el => {
+      if (param[el]) {
+        param[el] = +param[el];
       }
     });
     const myHeaders: Headers = new Headers();
