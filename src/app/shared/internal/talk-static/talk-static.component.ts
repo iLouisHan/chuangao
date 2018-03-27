@@ -5,11 +5,12 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 @Component({
-  selector: 'app-attendance-check',
-  templateUrl: './attendance-check.component.html',
-  styleUrls: ['./attendance-check.component.scss']
+  selector: 'app-talk-static',
+  templateUrl: './talk-static.component.html',
+  styleUrls: ['./talk-static.component.scss']
 })
-export class AttendanceCheckComponent implements OnInit {
+export class TalkStaticComponent implements OnInit {
+
   cols: Array<any>;
   rows: Array<any>;
   options: any;
