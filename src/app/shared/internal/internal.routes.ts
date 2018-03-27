@@ -13,6 +13,7 @@ import { DeviceSearchComponent } from './device-search/device-search.component';
 import { DeviceInputComponent } from './device-input/device-input.component';
 import { DocUploadComponent } from './doc-upload/doc-upload.component';
 import { TalkInputComponent } from './talk-input/talk-input.component';
+import { TalkStaticComponent } from './talk-static/talk-static.component';
 
 export const InternalRoutes: Routes = [
   {
@@ -70,6 +71,10 @@ export const InternalRoutes: Routes = [
         {
             path: 'talkInput',
             component: TalkInputComponent
+        },
+        {
+            path: 'talkStatic',
+            component: TalkStaticComponent
         }
     ]
   }

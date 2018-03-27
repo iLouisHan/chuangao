@@ -65,8 +65,9 @@ export class DeviceInputComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'assetState', header: '设备类型' },
+      { field: 'assetType', header: '设备类型' },
       { field: 'assetName', header: '设备名称' },
+      { field: 'assetState', header: '设备状态' },
       { field: 'useOrg', header: '资产单位' },
       { field: 'buyNum', header: '购置数量' },
       { field: 'assetLife', header: '设备理论年限' },
@@ -94,7 +95,7 @@ export class DeviceInputComponent implements OnInit {
 
   selectedSearchOrg($event) {
     console.log($event);
-    this.searchOrg[0] = ($event);
+    this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
     this.deviceList.forEach(item => {
@@ -109,7 +110,7 @@ export class DeviceInputComponent implements OnInit {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     } else {
-      this.param.orgList = ['00200119'];
+      this.param.orgList = [this.orgList[0].data];
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -253,14 +254,20 @@ export class DeviceInputComponent implements OnInit {
   }
 
   toFirstPage() {
-    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
-    this.isChosen = false;
-    element.click();
+    if (document.getElementsByClassName('ui-paginator-page')[0]) {
+      const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+      this.isChosen = false;
+      element.click();
+    } else {
+      this.param.page = 0;
+      this.getInfo();
+    }
   }
 
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.orgList = [{data: res.orgCode, label: res.orgName}];
         this.getInfo();
       }
     });
