@@ -21,16 +21,16 @@
       <div class="form-item">
         <p>设备状态</p>
         <select formControlName="assetState">
-          <option value="文明礼仪">封存</option>
-          <option value="稽查业务培训">维修</option>
-          <option value="机电培训">报废</option>
-          <option value="机电培训">在用</option>
+          <option value="封存">封存</option>
+          <option value="维修">维修</option>
+          <option value="报废">报废</option>
+          <option value="在用">在用</option>
         </select>
       </div>
       <div class="form-item">
         <p>资产单位</p>
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)" [initOrgName]="orgList[0].label"></app-drop-org-tree>
         </div>
       </div>
       <div class="form-item">
@@ -80,7 +80,7 @@
       </ul>
       <div class="searchbar-container">
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)" [initOrgName]="orgList[0].label"></app-drop-org-tree>
         </div>
         <div (click)="search()">查询</div>
       </div>
