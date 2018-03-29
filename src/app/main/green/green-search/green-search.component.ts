@@ -19,12 +19,16 @@ export class GreenSearchComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   form: FormGroup;
   dateTime: string;
+  orgType: number;
   param: any = {
     page: 0,
     size: 15
   };
   carCheckHisDataList: any;
   hasData: boolean;
+  selectionMode = 'single';
+  selected: any;
+  count: any;
 
   boxType = ['开放货车', '封闭货车', '帆布货车', '其他货车'];
   carType = ['两轴货车', '三轴货车', '四轴货车', '五轴货车', '六轴货车'];
@@ -79,6 +83,27 @@ export class GreenSearchComponent implements OnInit {
     }
   }
 
+  selectedOrg($event) {
+    this.selected = $event[0];
+  }
+
+  search() {
+    if (this.selected) {
+      if (this.selected.orgType !== 3) {
+        alert('请选择收费站！');
+      }else {
+        this.param.stationCode = this.selected.data;
+        this.getInfo();
+      }
+    }else {
+      if (this.orgType === 3) {
+        this.getInfo();
+      }else {
+        alert('请选择收费站！');
+      }
+    }
+  }
+
   getInfo() {
     if (this.form.value.shift !== '-1') {
       this.param.shift = +this.form.value.shift;
@@ -98,28 +123,30 @@ export class GreenSearchComponent implements OnInit {
     this.http.post(`http://119.29.144.125:8080/cgfeesys/Green/getCarCheckHis`, JSON.stringify(this.param), {
       headers: new Headers({'Content-Type': 'application/json'})
     })
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        this.carCheckHisDataList = res.data.carCheckHisDataList;
-        this.carCheckHisDataList.forEach(el => {
-          el.boxTypeCN = this.boxType[el.boxType];
-          el.carTypeCN = this.carType[el.carType - 1];
-          el.shiftCN = this.shift[el.shift - 1];
-          el.firstCheckCN = this.firstCheck[el.firstCheck];
-          el.dealResultCN = this.dealResult[el.dealResult - 1];
-        });
-        if (res.data.count) {
-          this.hasData = true;
-        }else {
-          this.hasData = false;
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.carCheckHisDataList = res.data.carCheckHisDataList;
+          this.carCheckHisDataList.forEach(el => {
+            el.boxTypeCN = this.boxType[el.boxType];
+            el.carTypeCN = this.carType[el.carType - 1];
+            el.shiftCN = this.shift[el.shift - 1];
+            el.firstCheckCN = this.firstCheck[el.firstCheck];
+            el.dealResultCN = this.dealResult[el.dealResult - 1];
+          });
+          if (res.data.count) {
+            this.hasData = true;
+            this.count = res.data.count;
+          }else {
+            this.hasData = false;
+          }
         }
-      }
-    });
+      });
   }
 
   paginate($event) {
     this.param.page = $event.page;
+    console.log(1);
     this.getInfo();
   }
 
@@ -129,7 +156,10 @@ export class GreenSearchComponent implements OnInit {
         this.orgName = res.orgName;
         this.orgCode = res.orgCode;
         this.param.stationCode = res.orgCode;
-        this.getInfo();
+        this.orgType = res.orgType;
+        if (this.orgType === 3) {
+          this.getInfo();
+        }
       }
     });
   }

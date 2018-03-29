@@ -1,4 +1,4 @@
-<h1 class="page-title"><div class="page-title-icon"></div>调顶班查询</h1>
+<h1 class="page-title"><div class="page-title-icon"></div>排班模板设置</h1>
 <div class="part-container">
   <div class="main-container">
     <div class="condition-container">
@@ -11,16 +11,16 @@
         <div class="mod-container">
           <ul>
             <li *ngFor="let mod of modList" class="mod-li">
-              <div class="checkbox-container">
-                <label>
+              <label>
+                <div class="checkbox-container">
                   <div [class.checked]="test(mod.scheduleType)"></div>
                   <input type="checkbox" (click)="chooseMod(mod.scheduleType)">
-                </label>
-              </div>
-              <div (click)="searchModDetail(mod.scheduleType)" class="mod">
-                <span class="mod-des">{{mod.scheduleTypeDesc}}</span>
-                <span class="mod-day">[{{mod.scheduleDays}}天]</span>
-              </div>
+                </div>
+                <div (click)="searchModDetail(mod.scheduleType)" class="mod">
+                  <span class="mod-des">{{mod.scheduleTypeDesc}}</span>
+                  <span class="mod-day">[{{mod.scheduleDays}}天]</span>
+                </div>
+              </label>
             </li>
           </ul>
         </div>

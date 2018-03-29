@@ -9,7 +9,7 @@
           <p-tree class="tree"
             (onNodeSelect)="nodeSelect($event)"
             (onNodeUnselect)="nodeSelect($event)"
-            [value]="treeNodes"
+            [value]="allTreeNodes"
             selectionMode="single"
             [(selection)]="selectedFiles2"
             [propagateSelectionUp]="false"
@@ -31,11 +31,11 @@
         <div *ngIf="view === 1" class="part-content">
           <form [formGroup]="form">
             <div class="form-item">
-              <p>机构名称</p>
+              <p>机构名称<span class="form-required">*</span></p>
               <input type="text" formControlName="orgName">
             </div>
             <div class="form-item">
-              <p>机构代码</p>
+              <p>机构代码<span class="form-required">*</span></p>
               <input type="text" formControlName="orgCode">
             </div>
             <div class="form-item">
@@ -48,7 +48,7 @@
               </select>
             </div>
             <div class="form-item">
-              <p>机构管理员姓名</p>
+              <p>机构管理员姓名<span class="form-required">*</span></p>
               <input type="text" formControlName="adminName">
             </div>
             <div class="form-item">

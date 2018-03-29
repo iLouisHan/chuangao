@@ -75,7 +75,7 @@ export class TeamScheduleSetComponent implements OnInit {
       myHeaders.append('Content-Type', 'application/json');
       this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/setTeamSchedule', JSON.stringify({
         stationCode: this.orgCode,
-        scheduleType: this.form.value.scheduleType,
+        scheduleType: +this.form.value.scheduleType,
         startTime: this.dateFormat(this.startTime),
         endTime: this.dateFormat(this.endTime)
       }), {

@@ -119,6 +119,13 @@
           background: #6c9cff url('/assets/images/affairs-item-hover.png') no-repeat center 10px;
         }
       }
+      &.green-item{
+        background: url('/assets/images/green-item.png') no-repeat center 10px;
+
+        &:hover, &.actived{
+          background: #6c9cff url('/assets/images/green-item-hover.png') no-repeat center 10px;
+        }
+      }
 
       &:hover, &.actived{
         .sidebar-item-show p{

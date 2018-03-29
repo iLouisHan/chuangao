@@ -21,7 +21,20 @@ export class SuperComponent implements OnInit {
   expanded: true;
   view = 0;
   orgCode: string;
+  keys: Array<string>;
   staffList: any = {};
+  allTreeNodes: Array<any> = [{
+    label: '机构树形图',
+    data: '',
+    expanded: true,
+    children: [],
+    orgType: 0
+  }];
+  requiredItems = {
+    orgName: '机构名称',
+    orgCode: '机构代码',
+    adminName: '机构管理员姓名'
+  };
 
   constructor(
     private http: Http,
@@ -36,12 +49,15 @@ export class SuperComponent implements OnInit {
       pOrgCode: new FormControl('', Validators.nullValidator)
     });
     this.initForm = this.form.value;
+    this.keys = Object.keys(this.form.value);
   }
 
   nodeSelect($event) {
     this.form.patchValue($event.node);
     this.selected = $event.node;
-    this.getStaff($event.node.data);
+    if (this.selected.orgType) {
+      this.getStaff($event.node.data);
+    }
   }
 
   getStaff(orgCode) {
@@ -97,7 +113,8 @@ export class SuperComponent implements OnInit {
   }
 
   delete() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Super/deleteOrg?orgCode=${this.selected.data}&orgType=${this.selected.orgType}`)
+    if (window.confirm('是否确认删除？')) {
+      this.http.get(`http://119.29.144.125:8080/cgfeesys/Super/deleteOrg?orgCode=${this.selected.data}&orgType=${this.selected.orgType}`)
         .map(res => res.json())
         .subscribe(res => {
           alert(res.message);
@@ -106,6 +123,7 @@ export class SuperComponent implements OnInit {
             this.getOrgInfo();
           }
         });
+    }
   }
 
   addChild(arr, node) {
@@ -147,6 +165,7 @@ export class SuperComponent implements OnInit {
         }
       });
     }
+    this.allTreeNodes[0].children = this.treeNodes;
   }
 
   getOrgInfo() {
@@ -163,18 +182,23 @@ export class SuperComponent implements OnInit {
   }
 
   submit() {
-    this.form.value.orgType = +this.form.value.orgType;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Super/addOrg`, JSON.stringify(this.form.value), {
-      headers: new Headers({'Content-Type': 'application/json'})
-    })
-    .map(res => res.json())
-    .subscribe(res => {
-      alert(res.message);
-      if (res.code) {
-        this.view = 0;
-        this.getOrgInfo();
-      }
-    });
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    }else {
+      this.form.value.orgType = +this.form.value.orgType;
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/Super/addOrg`, JSON.stringify(this.form.value), {
+        headers: new Headers({'Content-Type': 'application/json'})
+      })
+      .map(res => res.json())
+      .subscribe(res => {
+        alert(res.message);
+        if (res.code) {
+          this.view = 0;
+          this.getOrgInfo();
+        }
+      });
+    }
   }
 
   ngOnInit() {

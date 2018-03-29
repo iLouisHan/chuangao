@@ -95,6 +95,9 @@ export class TeamScheduleModComponent implements OnInit {
 
   submit() {
     if (this.form.value.scheduleDays && this.form.value.scheduleDays > 0) {
+      this.modDetail.forEach(el => {
+        el.teamsGroup = +el.teamsGroup;
+      });
       const valid = this.modDetail.filter(el => el.teamsGroup === -1).length === 0;
       if (valid) {
         const myHeaders: Headers = new Headers();
@@ -125,7 +128,7 @@ export class TeamScheduleModComponent implements OnInit {
   }
 
   test(val) {
-    return val === +this.checkItem;
+    return val === this.checkItem;
   }
 
   searchModDetail(id) {
@@ -163,6 +166,7 @@ export class TeamScheduleModComponent implements OnInit {
 
   chooseMod(id) {
     this.checkItem = this.checkItem === id ? '' : id;
+    console.log(this.checkItem);
   }
 
   ngOnInit() {

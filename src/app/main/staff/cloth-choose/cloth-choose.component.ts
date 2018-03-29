@@ -37,6 +37,7 @@ export class ClothChooseComponent implements OnInit {
   chooseCloth($event) {
     this._cloth = this.clothesTypeList[$event.clothesType];
     this.chosenCloth.emit($event);
+    this.switchTableShow = false;
   }
 
   getInfo() {

@@ -15,6 +15,11 @@ export class OtherComponent implements OnInit {
   form: FormGroup;
   keys: Array<string>;
   data: any;
+  requiredItems = {
+    stationIntroduce: '收费站简介',
+    stationHorstoryHonor: '收费站历史荣誉',
+    stationEventHistory: '收费站大事件'
+  };
 
   constructor(
     private http: Http,
@@ -43,22 +48,22 @@ export class OtherComponent implements OnInit {
   }
 
   submit() {
-    // const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.trans[el]);
-    // if (spaceArr.length > 0) {
-    //   alert(`${spaceArr.join(',')}为空`);
-    // }else {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.keys.forEach(el => {
-      this.data[el] = this.form.value[el];
-    });
-    this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        alert(res.message);
+    const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    }else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      this.keys.forEach(el => {
+        this.data[el] = this.form.value[el];
       });
-    // }
+      this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
+        headers: myHeaders
+      }).map(res => res.json())
+        .subscribe(res => {
+          alert(res.message);
+        });
+    }
   }
 
   ngOnInit() {

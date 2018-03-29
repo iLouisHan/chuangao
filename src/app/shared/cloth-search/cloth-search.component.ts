@@ -15,7 +15,7 @@ export class ClothSearchComponent implements OnInit {
   clothesChangeStartDate: string;
   clothesChangeEndDate: string;
   count: number;
-  leaveDataList: Array<any>;
+  clothesDataList: Array<any>;
   orgList: Array<any>;
   page = 0;
   size = 15;
@@ -35,6 +35,16 @@ export class ClothSearchComponent implements OnInit {
   orgCode: string;
   orgName: string;
   login: Observable<any> = new Observable<any>();
+  clothesType: any = {
+    1: '冬装',
+    2: '夏装',
+    3: '头花',
+    4: '春秋装'
+  };
+  clothesClassification: any = {
+    1: '管理（执法）类服装',
+    2: '收费类服装'
+  };
 
   constructor(
     private http: Http,
@@ -48,8 +58,8 @@ export class ClothSearchComponent implements OnInit {
     });
     this.cols = [
       { field: 'userName', header: '收费员名称' },
-      { field: 'clothesType', header: '服装类型' },
-      { field: 'clothesClassification', header: '服装类别' },
+      { field: 'clothesTypeCN', header: '服装类型' },
+      { field: 'clothesClassificationCN', header: '服装类别' },
       { field: 'clothesDate', header: '领用日期' },
       { field: 'clothesChangeDate', header: '到期日期' },
       { field: 'clothesSex', header: '性别' },
@@ -108,7 +118,11 @@ export class ClothSearchComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 this.count = res.data.count;
-                this.leaveDataList = res.data.leaveDataList;
+                res.data.clothesDataList.forEach(el => {
+                  el.clothesClassificationCN = this.clothesClassification[el.clothesClassification];
+                  el.clothesTypeCN = this.clothesType[el.clothesType];
+                });
+                this.clothesDataList = res.data.clothesDataList;
                 if (res.data.count > 0) {
                   this.hasData = true;
                 }

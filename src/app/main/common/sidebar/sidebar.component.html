@@ -1,6 +1,6 @@
 <div class="sidebar-container">
   <ul class="sidebar-items">
-    <li *ngIf="orgType !== 3" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
+    <li routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
       <div class="sidebar-item-show">
         <p>系统首页</p>
       </div>
@@ -31,7 +31,7 @@
     </li>
     <li class="sidebar-item staff-item">
       <div class="sidebar-item-show">
-        <p>收费人员</p>
+        <p>人员管理</p>
       </div>
       <div class="sidebar-item-hover">
         <div class="hover-item">

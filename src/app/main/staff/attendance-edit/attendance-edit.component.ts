@@ -46,7 +46,7 @@ export class AttendanceEditComponent implements OnInit {
     this.attendanceList = [
       {
         value: '1',
-        label: '上班'
+        label: '实际上班'
       }
     ];
     this.initType = [
@@ -140,7 +140,12 @@ export class AttendanceEditComponent implements OnInit {
           if (res.code) {
             alert(res.message);
             this.freeItemsList = this.initType;
-            this.attendanceList = [];
+            this.attendanceList = [
+              {
+                value: '1',
+                label: '实际上班'
+              }
+            ];
             this.applyDate = '';
             this.shiftId = 0;
           }else {
@@ -162,6 +167,10 @@ export class AttendanceEditComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 this.staffList = res.data;
+                const selected = this.attendanceList.filter(el => el.value === this.activedType)[0].staff;
+                this.staffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
+                  el.choose = true;
+                });
               }
             });
   }
@@ -212,7 +221,19 @@ export class AttendanceEditComponent implements OnInit {
     if (+this.activedType !== 5) {
       this.attendanceList.forEach(el => {
         if (+el.value === +this.activedType) {
-          el.staff = this.staffList.filter(user => user.choose);
+          this.staffList.filter(user => !user.choose).forEach(user => {
+            const index = el.staff.findIndex(staff => staff.userId === user.userId);
+            if (index > -1) {
+              el.staff.splice(index, 1);
+            }
+          });
+          const arr = el.staff.concat(this.staffList.filter(user => user.choose));
+          el.staff = [];
+          arr.forEach(staff => {
+            if (el.staff.findIndex(item => item.userId === staff.userId) === -1) {
+              el.staff.push(staff);
+            }
+          });
           el.teams = this.teams;
         }
       });

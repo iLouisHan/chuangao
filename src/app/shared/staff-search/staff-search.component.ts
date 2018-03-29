@@ -26,6 +26,7 @@ export class StaffSearchComponent implements OnInit {
   page = 0;
   size = 15;
   hasData = false;
+  param: any = {};
   selectionMode = 'checkbox';
   en = {
     firstDayOfWeek: 0,
@@ -36,7 +37,7 @@ export class StaffSearchComponent implements OnInit {
     monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
   };
   cols: any;
-  numberArr: Array<string> = ['workPost', 'userSex', 'politicalStatus', 'educational', 'listGroup'];
+  numberArr: Array<string> = ['workPost', 'political_status', 'educational', 'listGroup'];
 
   constructor(
     private http: Http,
@@ -50,7 +51,7 @@ export class StaffSearchComponent implements OnInit {
       workPost: new FormControl('', Validators.nullValidator),
       userSex: new FormControl('', Validators.nullValidator),
       educational: new FormControl('', Validators.nullValidator),
-      politics: new FormControl('', Validators.nullValidator),
+      political_status: new FormControl('', Validators.nullValidator),
       specialSkill: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
@@ -97,24 +98,24 @@ export class StaffSearchComponent implements OnInit {
     this.form.value.birthday = this.dateFormat(this.birthday);
     this.form.value.hireDate = this.dateFormat(this.hireDate);
     this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
+    this.param = {
       page: page,
       size: size,
     };
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       if (this.form.value[el] || this.form.value[el] === 0) {
-        param[el] = this.form.value[el];
+        this.param[el] = this.form.value[el];
       }
     });
     this.numberArr.forEach(el => {
-      if (param[el]) {
-        param[el] = +param[el];
+      if (this.param[el]) {
+        this.param[el] = +this.param[el];
       }
     });
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(param) , {
+    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param) , {
               headers: myHeaders
             })
             .map(res => res.json())

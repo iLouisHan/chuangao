@@ -16,48 +16,47 @@
     position: absolute;
     top: 40px;
     left: 0;
-    width: 628px;
+    width: 470px;
     height: 198px;
     border: 1px solid #d4d4d4;
     background: #fff;
     line-height: 40px;
     z-index: 99;
-  }
 
-  .ul-header-container{
-    height: 40px;
-    border-bottom: 1px solid #333;
 
     li{
       float: left;
       height: 40px;
 
-      &.li-userName{
-        width: 140px;
+      &.li-clothesType{
+        width: 100px;
       }
 
-      &.li-scheduleDate{
-        width: 125px;
+      &.li-clothesClassification{
+        width: 170px;
       }
 
-      &.li-teamsGroup{
-        width: 105px;
+      &.li-clothesSex{
+        width: 80px;
       }
 
-      &.li-shiftId{
-        width: 105px;
+      &.li-clothesSize{
+        width: 80px;
       }
 
       &.li-index{
         width: 30px;
         text-align: center;
       }
-
-      &.li-type{
-        width: 106px;
-      }
     }
   }
+
+  .ul-header-container{
+    height: 40px;
+    border-bottom: 1px solid #333;
+
+  }
+
 }
 
 .ul-body-container{

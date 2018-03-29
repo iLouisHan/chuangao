@@ -1,6 +1,6 @@
 <div class="sidebar-container">
   <ul class="sidebar-items">
-    <li *ngIf="orgType !== 3" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
+    <li routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
       <div class="sidebar-item-show">
         <p>系统首页</p>
       </div>
@@ -31,7 +31,7 @@
     </li>
     <li class="sidebar-item staff-item">
       <div class="sidebar-item-show">
-        <p>收费人员</p>
+        <p>人员管理</p>
       </div>
       <div class="sidebar-item-hover">
         <div class="hover-item">
@@ -164,6 +164,29 @@
             </li>
             <li class="hover-li">
               <a routerLink="/admin/internal/deviceInput">收费设备设施录入</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+    <li class="sidebar-item green-item">
+      <div class="sidebar-item-show">
+        <p>绿通</p>
+      </div>
+      <div class="sidebar-item-hover">
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>绿通流水查询</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/admin/green/search">绿通流水查询</a>
+            </li>
+          </ul>
+        </div>
+        <div class="hover-item">
+          <p class="hover-title"><span class="circle"></span><span>货物查询</span></p>
+          <ul class="hover-ul clearfix">
+            <li class="hover-li">
+              <a routerLink="/admin/green/goodsSearch">货物分类查询</a>
             </li>
           </ul>
         </div>

@@ -37,8 +37,8 @@ export class AdminSidebarComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      this.orgType = res.orgType;
       if (res) {
+        this.orgType = res.orgType;
         this.orgTypeStr = this.orgLevel[res.orgType - 1];
         this.orgLink = this.orgLinks[res.orgType - 1];
         this.orgInputLink = this.orgInputLinks[res.orgType - 1];

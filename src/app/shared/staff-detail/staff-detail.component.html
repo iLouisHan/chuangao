@@ -4,7 +4,7 @@
     <h1 class="part-title">基本信息</h1>
     <div class="part-content clearfix">
       <div class="img-container">
-        <img src="/assets/images/staff-photo.jpg" alt="">
+        <img [attr.src]="data.iconUrl || '/assets/images/staff-photo.jpg'" alt="">
       </div>
       <div class="basic-info-div">
         <ul class="basic-info-ul">
@@ -72,25 +72,25 @@
       </div>
     </div>
   </div>
-  <div [class.not-toll-station]="data.orgType !== 5" class="other-container">
+  <div [class.not-toll-station]="data.orgType !== 3" class="other-container">
     <div>
       <h1 class="part-title">星评情况</h1>
       <div class="part-content2 score-container clearfix">
         <div class="comprehensive">
           <p class="item">综合考核</p>
-          <p class="value">暂无</p>
+          <p class="value">{{data.compositScore || '暂无'}}</p>
         </div>
         <div class="business">
           <p class="item">业务考核</p>
-          <p class="value">暂无</p>
+          <p class="value">{{data.examScore || '暂无'}}</p>
         </div>
         <div class="level">
           <p class="item">等级考核</p>
-          <p class="value">暂无</p>
+          <p class="value">{{data.mandarinLevel || '暂无'}}</p>
         </div>
         <div class="star">
           <p class="item">星级考核</p>
-          <p class="value">暂无</p>
+          <p class="value">{{data.userStar || '暂无'}}</p>
         </div>
       </div>
     </div>

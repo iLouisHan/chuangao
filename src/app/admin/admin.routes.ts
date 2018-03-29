@@ -113,6 +113,10 @@ export const AdminRoutes: Routes = [
       {
         path: 'internal',
         loadChildren: '../shared/internal/internal.module#InternalModule'
+      },
+      {
+        path: 'green',
+        loadChildren: '../main/green/green.module#GreenModule'
       }
     ]
   }

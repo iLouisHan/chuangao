@@ -35,6 +35,15 @@ export class LeaveSearchComponent implements OnInit {
   orgCode: string;
   orgName: string;
   login: Observable<any> = new Observable<any>();
+  leaveType: any = {
+    1: '事假',
+    2: '年休',
+    3: '补休',
+    4: '病假',
+    5: '产假',
+    6: '婚假',
+    7: '其他'
+  };
 
   constructor(
     private http: Http,
@@ -49,7 +58,7 @@ export class LeaveSearchComponent implements OnInit {
     this.cols = [
       { field: 'orgName', header: '组织机构' },
       { field: 'userName', header: '请假人' },
-      { field: 'applyType', header: '请假类型' },
+      { field: 'applyTypeCN', header: '请假类型' },
       { field: 'applyDate', header: '开始请假时间' },
       { field: 'applyDateEnd', header: '结束请假时间' },
       { field: 'remark', header: '请假理由' },
@@ -107,6 +116,9 @@ export class LeaveSearchComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 this.count = res.data.count;
+                res.data.leaveDataList.forEach(el => {
+                  el.applyTypeCN = this.leaveType[el.applyType];
+                });
                 this.leaveDataList = res.data.leaveDataList;
                 if (res.data.count > 0) {
                   this.hasData = true;

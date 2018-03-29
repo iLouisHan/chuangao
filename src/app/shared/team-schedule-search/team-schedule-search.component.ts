@@ -80,6 +80,7 @@ export class TeamScheduleSearchComponent implements OnInit {
         const day = new Date((new Date(first)).setDate(first.getDate() - (startDate - col)));
         this.myCalendar[row][col] = {
           day: day,
+          year: day.getFullYear(),
           month: day.getMonth(),
           date: day.getDate()
         };
@@ -87,6 +88,7 @@ export class TeamScheduleSearchComponent implements OnInit {
         const day = new Date((new Date(first)).setDate(first.getDate() + (i - startDate)));
         this.myCalendar[row][col] = {
           day: day,
+          year: day.getFullYear(),
           month: day.getMonth(),
           date: day.getDate()
         };
@@ -133,11 +135,12 @@ export class TeamScheduleSearchComponent implements OnInit {
     });
     _thisMonthList.forEach(el => {
       const day = new Date(el.scheduleDate);
+      const year = day.getFullYear();
       const month = day.getMonth();
       const date = day.getDate();
       this.myCalendar.forEach(row => {
         row.forEach(element => {
-          if (element.date === date && element.month === month) {
+          if (element.date === date && element.month === month && element.year === year) {
             switch (el.shiftId) {
               case 1: {
                 element.dayShift = {

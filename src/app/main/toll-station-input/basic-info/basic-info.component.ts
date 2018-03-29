@@ -16,9 +16,7 @@ export class BasicInfoComponent implements OnInit {
   checkItem: string;
   keys: Array<string>;
   data: any;
-  trans = {
-    companyCode: '公司编码',
-    companyName: '公司名称',
+  requiredItems = {
     shortName: '简称',
     organizationCode: '组织机构代码',
     level: '公司级别',
@@ -29,7 +27,8 @@ export class BasicInfoComponent implements OnInit {
     status: '启用状态',
     totalMileage: '所辖路段里程（单位：公里）',
     longitude: '经度',
-    latitude: '纬度'
+    latitude: '纬度',
+    stationClass: '收费站类别'
   };
 
   constructor(
@@ -71,26 +70,26 @@ export class BasicInfoComponent implements OnInit {
   }
 
   submit() {
-    this.form.value.status = +this.checkItem;
-    // const spaceArr = this.keys.filter(el => !this.form.value[el]).map(el => this.trans[el]);
-    // if (spaceArr.length > 0) {
-    //   alert(`${spaceArr.join(',')}为空`);
-    // }else {
-    this.form.value.longitude = +this.form.value.longitude;
-    this.form.value.latitude = +this.form.value.latitude;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      this.data[el] = this.form.value[el];
-    });
-    this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        alert(res.message);
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    }else {
+      this.form.value.status = +this.checkItem;
+      this.form.value.longitude = +this.form.value.longitude;
+      this.form.value.latitude = +this.form.value.latitude;
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      const keys = Object.keys(this.form.value);
+      keys.forEach(el => {
+        this.data[el] = this.form.value[el];
       });
-    // }
+      this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
+        headers: myHeaders
+      }).map(res => res.json())
+        .subscribe(res => {
+          alert(res.message);
+        });
+    }
   }
 
   check($event) {

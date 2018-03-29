@@ -16,6 +16,17 @@ export class BasicInfoComponent implements OnInit {
   form: FormGroup;
   checkItem: string;
   keys: Array<string>;
+  requiredItems: any = {
+    pileInfo: '管辖范围描述（起止桩号集合）',
+    totalMileage: '所辖路段里程（单位：公里）',
+    address: '地址',
+    contacts: '联系人',
+    phoneNo: '联系电话',
+    longitude: '经度',
+    latitude: '纬度',
+    briefIntro: '公司简介',
+    historyHonour: '管理处历史荣誉'
+  };
 
   constructor(
     private http: Http,
