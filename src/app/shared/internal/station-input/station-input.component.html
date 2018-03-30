@@ -5,9 +5,10 @@
     <form [formGroup]="form">
       <div class="form-item">
           <p>所属机构</p>
-          <div class="tree-container">
+          <div class="tree-container" *ngIf="isAdd">
             <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
           </div>
+          <input type="text" [(ngModel)]="stationName" *ngIf="!isAdd" [ngModelOptions]="{standalone: true}" disabled='true'>
         </div>
       <div class="form-item">
         <p>会议名称</p>
@@ -48,6 +49,7 @@
       <div class="form-btn-container">
         <div class="form-item">
           <button (click)="submit()" class="form-btn">保存</button>
+          <button (click)="isChosen = false" class="form-btn">返回</button>
         </div>
       </div>
     </form>
@@ -64,7 +66,7 @@
       </ul>
       <div class="searchbar-container">
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)" [initOrgName]="searchOrg[0].label"></app-drop-org-tree>
         </div>
         <div (click)="search()">查询</div>
       </div>

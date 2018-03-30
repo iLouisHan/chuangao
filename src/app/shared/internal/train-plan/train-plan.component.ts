@@ -17,13 +17,15 @@ export class TrainPlanComponent implements OnInit {
   endDate: string;
   en: any;
   file: any;
+  checkMode = 'checkbox';
   filename: string;
   isChosen = false;
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
   count: number;
-  exOrg: string;
+  exOrg: Array<any>;
+  DoOrg: string;
   planOrg: string;
   staffList: Array<any>;
   hasData: boolean;
@@ -32,6 +34,7 @@ export class TrainPlanComponent implements OnInit {
   selectedUser = '';
   isAdd: boolean;
   keys: Array<any>;
+  orgList: Array<any>;
   selectionMode = 'single';
   searchOrg: Array<any>;
   initForm: any;
@@ -64,6 +67,7 @@ export class TrainPlanComponent implements OnInit {
       trainLoc: new FormControl('', Validators.nullValidator)
     });
     this.searchOrg = [];
+    this.exOrg = [];
     this.keys = Object.keys(this.form.value);
     this.en = {
       firstDayOfWeek: 0,
@@ -76,7 +80,7 @@ export class TrainPlanComponent implements OnInit {
     this.login = store.select('login');
     this.cols = [
       { field: 'trainName', header: '培训计划名称' },
-      { field: 'trainDoOrg', header: '落实单位' },
+      { field: 'trainDoOrgName', header: '落实单位' },
       { field: 'trainStartDate', header: '开始时间' },
       { field: 'trainEndDate', header: '结束时间' },
       { field: 'trainWay', header: '培训方式' },
@@ -87,6 +91,7 @@ export class TrainPlanComponent implements OnInit {
       { field: 'trainContent', header: '培训内容' }
     ];
     this.initForm = {
+      trainPlanOrg: '',
       trainPlanName: '',
       trainStartDate: '',
       trainTeacher: '',
@@ -100,13 +105,13 @@ export class TrainPlanComponent implements OnInit {
     };
   }
 
-  selectedOrg($event) {
-    console.log($event);
-    this.planOrg = ($event)[0].data;
-  }
+  // selectedOrg($event) {
+  //   console.log($event);
+  //   this.planOrg = ($event)[0].data;
+  // }
   selectedEXOrg($event) {
     console.log($event);
-    this.exOrg = ($event)[0].data;
+    this.exOrg = ($event);
   }
   selectedSearchOrg($event) {
     console.log($event);
@@ -119,6 +124,8 @@ export class TrainPlanComponent implements OnInit {
               if (res.code) {
                 this.data = res.data;
                 this.form.patchValue(res.data);
+                this.form.patchValue({trainPlanName: res.data.trainName});
+                this.DoOrg = res.data.trainDoOrgName;
                 this.startDate = res.data.trainStartDate;
                 this.endDate = res.data.trainEndDate;
               } else {
@@ -141,9 +148,9 @@ export class TrainPlanComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.staffList = [];
-                  this.staffList = res.data.trainPlanDataList;
                 }
+                this.staffList = [];
+                this.staffList = res.data.trainPlanDataList;
               } else {
                 alert(res.message);
               }
@@ -169,7 +176,7 @@ export class TrainPlanComponent implements OnInit {
   add() {
     this.form.reset();
     this.form.patchValue(this.initForm);
-    // this.form.patchValue({orgName: this.orgName});
+    this.form.patchValue({trainPlanOrg: this.orgList[0].label});
     this.filename = '';
     this.isChosen = true;
     this.isAdd = true;
@@ -180,7 +187,7 @@ export class TrainPlanComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的人员姓名！');
+      alert('请输入要查询的组织！');
     }
   }
 
@@ -190,7 +197,7 @@ export class TrainPlanComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个计划');
     }
   }
 
@@ -227,8 +234,14 @@ export class TrainPlanComponent implements OnInit {
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
     this.form.value.trainEndDate = this.dateFormat(this.endDate);
     // this.form.value.orgType = +this.orgType;
-    this.form.value.trainPlanOrg = '' + this.planOrg;
-    this.form.value.trainDoOrg = '' + this.exOrg;
+    if (this.exOrg.length !== 0) {
+      this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
+    } else {
+      alert('请选择落实单位！');
+      return false;
+    }
+    this.form.value.trainPlanOrg = this.orgList[0].data;
+
     // this.form.value.politicalStatus = +this.form.value.politicalStatus;
     // this.form.value.positionalTitle = +this.form.value.positionalTitle;
     // this.form.value.userId = '' + Math.round(1000 * Math.random());
@@ -239,7 +252,10 @@ export class TrainPlanComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 if (this.file) {
-                  this.upload(res.data.id);
+                  const tmpArr = res.data;
+                  tmpArr.forEach(item => {
+                    this.upload(item);
+                  });
                 } else {
                   this.toFirstPage();
                 }
@@ -314,7 +330,9 @@ export class TrainPlanComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
-        this.searchOrg = [{data: res.orgCode}];
+        this.searchOrg = [{data: res.orgCode, label: res.orgName}];
+        this.orgList = [{data: res.orgCode, label: res.orgName}];
+        this.planOrg = this.orgList[0].label;
         this.getInfo();
       }
     });

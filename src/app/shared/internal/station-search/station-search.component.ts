@@ -42,7 +42,7 @@ export class StationSearchComponent implements OnInit {
     this.cols = [
       { field: 'meetingName', header: '会议名称' },
       { field: 'meetingPlace', header: '会议地点' },
-      { field: 'trainHasDo', header: '所属机构' },
+      { field: 'stationName', header: '所属机构' },
       { field: 'meetingDate', header: '会议时间' },
       { field: 'meetingHost', header: '主持人' },
       { field: 'meetingNote', header: '记录人' },
@@ -101,8 +101,8 @@ export class StationSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.planList = res.data.stationMeetingDataList;
                 }
+                this.planList = res.data.stationMeetingDataList;
               } else {
                 alert(res.message);
               }

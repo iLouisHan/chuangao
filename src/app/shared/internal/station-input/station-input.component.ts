@@ -13,10 +13,20 @@ import { Observable } from 'rxjs/Observable';
 export class StationInputComponent implements OnInit {
   data: any = {};
   form: FormGroup;
+  requiredItems = {
+    meetingName: '会议名称',
+    meetingPlace: '会议地址',
+    meetingHost: '主持人',
+    meetingNote: '记录人',
+    meetingJoinPeople: '参会人员',
+    meetingContent: '会议内容'
+  };
   startDate: string;
-  orgCode: Array<any>;
+  orgCode: Array<any> = [];
   en: any;
+  stationName: string;
   file: any;
+  orgList: Array<any>;
   filename: string;
   isChosen = false;
   login: Observable<any> = new Observable<any>();
@@ -89,21 +99,20 @@ export class StationInputComponent implements OnInit {
   }
   selectedSearchOrg($event) {
     console.log($event);
-    this.searchOrg[0] = ($event);
+    this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
     this.staffList.forEach(item => {
       if (item.id === staffId) {
         this.form.patchValue(item);
         this.startDate = item.meetingDate;
+        this.stationName = item.stationName;
       }
     });
   }
   getInfo() {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
-    } else {
-      this.param.orgList = this.orgCode.map(el => el.data);
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -197,56 +206,74 @@ export class StationInputComponent implements OnInit {
   }
 
   addStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.form.value.meetingDate = this.dateFormat(this.startDate);
-    // this.form.value.orgType = +this.orgType;
-    this.form.value.stationCode = this.orgCode[0].data;
-    // this.form.value.politicalStatus = +this.form.value.politicalStatus;
-    // this.form.value.positionalTitle = +this.form.value.positionalTitle;
-    // this.form.value.userId = '' + Math.round(1000 * Math.random());
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/add`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(res.data.id);
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    } else if (this.orgCode.length === 0) {
+      alert('请选择所属机构！');
+    } else if (!this.startDate) {
+      alert('请选择会议时间');
+    } else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      this.form.value.meetingDate = this.dateFormat(this.startDate);
+      // this.form.value.orgType = +this.orgType;
+      this.form.value.stationCode = this.orgCode[0].data;
+      // this.form.value.politicalStatus = +this.form.value.politicalStatus;
+      // this.form.value.positionalTitle = +this.form.value.positionalTitle;
+      // this.form.value.userId = '' + Math.round(1000 * Math.random());
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/add`, JSON.stringify(this.form.value), {
+                headers: myHeaders
+              })
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  if (this.file) {
+                    this.upload(res.data.id);
+                  } else {
+                    this.toFirstPage();
+                  }
                 } else {
-                  this.toFirstPage();
+                  alert(res.message);
                 }
-              } else {
-                alert(res.message);
-              }
-            });
+              });
+    }
   }
 
   updateStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      this.data[el] = this.form.value[el];
-    });
-    this.data.meetingDate = this.dateFormat(this.startDate);
-    this.data.stationCode = this.orgCode[0].data;
-    this.data.id = this.selectedUser;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/update`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(this.selectedUser);
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    } else if (this.orgCode.length === 0) {
+      alert('请选择所属机构！');
+    } else if (!this.startDate) {
+      alert('请选择会议时间');
+    } else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      const keys = Object.keys(this.form.value);
+      keys.forEach(el => {
+        this.data[el] = this.form.value[el];
+      });
+      this.data.meetingDate = this.dateFormat(this.startDate);
+      this.data.stationCode = this.orgCode[0].data;
+      this.data.id = this.selectedUser;
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/update`, JSON.stringify(this.data), {
+                headers: myHeaders
+              })
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  if (this.file) {
+                    this.upload(this.selectedUser);
+                  } else {
+                    this.toFirstPage();
+                  }
                 } else {
-                  this.toFirstPage();
+                  alert(res.message);
                 }
-              } else {
-                alert(res.message);
-              }
-            });
+              });
+      }
   }
 
   paginate($event) {
@@ -279,15 +306,19 @@ export class StationInputComponent implements OnInit {
   }
 
   toFirstPage() {
-    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
     this.isChosen = false;
-    element.click();
+    if (document.getElementsByClassName('ui-paginator-page')[0]) {
+      const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+      element.click();
+    } else {
+      this.getInfo();
+    }
   }
 
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
-        this.orgCode = [{data: res.orgCode}];
+        this.searchOrg = [{data: res.orgCode, label: res.orgName}];
         this.getInfo();
       }
     });

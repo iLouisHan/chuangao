@@ -49,6 +49,9 @@ export class DeviceSearchComponent implements OnInit {
       { field: 'assetName', header: '资产名称' },
       { field: 'assetType', header: '资产类别' },
       { field: 'assetState', header: '资产状态' },
+      { field: 'assetModel', header: '设备型号' },
+      { field: 'assetNo', header: '设备编号' },
+      { field: 'assetUser', header: '设备管理人' },
       { field: 'useOrg', header: '资产单位' },
       { field: 'buyNum', header: '购置数量' },
       { field: 'assetLife', header: '资产理论年限' },
@@ -109,8 +112,8 @@ export class DeviceSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.deviceList = res.data.fixedAssetDataList;
                 }
+                this.deviceList = res.data.fixedAssetDataList;
               } else {
                 alert(res.message);
               }
