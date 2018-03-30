@@ -7,7 +7,7 @@
     </li>
     <li class="sidebar-item basic-item" [class.actived]="isBasic()">
       <div class="sidebar-item-show">
-        <p>基础数据</p>
+        <p>基础信息</p>
       </div>
       <div class="sidebar-item-hover">
         <div class="hover-item">
@@ -23,13 +23,7 @@
         </div>
       </div>
     </li>
-    <li class="sidebar-item system-item">
-      <div class="sidebar-item-show">
-        <p>系统管理</p>
-      </div>
-      <div class="sidebar-item-hover"></div>
-    </li>
-    <li class="sidebar-item staff-item">
+    <li [class.actived]="testHash('staff')" class="sidebar-item staff-item">
       <div class="sidebar-item-show">
         <p>人员管理</p>
       </div>
@@ -104,7 +98,7 @@
         </div>
       </div>
     </li>
-    <li class="sidebar-item affairs-item">
+    <li [class.actived]="testHash('internal')" class="sidebar-item affairs-item">
       <div class="sidebar-item-show">
         <p>内务管理</p>
       </div>
@@ -169,7 +163,7 @@
         </div>
       </div>
     </li>
-    <li class="sidebar-item green-item">
+    <li [class.actived]="testHash('green')" class="sidebar-item green-item">
       <div class="sidebar-item-show">
         <p>绿通</p>
       </div>
@@ -192,5 +186,11 @@
         </div>
       </div>
     </li>
+    <!-- <li class="sidebar-item system-item">
+      <div class="sidebar-item-show">
+        <p>系统管理</p>
+      </div>
+      <div class="sidebar-item-hover"></div>
+    </li> -->
   </ul>
 </div>

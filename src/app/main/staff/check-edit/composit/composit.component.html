@@ -25,9 +25,9 @@
         <tbody>
           <tr *ngFor="let staff of resultList">
             <td>{{staff.userName}}</td>
-            <td (click)="staff.editable = true">
+            <td (click)="staff.editable = true;inputFocus($event)">
               <span *ngIf="!staff.editable">{{staff.score}}</span>
-              <input (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
+              <input class="add-input" (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
             </td>
           </tr>
         </tbody>

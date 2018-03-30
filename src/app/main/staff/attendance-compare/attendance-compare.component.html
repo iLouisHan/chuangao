@@ -62,7 +62,7 @@
       <p>实际上班人员</p>
       <div>
         <ul class="clearfix">
-          <li *ngFor="let staff of attendanceList" class="staffList-li">{{staff.userName}}</li>
+          <li *ngFor="let staff of attendanceList" class="staffList-li">{{staff.attenceUserName}}</li>
         </ul>
       </div>
     </div>
@@ -78,7 +78,7 @@
       <p>换班顶班人员</p>
       <div>
         <ul class="clearfix">
-          <li *ngFor="let staff of shiftChangeList" class="staffList-li">{{staff.userName}}</li>
+          <li *ngFor="let staff of shiftChangeList" class="staffList-li">{{staff.applyUserName}}</li>
         </ul>
       </div>
     </div>

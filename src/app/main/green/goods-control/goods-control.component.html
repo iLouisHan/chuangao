@@ -3,7 +3,7 @@
   <div class="condition-container">
     <div class="part-container">
       <h1 class="part-title">货物分类</h1>
-      <div class="part-content clearfix">
+      <div class="part-content tree-container clearfix">
         <p-tree class="tree"
           (onNodeSelect)="nodeSelect($event)"
           (onNodeUnselect)="nodeSelect($event)"
@@ -30,11 +30,11 @@
         <form [formGroup]="form">
           <div class="form-item">
             <p>上级结构代码</p>
-            <input type="text" formControlName="pCode">
+            <input disabled="disabled" type="text" formControlName="pCode">
           </div>
           <div class="form-item">
             <p>上级代码名称</p>
-            <input type="text" formControlName="pName">
+            <input disabled="disabled" type="text" formControlName="pName">
           </div>
           <div class="form-item">
             <p>结构代码</p>

@@ -54,14 +54,17 @@ export class GoodsControlComponent implements OnInit {
               el.level = 1;
               el.label = el.name;
               el.data = el.id;
+              el.expanded = true;
               el.children = res.data.filter(item => item.pCode === el.code);
               el.children.forEach(child => {
                 child.label = child.name;
                 child.data = child.code;
                 child.level = 2;
+                child.expanded = true;
                 child.children = child.itemDetail.split(';').map(item => {
                   return {
                     label: item,
+                    expanded: true,
                     selectable: false
                   };
                 });

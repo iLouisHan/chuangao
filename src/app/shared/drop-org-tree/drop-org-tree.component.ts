@@ -78,6 +78,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
     } else {
       this.selectedFiles2 = [$event.node];
       this.selected = this.selectedFiles2[0].label;
+      this.isShow = false;
     }
     this.selectedOrg.emit(this.selectedFiles2);
   }

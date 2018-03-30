@@ -192,3 +192,8 @@ form{
     outline: none !important;
   }
 }
+
+.tree-container{
+  max-height: 500px;
+  overflow: scroll;
+}

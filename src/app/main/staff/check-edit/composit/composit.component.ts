@@ -115,6 +115,12 @@ export class CompositComponent implements OnInit {
       });
   }
 
+  inputFocus($event) {
+    const element = $event.target as HTMLElement;
+    console.log($event);
+    // element.focus();
+  }
+
   update() {
     if (this.selectedId) {
       this.view = 2;
