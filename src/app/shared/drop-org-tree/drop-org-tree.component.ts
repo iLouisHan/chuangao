@@ -23,7 +23,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   isShow = false;
   selected: string;
   hasClicked = false;
-  initArr: Array<string>;
+  initArr: Array<string> = [];
 
   constructor(
     private http: Http,
@@ -105,9 +105,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
       }
     });
     this.selected = this.initOrgName || '';
-    if (this.initOrgName) {
-      this.initArr = this.initOrgName.split(',');
-    }
+    this.initArr = this.selected.split(',');
   }
 
   ngDoCheck() {
