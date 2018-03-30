@@ -23,6 +23,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   isShow = false;
   selected: string;
   hasClicked = false;
+  initArr: Array<string>;
 
   constructor(
     private http: Http,
@@ -38,6 +39,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
         data: node.orgCode,
         id: node.id,
         orgType: node.orgType,
+        expanded: true,
         children: []
       });
     } else if (arr.children.length > 0) {
@@ -61,6 +63,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
             data: el.orgCode,
             id: el.id,
             orgType: el.orgType,
+            expanded: true,
             children: []
           });
         }
@@ -102,19 +105,18 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
       }
     });
     this.selected = this.initOrgName || '';
+    this.initArr = this.initOrgName.split(',');
   }
 
   ngDoCheck() {
-    if (!this.hasClicked && this.initOrgName && this.selectionMode === 'checkbox') {
-      let el = Array.from(document.getElementsByClassName('ui-treenode-label'));
-      el = el.filter(item => {
-        return item.getElementsByClassName('ng-star-inserted')[0].innerHTML === this.initOrgName;
-      });
-      if (el && el[0]) {
-        const dom = el[0] as HTMLElement;
-        dom.click();
-        this.hasClicked = true;
-      }
+    if (!this.hasClicked && this.initArr.length && this.selectionMode === 'checkbox') {
+      Array.from(document.getElementsByClassName('ui-treenode-label'))
+          .filter(item => this.initArr.includes(item.getElementsByClassName('ng-star-inserted')[0].innerHTML))
+          .forEach(item => {
+            const dom = item as HTMLElement;
+            dom.click();
+            this.hasClicked = true;
+          });
     }
   }
 }
