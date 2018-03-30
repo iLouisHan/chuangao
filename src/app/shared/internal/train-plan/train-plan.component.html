@@ -9,14 +9,15 @@
       </div>
       <div class="form-item">
         <p>发起单位</p>
-        <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
-        </div>
+        <input type="text" [(ngModel)]="planOrg" disabled="true" [ngModelOptions]="{standalone: true}">
       </div>
       <div class="form-item">
         <p>落实单位</p>
-        <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedEXOrg($event)"></app-drop-org-tree>
+        <div class="tree-container" *ngIf="isAdd">
+          <app-drop-org-tree [selectionMode]="checkMode" (selectedOrg)="selectedEXOrg($event)"></app-drop-org-tree>
+        </div>
+        <div *ngIf="!isAdd">
+          <input type="text" [(ngModel)]="DoOrg" disabled="true" [ngModelOptions]="{standalone: true}">
         </div>
       </div>
       <div class="form-item">
@@ -69,7 +70,7 @@
         <textarea type="text" formControlName="trainContent"></textarea>
       </div>
       <div class="form-item">
-        <p>附件上传(仅支持pdf格式)</p>
+        <p>附件上传(支持pdf,jpg,doc格式)</p>
         <div class="upload-photo">
           <input (change)="fileChange($event)" #photo type="file">
           <span [title]="filename">{{filename}}</span>
@@ -79,6 +80,7 @@
       <div class="form-btn-container">
         <div class="form-item">
           <button (click)="submit()" class="form-btn">保存</button>
+          <button (click)="isChosen = false;" class="form-btn">返回</button>
         </div>
       </div>
     </form>
@@ -95,7 +97,7 @@
       </ul>
       <div class="searchbar-container">
         <div class="tree-container">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)" [initOrgName]="searchOrg[0].label"></app-drop-org-tree>
         </div>
         <div (click)="search()">查询</div>
       </div>

@@ -108,8 +108,8 @@ export class TalkSearchComponent implements OnInit {
                   res.data.chatDataList.forEach(item => {
                     item.chatType = item.chatType === '0' ? '一般谈心' : '重要谈心';
                   });
-                  this.planList = res.data.chatDataList;
                 }
+                this.planList = res.data.chatDataList;
               } else {
                 alert(res.message);
               }

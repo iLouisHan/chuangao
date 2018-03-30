@@ -98,8 +98,8 @@ export class DocSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.planList = res.data.fileManagerDataList;
                 }
+                this.planList = res.data.fileManagerDataList;
               } else {
                 alert(res.message);
               }

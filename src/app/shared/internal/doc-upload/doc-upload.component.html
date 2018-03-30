@@ -9,7 +9,7 @@
       </div>
       <div class="form-item">
         <p>发文单位</p>
-        <input type="text" formControlName="fileUnit">
+        <input type="text" formControlName="fileUnit" disabled="true">
       </div>
       <div class="form-item">
         <p>发文文号</p>
@@ -28,7 +28,7 @@
       <div class="form-item">
         <p>文件级别</p>
         <select formControlName="fileLevel">
-            <option value="">请选择</option>
+          <option value="">请选择</option>
           <option value="一级">一级</option>
           <option value="二级">二级</option>
         </select>
@@ -60,6 +60,7 @@
       <div class="form-btn-container">
         <div class="form-item">
           <button (click)="submit()" class="form-btn">保存</button>
+          <button (click)="isChosen = false" class="form-btn">返回</button>
         </div>
       </div>
     </form>

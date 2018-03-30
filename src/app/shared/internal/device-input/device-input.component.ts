@@ -36,6 +36,13 @@ export class DeviceInputComponent implements OnInit {
     page: this.page,
     size: this.size
   };
+  requiredItems = {
+    assetName: '设备名称',
+    assetType: '设备类型',
+    assetState: '设备状态',
+    buyNum: '购置数量',
+    assetLife: '理论年限'
+  };
   constructor(
     private http: Http,
     private store: Store<any>
@@ -65,13 +72,16 @@ export class DeviceInputComponent implements OnInit {
     };
     this.login = store.select('login');
     this.cols = [
-      { field: 'assetType', header: '设备类型' },
-      { field: 'assetName', header: '设备名称' },
-      { field: 'assetState', header: '设备状态' },
+      { field: 'assetName', header: '资产名称' },
+      { field: 'assetType', header: '资产类别' },
+      { field: 'assetState', header: '资产状态' },
+      { field: 'assetModel', header: '设备型号' },
+      { field: 'assetNo', header: '设备编号' },
+      { field: 'assetUser', header: '设备管理人' },
       { field: 'useOrg', header: '资产单位' },
       { field: 'buyNum', header: '购置数量' },
-      { field: 'assetLife', header: '设备理论年限' },
-      { field: 'buyDate', header: '购置日起' },
+      { field: 'assetLife', header: '资产理论年限' },
+      { field: 'buyDate', header: '购置日期' },
       { field: 'scrapDate', header: '报废日期' }
     ];
     this.initForm = {
@@ -197,47 +207,61 @@ export class DeviceInputComponent implements OnInit {
   }
 
   addDevice() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.form.value.buyDate = this.dateFormat(this.startDate);
-    this.form.value.scrapDate = this.dateFormat(this.endDate);
-    this.form.value.useOrg = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                // this.deviceList.push(this.form.value);
-                this.toFirstPage();
-              } else {
-                alert(res.message);
-              }
-            });
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    } else if (!this.startDate) {
+      alert('请选择购置日期');
+    } else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      this.form.value.buyDate = this.dateFormat(this.startDate);
+      this.form.value.scrapDate = this.dateFormat(this.endDate);
+      this.form.value.useOrg = this.orgList[0].data;
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
+                headers: myHeaders
+              })
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  // this.deviceList.push(this.form.value);
+                  this.toFirstPage();
+                } else {
+                  alert(res.message);
+                }
+              });
+      }
   }
 
   updateDevice() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      this.data[el] = this.form.value[el];
-    });
-    this.data.id = this.selectedDevice;
-    this.data.buyDate = this.dateFormat(this.startDate);
-    this.data.scrapDate = this.dateFormat(this.endDate);
-    this.data.useOrg = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.toFirstPage();
-              } else {
-                alert(res.message);
-              }
-            });
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    } else if (!this.startDate) {
+      alert('请选择购置日期');
+    } else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      const keys = Object.keys(this.form.value);
+      keys.forEach(el => {
+        this.data[el] = this.form.value[el];
+      });
+      this.data.id = this.selectedDevice;
+      this.data.buyDate = this.dateFormat(this.startDate);
+      this.data.scrapDate = this.dateFormat(this.endDate);
+      this.data.useOrg = this.orgList[0].data;
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
+                headers: myHeaders
+              })
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  this.toFirstPage();
+                } else {
+                  alert(res.message);
+                }
+              });
+            }
   }
 
   paginate($event) {

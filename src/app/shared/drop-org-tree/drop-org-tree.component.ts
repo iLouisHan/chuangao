@@ -23,7 +23,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   isShow = false;
   selected: string;
   hasClicked = false;
-  initArr: Array<string>;
+  initArr: Array<string> = [];
 
   constructor(
     private http: Http,

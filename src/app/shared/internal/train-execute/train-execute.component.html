@@ -21,22 +21,25 @@
       </div>
       <div class="form-item">
         <p>培训讲师</p>
-        <input type="text" formControlName="trainDoTeacher">
+        <input type="text" formControlName="trainTeacher">
       </div>
       <div class="form-item">
         <p>培训课时</p>
-        <input type="text" formControlName="trainDoTimeLong">
+        <input type="text" formControlName="trainTimeLong">
       </div>
       <div class="form-item">
         <p>培训地点</p>
-        <input type="text" formControlName="trainDoAddress">
+        <input type="text" formControlName="trainAddress">
       </div>
-      <div class="form-item" *ngIf="doFilePath !== ''">
-        <button (click)="downloadFile('do')" class="station">下载附件</button>
+      <div class="form-item">
+        <p>谈心对象</p>
+        <div class="tree-container">
+          <app-drop-staff-tree [selectionMode]="selectionStaffMode" (selectedOrg)="selectedStaff($event)"></app-drop-staff-tree>
+        </div>
       </div>
       <div class="form-item form-textarea">
         <p>培训纪要</p>
-        <textarea type="text" formControlName="trainDoContent"></textarea>
+        <textarea type="text" formControlName="trainContent"></textarea>
       </div>
       <div class="form-item">
         <p>附件上传(仅支持pdf格式)</p>
@@ -45,6 +48,9 @@
           <span [title]="filename">{{filename}}</span>
           <div class="upload-photo-btn" (click)="photo.click()">选择文件</div>
         </div>
+      </div>
+      <div class="form-item" *ngIf="doFilePath && doFilePath !== ''">
+        <button (click)="downloadFile('do')" class="station">下载附件</button>
       </div>
       <div class="form-btn-container">
         <div class="form-item">
@@ -61,7 +67,7 @@
     <form [formGroup]="form">
       <div class="form-item">
         <p>计划名称</p>
-        <input type="text" disabled="true" formControlName="trainPlanName">
+        <input type="text" disabled="true" formControlName="trainName">
       </div>
       <div class="form-item">
         <p>发起单位</p>
