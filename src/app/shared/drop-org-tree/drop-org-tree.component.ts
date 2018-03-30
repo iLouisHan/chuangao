@@ -105,7 +105,9 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
       }
     });
     this.selected = this.initOrgName || '';
-    this.initArr = this.initOrgName.split(',');
+    if (this.initOrgName) {
+      this.initArr = this.initOrgName.split(',');
+    }
   }
 
   ngDoCheck() {
