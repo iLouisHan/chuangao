@@ -1,4 +1,4 @@
-<h1 class="page-title"><div class="page-title-icon"></div>培训计划查询</h1>
+<h1 class="page-title"><div class="page-title-icon"></div>重要文档查询</h1>
 <div class="main-container">
   <div class="condition-container">
     <div class="part-container">
@@ -57,11 +57,13 @@
             <table class="myTable">
               <thead>
                 <tr>
+                  <th></th>
                   <th *ngFor="let field of cols">{{field.header}}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let item of planList">
+                  <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>
               </tbody>

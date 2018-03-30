@@ -34,9 +34,11 @@ export class TrainExecuteComponent implements OnInit {
   hasData: boolean;
   updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
+  userList: Array<any>;
   selectedUser = '';
   isAdd: boolean;
   keys: Array<any>;
+  selectionStaffMode = 'checkbox';
   selectionMode = 'single';
   searchOrg: Array<any>;
   initForm: any;
@@ -49,7 +51,7 @@ export class TrainExecuteComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      trainPlanName: new FormControl('', Validators.nullValidator),
+      trainName: new FormControl('', Validators.nullValidator),
       trainOrgName: new FormControl('', Validators.nullValidator),
       trainDoOrg: new FormControl('', Validators.nullValidator),
       trainStartDate: new FormControl('', Validators.nullValidator),
@@ -65,12 +67,13 @@ export class TrainExecuteComponent implements OnInit {
     this.trainForm = new FormGroup({
       trainPlanName: new FormControl('', Validators.nullValidator),
       trainDoOrgName: new FormControl('', Validators.nullValidator),
-      trainDoAddress: new FormControl('', Validators.nullValidator),
+      trainAddress: new FormControl('', Validators.nullValidator),
       trainDoStartDate: new FormControl('', Validators.nullValidator),
       trainDoEndDate: new FormControl('', Validators.nullValidator),
-      trainDoTeacher: new FormControl('', Validators.nullValidator),
-      trainDoTimeLong: new FormControl('', Validators.nullValidator),
-      trainDoContent: new FormControl('', Validators.nullValidator)
+      trainTeacher: new FormControl('', Validators.nullValidator),
+      trainTimeLong: new FormControl('', Validators.nullValidator),
+      trainContent: new FormControl('', Validators.nullValidator),
+      userIdList: new FormControl('', Validators.nullValidator)
     });
     this.searchForm = new FormGroup({
       hasDo: new FormControl('-1', Validators.nullValidator),
@@ -105,9 +108,9 @@ export class TrainExecuteComponent implements OnInit {
       { field: 'trainPlanTeacher', header: '培训讲师' },
       { field: 'trainPlanTimeLong', header: '培训课时' },
       { field: 'trainPlanLoc', header: '培训地点' },
-      { field: 'trainTeacher', header: '落实培训讲师' },
-      { field: 'trainTimeLong', header: '落实培训课时' },
-      { field: 'trainAddress', header: '落实培训地点' },
+      { field: 'trainDoTeacher', header: '落实培训讲师' },
+      { field: 'trainDoTimeLong', header: '落实培训课时' },
+      { field: 'trainDoAddress', header: '落实培训地点' },
       { field: 'trainDoStartDate', header: '落实起始时间' },
       { field: 'trainDoEndDate', header: '落实结束时间' }
     ];
@@ -127,6 +130,10 @@ export class TrainExecuteComponent implements OnInit {
   }
   selectedOrg($event) {
     this.searchOrg[0] = ($event);
+  }
+  selectedStaff($event) {
+    this.userList = ($event);
+    console.log(this.userList);
   }
   getStaffInfo(staffId, planId) {
     this.selectedUser  = staffId;
@@ -176,11 +183,11 @@ export class TrainExecuteComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.trainDoDataList.forEach(item => {
-                    item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
-                  });
-                  this.staffList = res.data.trainDoDataList;
                 }
+                res.data.trainDoDataList.forEach(item => {
+                  item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
+                });
+                this.staffList = res.data.trainDoDataList;
               } else {
                 alert(res.message);
               }
@@ -260,6 +267,7 @@ export class TrainExecuteComponent implements OnInit {
     this.trainForm.value.id = this.selectedUser;
     this.trainForm.value.trainDoStartDate = this.dateFormat(this.doStartDate);
     this.trainForm.value.trainDoEndDate = this.dateFormat(this.doEndDate);
+    this.trainForm.value.userIdList = this.userList.map(el => el.data);
     const tmpObj = {};
     const keys = Object.keys(this.trainForm.value);
     keys.forEach(el => {

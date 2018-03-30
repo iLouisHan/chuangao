@@ -140,11 +140,11 @@ export class TrainExecuteSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.trainDoDataList.forEach(item => {
-                    item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
-                  });
-                  this.staffList = res.data.trainDoDataList;
                 }
+                res.data.trainDoDataList.forEach(item => {
+                  item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
+                });
+                this.staffList = res.data.trainDoDataList;
               } else {
                 alert(res.message);
               }

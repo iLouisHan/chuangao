@@ -84,16 +84,12 @@ export class DocUploadComponent implements OnInit {
     };
   }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-              } else {
-                alert(res.message);
-              }
-            });
+    this.deviceList.forEach(item => {
+      if (item.id === staffId) {
+        this.form.patchValue(item);
+        this.endDate = item.filePublishTime;
+      }
+    });
   }
   getInfo() {
     const myHeaders: Headers = new Headers();
@@ -107,8 +103,8 @@ export class DocUploadComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.deviceList = res.data.fileManagerDataList;
                 }
+                this.deviceList = res.data.fileManagerDataList;
               } else {
                 alert(res.message);
               }
@@ -213,7 +209,7 @@ export class DocUploadComponent implements OnInit {
     this.data.id = this.selectedUser;
     this.data.filePublishTime = this.dateFormat(this.endDate);
     this.data.fileOwner = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/upload`, JSON.stringify(this.data), {
               headers: myHeaders
             })
             .map(res => res.json())
@@ -265,15 +261,20 @@ export class DocUploadComponent implements OnInit {
   }
 
   toFirstPage() {
-    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    if (document.getElementsByClassName('ui-paginator-page')[0]) {
+      const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+      element.click();
+    } else {
+      this.getInfo();
+    }
     this.isChosen = false;
-    element.click();
   }
 
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
-        this.orgList = [{data: res.orgCode}];
+        this.orgList = [{data: res.orgCode, label: res.orgName}];
+        this.initForm.fileUnit = this.orgList[0].label;
         this.getInfo();
       }
     });

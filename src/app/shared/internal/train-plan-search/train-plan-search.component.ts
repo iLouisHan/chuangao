@@ -13,8 +13,6 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 })
 export class TrainPlanSearchComponent implements OnInit {
   form: FormGroup;
-  startTime: string;
-  endTime: string;
   count: number;
   orgList: Array<any>;
   planList: Array<any>;
@@ -44,7 +42,7 @@ export class TrainPlanSearchComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl('-1', Validators.nullValidator),
+      hasDo: new FormControl(1, Validators.nullValidator),
       trainWay: new FormControl('', Validators.nullValidator),
       trainType: new FormControl('', Validators.nullValidator),
       trainPlanName: new FormControl('', Validators.nullValidator)
@@ -93,13 +91,13 @@ export class TrainPlanSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
+    this.form.value.trainStartDate = this.dateFormat(this.trainStartDate);
+    this.form.value.trainEndDate = this.dateFormat(this.trainEndDate);
     this.form.value.orgList = this.orgList.map(el => el.data);
     const param = {
       page: page,
       size: size,
-      hasDo: -1,
+      hasDo: 0,
       trainWay: '',
       trainType: '',
       trainPlanName: '',
@@ -123,11 +121,11 @@ export class TrainPlanSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.trainPlanDataList.forEach(item => {
-                    item.trainHasDo = item.trainHasDo === 0 ? '未落实' : '已落实';
-                  });
-                  this.planList = res.data.trainPlanDataList;
                 }
+                res.data.trainPlanDataList.forEach(item => {
+                  item.trainHasDo = item.trainHasDo === 0 ? '未落实' : '已落实';
+                });
+                this.planList = res.data.trainPlanDataList;
               } else {
                 alert(res.message);
               }
