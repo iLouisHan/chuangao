@@ -324,9 +324,9 @@ export class TrainExecuteComponent implements OnInit {
     }
   }
   toFirstPage() {
-    const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
     this.isChosen = false;
-    element.click();
+    this.param.page = 0;
+    this.getInfo();
   }
 
   ngOnInit() {

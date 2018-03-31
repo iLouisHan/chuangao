@@ -73,7 +73,7 @@ export const InternalRoutes: Routes = [
             component: TalkInputComponent
         },
         {
-            path: 'talkStatic',
+            path: 'trainStatic',
             component: TalkStaticComponent
         }
     ]

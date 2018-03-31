@@ -20,6 +20,7 @@ export class TalkStaticComponent implements OnInit {
   yearList: Array<number> = [];
   staff: string;
   staffList: Array<Object>;
+  talkList: Array<Object>;
   attendanceList: Array<any> = [];
   updateOptions: any;
   orgType: number;
@@ -32,12 +33,6 @@ export class TalkStaticComponent implements OnInit {
     private store: Store<any>
   ) {
     this.login = store.select('login');
-    for (let i = 0; i < 12; i++) {
-      this.attendanceList[i] = [];
-      for (let j = 0; j < 20; j++) {
-        this.attendanceList[i][j] = 0;
-      }
-    }
   }
 
   selectedOrg($event) {
@@ -52,8 +47,6 @@ export class TalkStaticComponent implements OnInit {
       alert('请选择收费站！');
     } else if (!this.year) {
       alert('请选择年份！');
-    } else if (!this.staff) {
-      alert('请选择人员！');
     } else {
       this.getInfo();
     }
@@ -62,121 +55,72 @@ export class TalkStaticComponent implements OnInit {
   getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/getYear`, JSON.stringify({
-      stationCode: this.orgList[0].data,
-      date: `${this.year}-01-01`,
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/trainStatistics`, JSON.stringify({
+      orgCode: this.orgList[0].data,
+      year: `${this.year}-01-01`,
       userId: this.staff
     }), {
       headers: myHeaders
     }).map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          this.classify(res.data);
+          this.talkList = res.data;
+          this.updateChart(res.data);
         }
       });
   }
 
-  classify(arr) {
-    arr.forEach(el => {
-      const mon = (new Date(el.attenceDate)).getMonth();
-      const type = el.attenceType;
-      const smallType = el.attenceSmallType;
-      if (!this.attendanceList[mon]) {
-        this.attendanceList[mon] = [];
-      }
-      if (smallType) {
-        const index = type + smallType + 4;
-        const num = this.attendanceList[mon][index];
-        this.attendanceList[mon][index] = num ? num + 1 : 1;
-      } else {
-        const num = this.attendanceList[mon][type];
-        this.attendanceList[mon][type] = num ? num + 1 : 1;
-      }
-    });
-    this.updateChart();
-  }
-
-  updateChart() {
+  updateChart(data) {
     const series: any = [{
-      name: '正常上班',
+      name: '',
       type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '替班',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '加班',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '还班',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '休息',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '事假',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '病假',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '补休',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '年休',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '婚假',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '迟到',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '早退',
-      type: 'bar',
-      stack: 'one',
-      data: []
-    }, {
-      name: '旷工',
-      type: 'bar',
-      stack: 'one',
-      data: []
+      data: [
+        {
+          value: 0,
+          itemStyle: {
+            color: '#c23531'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#37A2DA'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#32C5E9'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#32C5E9'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#9FE6B8'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#FFDB5C'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#ff9f7f'
+          }
+        }, {
+          value: 0,
+          itemStyle: {
+            color: '#fb7293'
+          }
+        }]
     }];
-    this.attendanceList.forEach((el, index) => {
-      series[0].data[index] = el[1];
-      series[1].data[index] = el[2];
-      series[2].data[index] = el[3];
-      series[3].data[index] = el[6];
-      series[4].data[index] = el[4];
-      series[5].data[index] = el[10];
-      series[6].data[index] = el[13];
-      series[7].data[index] = el[12];
-      series[8].data[index] = el[11];
-      series[9].data[index] = el[15];
-      series[10].data[index] = el[9];
-      series[11].data[index] = el[8];
-      series[12].data[index] = el[7];
+    data.forEach((el) => {
+      el.types.forEach( (item, index) => {
+        series[0].data[index].value += item;
+      });
     });
     this.updateOptions = {
       series: series
@@ -194,6 +138,11 @@ export class TalkStaticComponent implements OnInit {
   }
 
   ngOnInit() {
+    const year = (new Date()).getFullYear();
+    for (let i = 0; i < 10; i++) {
+      this.yearList[i] = year - i;
+    }
+    this.year = year;
     this.login.subscribe(res => {
       if (res) {
         this.orgType = res.orgType;
@@ -204,133 +153,55 @@ export class TalkStaticComponent implements OnInit {
           orgType: this.orgType
         }];
         this.getStaff();
+        this.search();
       }
     });
-
-    const year = (new Date()).getFullYear();
-    const xAxisData: any = [];
+    const xAxisData: any = [
+      '文明礼仪培训',
+      '稽查业务培训',
+      '机电培训',
+      '安全培训',
+      '综合培训',
+      '应急演练',
+      '劳动竞赛',
+      '收费业务培训'
+    ];
     const data1 = [];
     const data2 = [];
 
-    for (let i = 0; i < 10; i++) {
-      this.yearList[i] = year - i;
-    }
-    this.year = year;
-    this.staff = '0';
-
-    this.rows = [
-      { value: 1, name: '正常上班'},
-      { value: 2, name: '替班'},
-      { value: 3, name: '加班'},
-      { value: 6, name: '还班'},
-      { value: 4, name: '休息'},
-      { value: 10, name: '事假'},
-      { value: 13, name: '病假'},
-      { value: 12, name: '补休'},
-      { value: 11, name: '年休'},
-      { value: 15, name: '婚假'},
-      { value: 9, name: '迟到'},
-      { value: 8, name: '早退'},
-      { value: 7, name: '旷工'}
-    ];
     this.cols = [
-      { field: 0, header: '一月' },
-      { field: 1, header: '二月' },
-      { field: 2, header: '三月' },
-      { field: 3, header: '四月' },
-      { field: 4, header: '五月' },
-      { field: 5, header: '六月' },
-      { field: 6, header: '七月' },
-      { field: 7, header: '八月' },
-      { field: 8, header: '九月' },
-      { field: 9, header: '十月' },
-      { field: 10, header: '十一月' },
-      { field: 11, header: '十二月' }
+      { field: 0, header: '文明礼仪' },
+      { field: 1, header: '稽查业务' },
+      { field: 2, header: '机电培训' },
+      { field: 3, header: '安全培训' },
+      { field: 4, header: '综合培训' },
+      { field: 5, header: '应急演练' },
+      { field: 6, header: '劳动竞赛' },
+      { field: 7, header: '收费业务' }
     ];
-
-    for (let i = 0; i < 12; i++) {
-      xAxisData.push(`${i + 1}月`);
-    }
 
     this.options = {
       legend: {
-        data: ['正常上班', '加班', '替班', '还班', '休息', '事假', '病假', '补休', '年休', '婚假', '迟到', '早退', '旷工'],
+        data: ['文明礼仪培训', '稽查业务培训', '机电培训', '安全培训', '综合培训', '应急演练', '劳动竞赛', '收费业务培训'],
         align: 'left'
       },
       tooltip: {},
       xAxis: {
         data: xAxisData,
+        type: 'category',
         silent: false,
         splitLine: {
           show: false
         }
       },
       yAxis: {
+        type: 'value',
+        name: '培训次数'
       },
       series: [{
-        name: '正常上班',
+        name: '',
         type: 'bar',
-        stack: 'one'
-      }, {
-        name: '替班',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '加班',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '还班',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '休息',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '事假',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '病假',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '补休',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '年休',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '婚假',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '迟到',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '早退',
-        type: 'bar',
-        stack: 'one',
-        data: data2
-      }, {
-        name: '旷工',
-        type: 'bar',
-        stack: 'one',
-        data: data2
+        data: []
       }]
     };
   }
