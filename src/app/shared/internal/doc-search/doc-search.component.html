@@ -50,7 +50,12 @@
   </div>
   <div class="table-container">
     <div class="part-container">
-      <h1 class="part-title">重要基础文档查看</h1>
+      <h1 class="part-title">重要基础文档查看
+          <div class="abRight">
+              <div class="checkButton down" (click)="down()">下载</div>
+              <div class="checkButton pre" (click)="down()">预览</div>
+          </div>
+      </h1>
       <div class="scroll-table-container">
         <div class="part-content">
           <div>
@@ -63,7 +68,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let item of planList">
-                  <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
+                  <td><input type="checkbox" (click)="select(item.filePath)" [checked]="checked(item.filePath)"></td>
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>
               </tbody>

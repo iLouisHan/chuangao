@@ -10,6 +10,31 @@
     .table-container{
       width: calc(75% - 20px);
       max-width: calc(100% - 335px);
+      .part-title{
+        position: relative;
+      }
+      .abRight {
+        position: absolute;
+        right: 10px;
+        top: -7px;
+        width: 150px;
+        .checkButton {
+          width: 45px;
+          height: 30px;
+          line-height: 30px;
+          color: white;
+          text-align: center;
+          border-radius: 5px;
+        }
+        .down{
+          background: #ffaf58;
+          float: left;
+        }
+        .pre {
+          background: #6c9cff;
+          margin-left: 50px;
+        }
+      }
     }
   }
   
@@ -182,7 +207,6 @@
   .scroll-table-container{
   
     .part-content{
-  
       >div {
         overflow: scroll;
         padding-bottom: 10px;

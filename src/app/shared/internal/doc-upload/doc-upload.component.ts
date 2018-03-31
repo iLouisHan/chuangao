@@ -20,6 +20,15 @@ export class DocUploadComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
+  requiredItems = {
+    fileName	: '文件名称',
+    fileType: '文件类别',
+    fileNum: '发文文号',
+    fileUnit: '发文单位',
+    browsePermission: '浏览权限',
+    fileLevel: '文件级别',
+    keyWord: '关键字'
+  };
   orgList: Array<any>;
   count: number;
   deviceList: Array<any>;
@@ -178,52 +187,68 @@ export class DocUploadComponent implements OnInit {
   }
 
   addDevice() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.form.value.filePublishTime = this.dateFormat(this.endDate);
-    this.form.value.fileOwner = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/add`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(res.data.id);
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    } else if (!this.file) {
+      alert('请上传文档！');
+    } else if (!this.endDate) {
+      alert('请选择发文时间');
+    } else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      this.form.value.filePublishTime = this.dateFormat(this.endDate);
+      this.form.value.fileOwner = this.orgList[0].data;
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/add`, JSON.stringify(this.form.value), {
+                headers: myHeaders
+              })
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  if (this.file) {
+                    this.upload(res.data.id);
+                  } else {
+                    this.toFirstPage();
+                  }
                 } else {
-                  this.toFirstPage();
+                  alert(res.message);
                 }
-              } else {
-                alert(res.message);
-              }
-            });
+              });
+    }
   }
 
   updateDevice() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      this.data[el] = this.form.value[el];
-    });
-    this.data.id = this.selectedUser;
-    this.data.filePublishTime = this.dateFormat(this.endDate);
-    this.data.fileOwner = this.orgList[0].data;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/upload`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(this.selectedUser);
+    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    if (spaceArr.length > 0) {
+      alert(`${spaceArr.join(',')}为空`);
+    } else if (!this.endDate) {
+      alert('请选择发文时间');
+    } else {
+      const myHeaders: Headers = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+      const keys = Object.keys(this.form.value);
+      keys.forEach(el => {
+        this.data[el] = this.form.value[el];
+      });
+      this.data.id = this.selectedUser;
+      this.data.filePublishTime = this.dateFormat(this.endDate);
+      this.data.fileOwner = this.orgList[0].data;
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/upload`, JSON.stringify(this.data), {
+                headers: myHeaders
+              })
+              .map(res => res.json())
+              .subscribe(res => {
+                if (res.code) {
+                  if (this.file) {
+                    this.upload(this.selectedUser);
+                  } else {
+                    this.toFirstPage();
+                  }
                 } else {
-                  this.toFirstPage();
+                  alert(res.message);
                 }
-              } else {
-                alert(res.message);
-              }
-            });
+              });
+      }
   }
 
   paginate($event) {
