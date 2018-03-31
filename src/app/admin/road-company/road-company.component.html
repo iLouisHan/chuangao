@@ -4,7 +4,7 @@
     <h1 class="part-title">公司简介</h1>
     <div class="part-content company-briefIntro clearfix">
       <p>
-        <img class="company-img" src="/assets/images/road-company.png" alt="">
+        <img *ngIf="data.companyImg" class="company-img" [attr.src]="data.companyImg.filePath" alt="">
         {{data.briefIntro}}
       </p>
     </div>
