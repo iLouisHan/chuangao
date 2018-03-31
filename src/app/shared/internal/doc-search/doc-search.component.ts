@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-doc-search',
@@ -13,9 +15,11 @@ export class DocSearchComponent implements OnInit {
   startTime: string;
   endTime: string;
   count: number;
+  login: Observable<any> = new Observable<any>();
   hasDo: number;
   orgList: Array<any>;
   planList: Array<any>;
+  selectedDoc: string;
   page = 0;
   size = 15;
   hasData = false;
@@ -32,8 +36,10 @@ export class DocSearchComponent implements OnInit {
   checkItem: number;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     this.form = new FormGroup({
       fileNum: new FormControl('', Validators.nullValidator),
       keyWord: new FormControl('', Validators.nullValidator),
@@ -48,7 +54,7 @@ export class DocSearchComponent implements OnInit {
       { field: 'fileNum', header: '发文文号' },
       { field: 'fileLevel', header: '文件级别' },
       { field: 'filePublishTime', header: '发文时间' },
-      { field: 'fileOwnerName', header: '发文单位' },
+      { field: 'fileOwnerName', header: '上传单位' },
       { field: 'keyWord', header: '关键字' }
     ];
   }
@@ -76,6 +82,21 @@ export class DocSearchComponent implements OnInit {
     this.getInfo(event.page, this.size);
   }
 
+  select(val) {
+    this.selectedDoc = val === this.selectedDoc ? '' : val;
+  }
+
+  checked(val) {
+    return val === this.selectedDoc;
+  }
+
+  down() {
+    if (this.selectedDoc) {
+      window.open(this.selectedDoc);
+    } else {
+      alert('请勾选文档');
+    }
+  }
   getInfo(page: number, size: number) {
     this.form.value.filePublishStartTime = this.dateFormat(this.startTime);
     this.form.value.filePublishEndTime = this.dateFormat(this.endTime);
@@ -115,6 +136,12 @@ export class DocSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res && res.isAdmin) {
+        this.form.patchValue({fileUnit: res.orgName});
+        this.getInfo(this.page, this.size);
+      }
+    });
   }
 
 }
