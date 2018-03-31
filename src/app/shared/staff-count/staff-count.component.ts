@@ -45,9 +45,10 @@ export class StaffCountComponent implements OnInit {
                     name: '女',
                     type: 'bar',
                     stack: 'one',
-                    data: res.data.womans
+                    data: res.data.wonmans
                   }]
                 };
+                console.log(this.updateOptions1);
                 this.updateOptions2 = {
                   series: {
                     type: 'pie',

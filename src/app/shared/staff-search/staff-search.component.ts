@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post, politics, educational } from '../../store/translate';
+import { work_post, politics, educational, list_group } from '../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -28,6 +28,7 @@ export class StaffSearchComponent implements OnInit {
   hasData = false;
   param: any = {};
   selectionMode = 'checkbox';
+  listGroup = list_group;
   en = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -62,7 +63,7 @@ export class StaffSearchComponent implements OnInit {
       { field: 'userMail', header: '邮箱' },
       { field: 'workPost', header: '岗位' },
       { field: 'educational', header: '学历' },
-      { field: 'listGroup', header: '班组' },
+      { field: 'listGroupCN', header: '班组' },
       { field: 'orgName', header: '组织名称' }
     ];
   }
@@ -128,8 +129,11 @@ export class StaffSearchComponent implements OnInit {
                     el.politicalStatus = this.politics[el.politicalStatus];
                     el.workPost = this.work_post[el.workPost];
                     el.educational = this.educational[el.educational];
+                    el.listGroup = this.listGroup[el.listGroup];
                     return el;
                   });
+                }else {
+                  alert('没有匹配的人员信息，请重新设置查询条件！');
                 }
               }else {
                 alert(res.message);

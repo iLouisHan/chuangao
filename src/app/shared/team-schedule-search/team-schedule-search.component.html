@@ -91,7 +91,7 @@
               <tbody>
                 <tr *ngFor="let row of myCalendar">
                   <td *ngFor="let day of row">
-                    <div class="myTable-td-div">
+                    <div [class.today]="day.today" class="myTable-td-div">
                       <p>{{day.date}}</p>
                       <div>
                         <span *ngIf="day.dayShift" class="team-day">{{list_group[day.dayShift.teamsGroup]}}</span>

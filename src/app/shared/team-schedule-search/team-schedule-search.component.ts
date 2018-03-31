@@ -35,18 +35,20 @@ export class TeamScheduleSearchComponent implements OnInit {
   now: string;
   _month = this.nowTime.getMonth() + 1;
   _year = this.nowTime.getFullYear();
-  secheduleList: any;
+  secheduleList: any = [];
   list_group = list_group;
   orgType: number;
   orgCode: string;
   orgName: string;
   login: Observable<any> = new Observable<any>();
+  today: string;
 
   constructor(
     private http: Http,
     private store: Store<any>
   ) {
-    this.now = this.dateFormat(this.nowTime);
+    this.today = this.dateFormat(this.nowTime);
+    this.now = this.dateFormat(this.nowTime.setDate(1));
     this.login = store.select('login');
     this.form = new FormGroup({
       teamsGroup: new FormControl('', Validators.nullValidator),
@@ -92,6 +94,9 @@ export class TeamScheduleSearchComponent implements OnInit {
           month: day.getMonth(),
           date: day.getDate()
         };
+        if (this.dateFormat(day) === this.today) {
+          this.myCalendar[row][col].today = true;
+        }
       }
     }
   }

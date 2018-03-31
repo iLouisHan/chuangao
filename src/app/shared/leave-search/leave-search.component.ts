@@ -97,7 +97,7 @@ export class LeaveSearchComponent implements OnInit {
     this.form.value.startTime = this.dateFormat(this.startTime);
     this.form.value.endTime = this.dateFormat(this.endTime);
     this.form.value.orgList = this.orgList.map(el => el.data);
-    const param = {
+    const param: any = {
       page: page,
       size: size,
     };
@@ -107,6 +107,9 @@ export class LeaveSearchComponent implements OnInit {
         param[el] = this.form.value[el];
       }
     });
+    if (param.leaveType) {
+      param.leaveType = +param.leaveType;
+    }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(param) , {
