@@ -56,28 +56,61 @@
 <div class="flex-between chart-container">
   <div class="part-container chart-container income-container">
     <h1 class="part-title">清分收入同比图</h1>
-    <div>
-      <img src="/assets/images/income.jpg" alt="">
+    <div class="echarts-container">
+      <div echarts [options]="options1" [initOpts]="initOptions1"></div>
     </div>
   </div>
   <div class="part-container chart-container complete-container">
     <h1 class="part-title">任务完成情况</h1>
-    <div>
-      <img src="/assets/images/complete.jpg" alt="">
+    <div class="echarts-container clearfix">
+      <div class="left-chart">
+        <div class="flex-container">
+          <div class="progress-bar-container">
+            <p class="value-topbar">12313123</p>
+            <div>
+              <p class="progress-key daokou">道口收入</p>
+              <div class="progress-div">
+                <div class="progress-child-div daokou"></div>
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar-container">
+            <p class="value-topbar">32132131231</p>
+            <div>
+              <p class="progress-key qingfen">清分收入</p>
+              <div class="progress-div">
+                <div class="progress-child-div qingfen"></div>
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar-container">
+            <p class="value-topbar">31231231</p>
+            <div>
+              <p class="progress-key jihua">计划任务</p>
+              <div class="progress-div">
+                <div class="progress-child-div jihua"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-chart">
+        <div echarts [options]="options2" [initOpts]="initOptions2"></div>
+      </div>
     </div>
   </div>
 </div>
 <div class="flex-between chart-container">
     <div class="part-container chart-container history-income-container">
       <h1 class="part-title">历年收入</h1>
-      <div>
-        <img src="/assets/images/history-income.jpg" alt="">
+      <div class="bottom-chart-container">
+        <div echarts [options]="options3" [initOpts]="initOptions3"></div>
       </div>
     </div>
     <div class="part-container chart-container thisyear-income-container">
       <h1 class="part-title">年度收入</h1>
-      <div>
-        <img src="/assets/images/thisyear-income.jpg" alt="">
+      <div class="bottom-chart-container">
+        <div echarts [options]="options4" [initOpts]="initOptions4"></div>
       </div>
     </div>
   </div>

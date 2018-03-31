@@ -57,9 +57,9 @@
     width: calc(60% - 20px);
 
     div{
-      padding: 20px;
-      padding-top: 0;
-      min-height: calc(100% - 120px);
+      // padding: 20px;
+      // padding-top: 0;
+      // min-height: calc(100% - 120px);
 
       img{
         width: 100%;
@@ -72,9 +72,9 @@
     width: 40%;
 
     div{
-      padding: 20px;
-      padding-top: 0;
-      min-height: calc(100% - 120px);
+      // padding: 20px;
+      // padding-top: 0;
+      // min-height: calc(100% - 120px);
 
       img{
         width: 100%;
@@ -84,12 +84,9 @@
   }
 
   .history-income-container{
-    width: calc(40% - 20px);
+    width: calc(45% - 20px);
 
     div{
-      padding: 20px;
-      padding-top: 0;
-      min-height: calc(100% - 120px);
 
       img{
         width: 100%;
@@ -98,13 +95,101 @@
     }
   }
 
+  .echarts-container{
+    background: #fff;
+    margin: 20px;
+    height: 350px;
+    overflow: hidden;
+
+    .left-chart{
+      padding: 50px 0;
+      width: calc(100% - 250px);
+      height: 250px;
+      float: left;
+
+      .flex-container{
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .progress-bar-container{
+          padding-left: 20px;
+          height: 70px;
+          flex-direction: column;
+
+          .value-topbar{
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            text-indent: 70px;
+          }
+
+          >div {
+            height: 50px;
+            display: flex;
+            flex-direction: row;
+
+            .progress-key{
+              width: 70px;
+              line-height: 50px;
+
+              &.daokou{
+                color: #3fb1e3;
+              }
+
+              &.qingfen{
+                color: #6be6c1;
+              }
+
+              &.jihua{
+                color: #626c91;
+              }
+            }
+
+            .progress-div{
+              width: calc(100% - 70px);
+              background: #ccc;
+              height: 100%;
+
+              .progress-child-div{
+                width: 100%;
+                height: 50px;
+
+              &.daokou{
+                background: #3fb1e3;
+              }
+
+              &.qingfen{
+                background: #6be6c1;
+              }
+
+              &.jihua{
+                background: #626c91;
+              }
+              }
+            }
+          }
+
+        }
+
+      }
+    }
+
+    .right-chart{
+      width: 250px;
+      float: right;
+      height: 100%;
+    }
+  }
+
   .thisyear-income-container{
-    width: 60%;
+    width: 55%;
 
     div{
-      padding: 20px;
-      padding-top: 0;
-      min-height: calc(100% - 120px);
+      // padding: 20px;
+      // padding-top: 0;
+      // min-height: calc(100% - 120px);
 
       img{
         width: 100%;
@@ -115,5 +200,12 @@
 }
 
 .part-content2{
+  background: #fff;
+}
+
+.bottom-chart-container{
+  height: 200px;
+  overflow: hidden;
+  margin: 20px;
   background: #fff;
 }

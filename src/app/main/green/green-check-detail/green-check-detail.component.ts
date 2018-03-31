@@ -17,6 +17,7 @@ export class GreenCheckDetailComponent implements OnInit {
   firstCheck = ['未检', '合格', '不合格'];
   dealResult = ['免费放行', '缴费放行'];
   runType = ['正常运输', '超限运输', '装载比例不足', '货品不符', '其他'];
+  btnShow: false;
 
   constructor(
     private route: ActivatedRoute,

@@ -45,10 +45,9 @@ export class StaffCountComponent implements OnInit {
                     name: '女',
                     type: 'bar',
                     stack: 'one',
-                    data: res.data.wonmans
+                    data: res.data.womem
                   }]
                 };
-                console.log(this.updateOptions1);
                 this.updateOptions2 = {
                   series: {
                     type: 'pie',
@@ -140,7 +139,9 @@ export class StaffCountComponent implements OnInit {
       },
       legend: {
         data: ['研究生', '本科', '专科', '中专', '高中'],
-        align: 'right'
+        orient: 'vertical',
+        x: 'right',
+        y: 'center'
       },
       tooltip: {
         formatter: '{c}'
@@ -171,7 +172,7 @@ export class StaffCountComponent implements OnInit {
       },
       xAxis: {
         name: '人数',
-        minInterval: 10
+        minInterval: 3
       }
     };
 

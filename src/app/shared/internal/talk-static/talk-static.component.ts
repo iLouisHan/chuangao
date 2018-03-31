@@ -152,8 +152,10 @@ export class TalkStaticComponent implements OnInit {
           data: res.orgCode,
           orgType: this.orgType
         }];
-        this.getStaff();
-        this.search();
+        if (this.orgType === 3) {
+          this.getStaff();
+          this.search();
+        }
       }
     });
     const xAxisData: any = [
@@ -196,7 +198,8 @@ export class TalkStaticComponent implements OnInit {
       },
       yAxis: {
         type: 'value',
-        name: '培训次数'
+        name: '培训次数',
+        minInterval: 1
       },
       series: [{
         name: '',

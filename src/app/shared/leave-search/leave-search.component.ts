@@ -12,8 +12,8 @@ import { Store } from '@ngrx/store';
 })
 export class LeaveSearchComponent implements OnInit {
   form: FormGroup;
-  startTime: string;
-  endTime: string;
+  applyDate: string;
+  applyDateEnd: string;
   count: number;
   leaveDataList: Array<any>;
   orgList: Array<any>;
@@ -83,9 +83,13 @@ export class LeaveSearchComponent implements OnInit {
 
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
+      alert('未选择机构！');
     }else {
-      this.getInfo(this.page, this.size);
+      if (this.orgList.filter(el => el.orgType !== 3).length) {
+        alert('请选择收费站！');
+      }else {
+        this.getInfo(this.page, this.size);
+      }
     }
   }
 
@@ -94,8 +98,8 @@ export class LeaveSearchComponent implements OnInit {
   }
 
   getInfo(page: number, size: number) {
-    this.form.value.startTime = this.dateFormat(this.startTime);
-    this.form.value.endTime = this.dateFormat(this.endTime);
+    this.form.value.applyDate = this.dateFormat(this.applyDate);
+    this.form.value.applyDateEnd = this.dateFormat(this.applyDateEnd);
     this.form.value.orgList = this.orgList.map(el => el.data);
     const param: any = {
       page: page,
