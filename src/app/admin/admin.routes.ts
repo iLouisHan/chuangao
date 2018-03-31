@@ -16,6 +16,7 @@ import { ClothSearchComponent } from '../shared/cloth-search/cloth-search.compon
 import { ClothHistoryComponent } from '../shared/cloth-history/cloth-history.component';
 import { CheckSearchComponent } from '../shared/check-search/check-search.component';
 import { AttendanceCheckComponent } from '../shared/attendance-check/attendance-check.component';
+import { TollStationComponent } from '../shared/toll-station/toll-station.component';
 
 export const AdminRoutes: Routes = [
   {
@@ -35,6 +36,10 @@ export const AdminRoutes: Routes = [
       {
         path: 'home',
         component: HomeComponent
+      },
+      {
+        path: 'tollStation',
+        component: TollStationComponent
       },
       {
         path: 'roadCompanyInput',

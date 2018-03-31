@@ -32,7 +32,7 @@ export class AdminSidebarComponent implements OnInit {
   }
 
   isBasic(): boolean {
-    return /(roadCompany|division)/.test(this.router.url);
+    return /(roadCompany|division|tollStation)/.test(this.router.url);
   }
 
   ngOnInit() {

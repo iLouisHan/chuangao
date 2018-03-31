@@ -10,8 +10,6 @@ import { SharedModule } from '../shared/shared.module';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { MainComponent } from './main.component';
 
-import { TollStationComponent } from './toll-station/toll-station.component';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -20,8 +18,7 @@ import { TollStationComponent } from './toll-station/toll-station.component';
   ],
   declarations: [
     SidebarComponent,
-    MainComponent,
-    TollStationComponent
+    MainComponent
   ],
   providers: [
     HasLoginGuard,

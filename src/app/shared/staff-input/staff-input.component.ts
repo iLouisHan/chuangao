@@ -37,6 +37,8 @@ export class StaffInputComponent implements OnInit {
       positionalTitle: new FormControl('', Validators.nullValidator),
       emergencyContact: new FormControl('', Validators.nullValidator),
       emergencyPhone: new FormControl('', Validators.nullValidator),
+      collectionSysId: new FormControl('', Validators.nullValidator),
+      workLicense: new FormControl('', Validators.nullValidator),
       userMail: new FormControl('', Validators.nullValidator),
       jobDetail: new FormControl('', Validators.nullValidator),
       awardDetail: new FormControl('', Validators.nullValidator),

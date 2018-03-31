@@ -45,7 +45,7 @@ export class StaffTransferComponent implements OnInit {
     page: this.page,
     size: this.size
   };
-  orgList: any;
+  orgList: any = [];
   newOrg: any;
   staffSelected = [];
 
@@ -197,6 +197,7 @@ export class StaffTransferComponent implements OnInit {
   getStaff() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    console.log(this.param);
     this.http.post(`http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff`, JSON.stringify(this.param) , {
       headers: myHeaders
     })

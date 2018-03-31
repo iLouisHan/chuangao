@@ -4,9 +4,9 @@ import { HasLoginGuard } from '../guard/has-login.guard';
 import { TollGuard } from '../guard/toll.guard';
 import { AdminGuard } from '../guard/admin.guard';
 
-import { TollStationComponent } from './toll-station/toll-station.component';
 import { HomeComponent } from '../shared/home/home.component';
 import { StaffDetailComponent } from '../shared/staff-detail/staff-detail.component';
+import { TollStationComponent } from '../shared/toll-station/toll-station.component';
 
 export const MainRoutes: Routes = [
   {
@@ -16,16 +16,12 @@ export const MainRoutes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'home',
+        redirectTo: 'tollStation',
         pathMatch: 'full'
       },
       {
         path: 'tollStation',
         component: TollStationComponent
-      },
-      {
-        path: 'home',
-        component: HomeComponent,
       },
       {
         path: 'staff',

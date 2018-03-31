@@ -111,7 +111,14 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   ngDoCheck() {
     if (!this.hasClicked && this.initArr.length && this.selectionMode === 'checkbox') {
       Array.from(document.getElementsByClassName('ui-treenode-label'))
-          .filter(item => this.initArr.includes(item.getElementsByClassName('ng-star-inserted')[0].innerHTML))
+          .filter(item => {
+            const dom = item.getElementsByClassName('ng-star-inserted');
+            if (dom[0]) {
+              return this.initArr.includes(dom[0].innerHTML);
+            }else {
+              return false;
+            }
+          })
           .forEach(item => {
             const dom = item as HTMLElement;
             dom.click();
