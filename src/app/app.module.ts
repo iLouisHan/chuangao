@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { LoginReducer, GreenReducer } from './store/cacheStore.reducer';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { PublicStaticService } from './shared/services/public-static.service';
 
 import { AppRoutes } from './app.routes';
 
@@ -26,7 +27,8 @@ import { AppRoutes } from './app.routes';
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy
-    }
+    },
+    PublicStaticService
   ],
   bootstrap: [AppComponent]
 })

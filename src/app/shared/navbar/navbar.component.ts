@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
   noteData: any = {};
   noteCount = 0;
   isShowDetail: boolean = false;
+  isShowManager: boolean = false;
   orgType;
 
   logout(): void {
@@ -80,6 +81,13 @@ export class NavbarComponent implements OnInit {
     else if ('leave' === _type) {
       this.router.navigate([parentUrl + urlList[1] + '/staff/leaveEdit']);
     }
+    else if ('editPassword' === _type) {
+      this.router.navigate([parentUrl + urlList[1] + '/editPassword']);
+    }
+  }
+
+  showUserManager() {
+    this.isShowManager = !this.isShowManager;
   }
 
   ngOnInit() {
