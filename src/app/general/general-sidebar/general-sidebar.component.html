@@ -1,10 +1,5 @@
 <div class="sidebar-container">
   <ul class="sidebar-items">
-    <li *ngIf="orgType !== 3" routerLink="home" [class.actived]="testHash('home')" class="sidebar-item home-item">
-      <div class="sidebar-item-show">
-        <p>系统首页</p>
-      </div>
-    </li>
     <li class="sidebar-item basic-item" [class.actived]="isBasic()">
       <div class="sidebar-item-show">
         <p>基础数据</p>
@@ -23,7 +18,7 @@
         </div>
       </div>
     </li>
-    <li class="sidebar-item staff-item">
+    <li *ngIf="orgType" class="sidebar-item staff-item">
       <div class="sidebar-item-show">
         <p>收费人员</p>
       </div>

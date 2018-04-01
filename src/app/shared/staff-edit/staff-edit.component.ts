@@ -245,7 +245,7 @@ export class StaffEditComponent implements OnInit {
     this.form.value.educational = +this.form.value.educational;
     this.form.value.listGroup = +this.form.value.listGroup;
     this.form.value.orgType = +this.orgType;
-    this.form.value.orgCode = +this.orgCode;
+    this.form.value.orgCode = this.orgCode;
     this.form.value.politicalStatus = +this.form.value.politicalStatus;
     this.form.value.positionalTitle = +this.form.value.positionalTitle;
     if (this.orgType !== 3) {

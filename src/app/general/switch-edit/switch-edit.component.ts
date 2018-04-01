@@ -52,6 +52,11 @@ export class SwitchEditComponent implements OnInit {
   applyChangeType = 1;
   userId: string;
   shiftChangeDataList: Array<any>;
+  requiredItems = {
+    applyTeams: '换班人所在班组',
+    applyUserName: '换班申请人',
+    scheduleDate: '换班信息'
+  };
 
   constructor(
     private http: Http,
@@ -237,7 +242,10 @@ export class SwitchEditComponent implements OnInit {
               if (res.code) {
                 alert(res.message);
                 this.isChosen = false;
+                this.applyInfo = undefined;
                 this.toFirstPage();
+                this.form.reset();
+                this.form.patchValue(this.initForm);
               }else {
                 alert(res.message);
               }

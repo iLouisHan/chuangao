@@ -1,6 +1,6 @@
 <h1 class="page-title"><div class="page-title-icon"></div>请假登记</h1>
 <div class="part-container">
-  <h1 class="part-title">用户基本信息填报</h1>
+  <h1 class="part-title">请假信息填报</h1>
   <div class="part-content">
     <form [formGroup]="form">
       <div class="form-item">
@@ -39,6 +39,28 @@
     </form>
     <div class="form-item">
       <button (click)="submit()" class="form-btn">提&nbsp;交</button>
+    </div>
+  </div>
+</div>
+<div class="part-container">
+  <h1 class="part-title">请假信息记录</h1>
+  <div class="scroll-table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of leaveDataList">
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
     </div>
   </div>
 </div>

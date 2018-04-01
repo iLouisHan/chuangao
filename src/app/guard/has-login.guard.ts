@@ -49,11 +49,11 @@ export class HasLoginGuard implements CanActivate {
       }
     }else {
       if (this.hasLogin) {
-        if (this.orgType === 1 || this.orgType === 2) {
+        if ((this.orgType === 1 && this.isAdmin === 1) || (this.orgType === 2 && this.isAdmin === 1)) {
           this.router.navigate(['/admin']);
         }else if (this.orgType === 3 && this.isAdmin === 1) {
           this.router.navigate(['/main']);
-        }else if (this.orgType === 3 && !this.isAdmin) {
+        }else if (!this.isAdmin) {
           this.router.navigate(['/general']);
         }else if (this.isAdmin === 2) {
           this.router.navigate(['/super']);

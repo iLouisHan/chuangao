@@ -103,7 +103,7 @@
     }
 
     .edit-table{
-      margin-top: 20px;
+      // margin-top: 20px;
       width: 300px;
       text-align: center;
 
@@ -261,4 +261,11 @@ form{
     line-height: 40px;
     text-indent: 15px;
   }
+}
+
+.edit-table-container{
+  margin-top: 20px;
+  max-height: 500px;
+  width: 310px;
+  overflow: scroll;
 }

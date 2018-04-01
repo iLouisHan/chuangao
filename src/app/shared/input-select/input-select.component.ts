@@ -15,7 +15,13 @@ export class InputSelectComponent implements OnInit, DoCheck {
   staffList: Array<any>;
 
   @Input()
-  initUser: string;
+  set initUser(initUser: string) {
+    this.userName = initUser;
+  }
+
+  get initUser(): string {
+    return this.userName;
+  }
 
   @Output()
   selectUser: EventEmitter<any> = new EventEmitter<any>();
@@ -49,7 +55,6 @@ export class InputSelectComponent implements OnInit, DoCheck {
   }
 
   ngOnInit() {
-    this.userName = this.initUser;
     this.staffListShow = this.staffList;
   }
 

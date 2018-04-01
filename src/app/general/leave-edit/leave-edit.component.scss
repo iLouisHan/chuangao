@@ -168,3 +168,46 @@ form{
     outline: none !important;
   }
 }
+
+.scroll-table-container{
+
+  .part-content{
+
+    >div {
+      overflow: scroll;
+      padding-bottom: 10px;
+
+      .myTable{
+        min-width: 100%;
+
+        th{
+          background: #e2ebff;
+          padding: 0 30px;
+          text-align: center;
+          border: 1px solid #fff;
+          font-size: 14px;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+          white-space: nowrap;
+        }
+
+        td{
+          padding: 0 30px;
+          white-space: nowrap;
+          text-align: center;
+          border: 1px solid #fff;
+          background: #ededed;
+          font-size: 14px;
+          height: 40px;
+          line-height: 40px;
+          color: #666;
+
+          img{
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

@@ -16,30 +16,32 @@
         </select>
       </div>
     </div>
-    <div *ngFor="let item of attendanceList" class="attendance-container">
-      <button class="add-button" (click)="addStaffs(item.value)">添加</button>
-      <p>{{item.label}}人员</p>
-      <div class="staff-container">
-        <ul class="clearfix">
-          <li class="staffList-li clearfix" *ngFor="let staff of item.staff">
-            <p>{{staff.userName}}</p><div (click)="removeStaff(item.value, staff.userId)"></div>
-          </li>
-        </ul>
+    <div>
+      <div *ngFor="let item of attendanceList" class="attendance-container">
+        <button class="add-button" (click)="addStaffs(item.value)">添加</button>
+        <p>{{item.label}}人员</p>
+        <div class="staff-container">
+          <ul class="clearfix">
+            <li class="staffList-li clearfix" *ngFor="let staff of item.staff">
+              <p>{{staff.userName}}</p><div (click)="removeStaff(item.value, staff.userId)"></div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="clearfix">
-      <div class="form-item select-container">
-        <button (click)="addAttendanceType()" class="add-button">添加</button>
-        <p>其他</p>
-        <select [(ngModel)]="attenceTypeToAdd">
-          <option value="0">请选择</option>
-          <option *ngFor="let item of freeItemsList" [value]="item.value">{{item.label}}</option>
-        </select>
+      <div class="clearfix">
+        <div class="form-item select-container">
+          <button (click)="addAttendanceType()" class="add-button">添加</button>
+          <p>其他</p>
+          <select [(ngModel)]="attenceTypeToAdd">
+            <option value="0">请选择</option>
+            <option *ngFor="let item of freeItemsList" [value]="item.value">{{item.label}}</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="button-group">
-      <button (click)="submit()" class="button-submit">保存</button>
-      <button class="button-cancel">取消</button>
+      <div class="button-group">
+        <button (click)="submit()" class="button-submit">保存</button>
+        <button class="button-cancel">取消</button>
+      </div>
     </div>
   </div>
 </div>

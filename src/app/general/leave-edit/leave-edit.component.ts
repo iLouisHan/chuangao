@@ -20,6 +20,22 @@ export class LeaveEditComponent implements OnInit {
   file: any;
   orgCode: string;
   applyUserId: string;
+  size = 15;
+  page = 0;
+  count: number;
+  leaveDataList: any;
+  hasData: boolean;
+  leaveType: any = {
+    1: '事假',
+    2: '年休',
+    3: '补休',
+    4: '病假',
+    5: '产假',
+    6: '婚假',
+    7: '其他'
+  };
+  cols: any;
+  checkResult = ['未审核', '通过', '未通过'];
 
   constructor(
     private http: Http,
@@ -38,6 +54,16 @@ export class LeaveEditComponent implements OnInit {
       monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
       monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
     };
+    this.cols = [
+      { field: 'orgName', header: '组织机构' },
+      { field: 'userName', header: '请假人' },
+      { field: 'applyTypeCN', header: '请假类型' },
+      { field: 'applyDate', header: '开始请假时间' },
+      { field: 'applyDateEnd', header: '结束请假时间' },
+      { field: 'remark', header: '请假理由' },
+      { field: 'leaveTipDownload', header: '请假条下载' },
+      { field: 'checkResultCN', header: '请假审核状态' }
+    ];
   }
 
   fileChange($event) {
@@ -95,11 +121,42 @@ export class LeaveEditComponent implements OnInit {
       });
   }
 
+  getInfo(page, size) {
+    const param: any = {
+      page: page,
+      size: size,
+      orgList: [this.orgCode],
+      userId: this.applyUserId
+    };
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(param) , {
+              headers: myHeaders
+            })
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.count = res.data.count;
+                res.data.leaveDataList.forEach(el => {
+                  el.applyTypeCN = this.leaveType[el.applyType];
+                  el.checkResultCN = this.checkResult[el.checkResult];
+                });
+                this.leaveDataList = res.data.leaveDataList;
+                if (res.data.count > 0) {
+                  this.hasData = true;
+                }
+              }else {
+                alert(res.message);
+              }
+            });
+  }
+
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
         this.orgCode = res.orgCode;
         this.applyUserId = res.userId;
+        this.getInfo(this.page, this.size);
       }
     });
   }

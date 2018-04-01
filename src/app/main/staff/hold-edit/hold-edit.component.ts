@@ -171,7 +171,7 @@ export class HoldEditComponent implements OnInit {
 
   deleteLeave(selectedLeave) {
     const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Leave/deleteLeave?id=${selectedLeave}`)
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/delete?id=${selectedLeave}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);

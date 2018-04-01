@@ -15,23 +15,25 @@
           </select>
         </div>
       </div>
-      <table class="edit-table">
-        <thead>
-          <tr>
-            <th>收费员</th>
-            <th>评分</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let staff of resultList">
-            <td>{{staff.userName}}</td>
-            <td (click)="staff.editable = true;inputFocus($event)">
-              <span *ngIf="!staff.editable">{{staff.score}}</span>
-              <input class="add-input" (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="edit-table-container">
+        <table class="edit-table">
+          <thead>
+            <tr>
+              <th>收费员</th>
+              <th>评分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let staff of resultList">
+              <td>{{staff.userName}}</td>
+              <td (click)="staff.editable = true;inputFocus($event)">
+                <span *ngIf="!staff.editable">{{staff.score}}</span>
+                <input class="add-input" (blur)="staff.editable = false" type="text" *ngIf="staff.editable" [(ngModel)]="staff.score">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <button (click)="addComposit()" class="btn">提&nbsp;交</button>
     </div>
     <div class="update-container" *ngIf="view === 2">

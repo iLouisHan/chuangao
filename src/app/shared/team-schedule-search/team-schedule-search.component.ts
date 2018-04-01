@@ -242,7 +242,8 @@ export class TeamScheduleSearchComponent implements OnInit {
     this.nowTime = new Date();
     this._month = this.nowTime.getMonth() + 1;
     this._year = this.nowTime.getFullYear();
-    this.now = this.dateFormat(this.nowTime);
+    this.today = this.dateFormat(this.nowTime);
+    this.now = this.dateFormat(this.nowTime.setDate(1));
     this.calendarInit(this.now);
     this.bindSechedule();
   }
