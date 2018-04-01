@@ -63,8 +63,8 @@ export class SwitchEditComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      applyUserId: new FormControl('', Validators.nullValidator),
-      backUserId: new FormControl('', Validators.nullValidator),
+      // applyUserId: new FormControl('', Validators.nullValidator),
+      // backUserId: new FormControl('', Validators.nullValidator),
       remark: new FormControl('', Validators.nullValidator),
       applyTeams: new FormControl('', Validators.nullValidator),
       backTeams: new FormControl('', Validators.nullValidator)

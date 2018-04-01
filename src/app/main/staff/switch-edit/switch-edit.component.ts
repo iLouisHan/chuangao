@@ -68,11 +68,7 @@ export class SwitchEditComponent implements OnInit {
   loadingStaffs = false;
   loadingBackStaff = false;
 
-  requiredItems: any = {
-    applyTeams: '换班人所在班组',
-    applyUserId: '换班申请人',
-    applyDate: '换班信息'
-  };
+  requiredItems: any;
 
   constructor(
     private http: Http,
@@ -110,11 +106,10 @@ export class SwitchEditComponent implements OnInit {
       { field: 'remark', header: '备注' }
     ];
     this.initForm = {
-      applyUserId: '',
-      applyTeams: '',
-      backUserId: '',
-      backTeams: '',
-      returnShift: '0',
+      applyTeams: 0,
+      backTeams: 0,
+      returnShift: 0,
+      backShift: 0,
       remark: ''
     };
   }
@@ -258,7 +253,13 @@ export class SwitchEditComponent implements OnInit {
   return() {
     if (this.selectedSwitchId) {
       this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitchId)[0];
-      this.view = 2;
+      if (this._select.backDate) {
+        alert('该记录为替班！');
+      }else if (this._select.returnStatus) {
+        alert('该记录已有还班记录！');
+      }else {
+        this.view = 2;
+      }
     }
   }
 
@@ -293,38 +294,102 @@ export class SwitchEditComponent implements OnInit {
   }
 
   addSwitch() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.stationCode = this.orgCode;
-    this.form.value.applyDate = this.applyInfo.scheduleDate;
-    this.form.value.applyShift = this.applyInfo.shiftId;
-    this.form.value.userId = this.form.value.userId;
+    if (this.applyInfo) {
+      this.form.value.applyDate = this.applyInfo.scheduleDate;
+      this.form.value.applyShift = this.applyInfo.shiftId;
+    }
+    if (this.applyUserId) {
+      this.form.value.applyUserId = this.applyUserId;
+    }
     if (this.form.value.applyTeams) {
       this.form.value.applyTeams = +this.form.value.applyTeams;
     }
     this.form.value.applyChangeType = this.applyChangeType;
     if (this.checkItem === 1) {
-      // this.form
+      if (this.backInfo) {
+        this.form.value.backDate = this.backInfo.scheduleDate;
+        this.form.value.backShift = this.backInfo.shiftId;
+      }
+      if (this.backUserId) {
+        this.form.value.backUserId = this.backUserId;
+      }
+      if (this.form.value.backTeams) {
+        this.form.value.backTeams = +this.form.value.backTeams;
+      }
+      this.requiredItems = {
+        backTeams: '替班人所在班组',
+        backUserId: '替班人姓名',
+        backDate: '替班信息',
+        applyTeams: '换班人所在班组',
+        applyUserId: '换班申请人',
+        applyDate: '换班信息'
+      };
+      const keys = Object.keys(this.requiredItems);
+      const param: any = {};
+      const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
+      if (spaceArr.length > 0) {
+        alert(`${spaceArr.join(',')}为空`);
+      }else {
+        param.backTeams = this.form.value.backTeams;
+        param.backUserId = this.form.value.backUserId;
+        param.backDate = this.form.value.backDate;
+        param.applyTeams = this.form.value.applyTeams;
+        param.applyUserId = this.form.value.applyUserId;
+        param.applyDate = this.form.value.applyDate;
+        param.applyShift = this.form.value.applyShift;
+        param.backShift = this.form.value.backShift;
+        param.stationCode = this.orgCode;
+        param.applyChangeType = this.applyChangeType;
+        param.remark = this.form.value.remark;
+        param.checkUserId = this.userId;
+        this.postHttp(param);
+      }
+    }else {
+      this.form.value.returnShift = +this.form.value.returnShift;
+      this.form.value.returnDate = this.dateFormat(this.returnDate);
+      this.requiredItems = {
+        applyTeams: '换班人所在班组',
+        applyUserId: '换班申请人',
+        applyDate: '换班信息'
+      };
+      const keys = Object.keys(this.requiredItems);
+      const param: any = {};
+      const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
+      if (spaceArr.length > 0) {
+        alert(`${spaceArr.join(',')}为空`);
+      }else {
+        param.applyTeams = this.form.value.applyTeams;
+        param.applyUserId = this.form.value.applyUserId;
+        param.applyDate = this.form.value.applyDate;
+        param.applyShift = this.form.value.applyShift;
+        param.stationCode = this.orgCode;
+        param.applyChangeType = this.applyChangeType;
+        param.remark = this.form.value.remark;
+        param.checkUserId = this.userId;
+        this.postHttp(param);
+      }
     }
-    // this.form.value.backTeams = +this.form.value.backTeams;
-    // this.form.value.checkUserId = this.userId;
-    // this.form.value.applyUserId = this.applyUserId;
-    // this.form.value.backUserId = this.backUserId;
-    // this.form.value.backDate = this.dateFormat(this.backDate);
-    // this.form.value.returnDate = this.dateFormat(this.returnDate);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                alert(res.message);
-                this.view = 0;
-                this.toFirstPage();
-              }else {
-                alert(res.message);
-              }
-            });
+  }
+
+  postHttp(param) {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(param), {
+      headers: myHeaders
+    })
+    .map(res => res.json())
+    .subscribe(res => {
+      if (res.code) {
+        alert(res.message);
+        this.view = 0;
+        this.toFirstPage();
+      }else {
+        alert(res.message);
+      }
+      this.applyInfo = undefined;
+      this.backInfo = undefined;
+    });
   }
 
   updateLeave() {
@@ -362,9 +427,9 @@ export class SwitchEditComponent implements OnInit {
   submit() {
     if (this.isAdd) {
       this.addSwitch();
-      this.applyInfo = {};
-      this.returnDate = '';
-      this.backDate = '';
+      // this.applyInfo = {};
+      // this.returnDate = '';
+      // this.backDate = '';
     }else {
       this.updateLeave();
     }
@@ -392,15 +457,15 @@ export class SwitchEditComponent implements OnInit {
       this.loadingBackStaff = false;
       this.loadingStaffs = false;
       if (res.code) {
-                if (val === 1) {
-                  this.applyStaffList = res.data;
-                }else if (val === 2) {
-                  this.backStaffList = res.data;
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+        if (val === 1) {
+          this.applyStaffList = res.data;
+        }else if (val === 2) {
+          this.backStaffList = res.data;
+        }
+      }else {
+        alert(res.message);
+      }
+    });
   }
 
   chooseApplySchedule($event) {
