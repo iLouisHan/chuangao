@@ -22,6 +22,7 @@
         <div class="form-item">
           <p>换班申请人</p>
           <app-input-select (selectUser)="applyUserChoose($event)" [staffList]="applyStaffList" [initUser]="applyUserName"></app-input-select>
+          <div *ngIf="loadingStaffs" class="loading" style="top: 205px;"></div>
         </div>
         <div class="form-item">
           <p>换班信息</p>
@@ -51,6 +52,7 @@
         <div class="form-item">
           <p>替班申请人</p>
           <app-input-select (selectUser)="backUserChoose($event)" [staffList]="backStaffList" [initUser]="backUserName"></app-input-select>
+          <div *ngIf="loadingBackStaff" class="loading" style="top: 290px;"></div>
         </div>
         <div class="form-item">
           <p>替班日期</p>
