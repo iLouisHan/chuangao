@@ -18,11 +18,11 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
 
   @Input()
   set userName(userName: string) {
-    this.userName = userName;
+    this._username = userName;
   }
 
   get userName() {
-    return this.userName;
+    return this._username;
   }
 
   @Output()
