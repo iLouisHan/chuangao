@@ -41,3 +41,25 @@
     </div>
   </div>
 </div>
+<div class="part-container">
+  <h1 class="part-title">顶班信息填报</h1>
+  <div class="table-container">
+    <div class="part-content">
+      <div>
+        <table class="myTable">
+          <thead>
+            <tr>
+              <th *ngFor="let field of cols">{{field.header}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of holdList">
+              <td *ngFor="let field of cols">{{item[field.field]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>

@@ -99,7 +99,7 @@ export class SwitchSearchComponent implements OnInit {
     this.form.value.startDate = this.dateFormat(this.startDate);
     this.form.value.endDate = this.dateFormat(this.endDate);
     this.form.value.orgList = this.orgList.map(el => el.data);
-    this.param.applyChangeType = this.checkItem;
+    this.param.applyChangeType = +this.checkItem;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       if (this.form.value[el] || this.form.value[el] === 0) {

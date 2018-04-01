@@ -56,6 +56,10 @@ export class SwitchEditComponent implements OnInit {
   backDate: string;
   view = 0;
   _select: any;
+  applyChangeTypeCN = {
+    1: '调班',
+    2: '顶班'
+  };
 
   constructor(
     private http: Http,
@@ -83,7 +87,7 @@ export class SwitchEditComponent implements OnInit {
       { field: 'applyTeamsCN', header: '换/顶班班组' },
       { field: 'applyDate', header: '换/顶班日期' },
       { field: 'applyShiftCN', header: '换/顶班班次' },
-      { field: 'applyChangeType', header: '排班类型' },
+      { field: 'applyChangeTypeCN', header: '排班类型' },
       { field: 'backUserName', header: '替班收费员' },
       { field: 'backTeamsCN', header: '替班班组' },
       { field: 'backDate', header: '替班日期' },
@@ -141,6 +145,7 @@ export class SwitchEditComponent implements OnInit {
                     el.backTeamsCN = this.list_group[el.backTeams];
                     el.applyShiftCN = this.shiftId[el.applyShift];
                     el.backShiftCN = this.shiftId[el.backShift];
+                    el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
                   });
                 }
               }else {
