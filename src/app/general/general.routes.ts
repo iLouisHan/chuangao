@@ -7,6 +7,7 @@ import { HoldEditComponent } from './hold-edit/hold-edit.component';
 import { SwitchEditComponent } from './switch-edit/switch-edit.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 import { ReturnEditComponent } from './return-edit/return-edit.component';
+import { EditPasswordComponent } from '../shared/edit-password/edit-password.component';
 
 export const GeneralRoute: Routes = [
   {
@@ -46,6 +47,10 @@ export const GeneralRoute: Routes = [
       {
         path: 'returnEdit',
         component: ReturnEditComponent
+      },
+      {
+        path: 'editPassword',
+        component: EditPasswordComponent
       }
     ]
   }

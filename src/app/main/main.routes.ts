@@ -7,6 +7,7 @@ import { AdminGuard } from '../guard/admin.guard';
 import { HomeComponent } from '../shared/home/home.component';
 import { StaffDetailComponent } from '../shared/staff-detail/staff-detail.component';
 import { TollStationComponent } from '../shared/toll-station/toll-station.component';
+import { EditPasswordComponent } from '../shared/edit-password/edit-password.component';
 
 export const MainRoutes: Routes = [
   {
@@ -46,6 +47,10 @@ export const MainRoutes: Routes = [
       {
         path: 'internal',
         loadChildren: '../shared/internal/internal.module#InternalModule'
+      },
+      {
+        path: 'editPassword',
+        component: EditPasswordComponent
       }
     ]
   }

@@ -17,6 +17,7 @@ import { ClothHistoryComponent } from '../shared/cloth-history/cloth-history.com
 import { CheckSearchComponent } from '../shared/check-search/check-search.component';
 import { AttendanceCheckComponent } from '../shared/attendance-check/attendance-check.component';
 import { TollStationComponent } from '../shared/toll-station/toll-station.component';
+import { EditPasswordComponent } from '../shared/edit-password/edit-password.component';
 
 export const AdminRoutes: Routes = [
   {
@@ -122,6 +123,10 @@ export const AdminRoutes: Routes = [
       {
         path: 'green',
         loadChildren: '../main/green/green.module#GreenModule'
+      },
+      {
+        path: 'editPassword',
+        component: EditPasswordComponent
       }
     ]
   }
