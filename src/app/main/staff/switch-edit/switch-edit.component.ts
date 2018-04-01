@@ -61,6 +61,9 @@ export class SwitchEditComponent implements OnInit {
     2: '顶班'
   };
 
+  loadingStaffs = false;
+  loadingBackStaff = false;
+
   constructor(
     private http: Http,
     private store: Store<any>
@@ -338,10 +341,17 @@ export class SwitchEditComponent implements OnInit {
   }
 
   getStaff(teams, val) {
+    if (1 === val) {
+      this.loadingStaffs = true;
+    }else if (2 === val) {
+      this.loadingBackStaff = true;
+    }
     this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?stationCode=${this.orgCode}&teams=${teams}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
+    .map(res => res.json())
+    .subscribe(res => {
+      this.loadingBackStaff = false;
+      this.loadingStaffs = false;
+      if (res.code) {
                 if (val === 1) {
                   this.applyStaffList = res.data;
                 }else if (val === 2) {
@@ -379,15 +389,21 @@ export class SwitchEditComponent implements OnInit {
 
   applyTeamsChange($event) {
     this.applyTeams = $event.target.value;
+    this.applyUserName = '';
     if (this.applyTeams !== '-1') {
       this.getStaff(this.applyTeams, 1);
+    }else {
+      this.applyStaffList = [];
     }
   }
 
   backTeamsChange($event) {
     this.backTeams = $event.target.value;
+    this.backUserName = '';
     if (this.backTeams !== '-1') {
       this.getStaff(this.backTeams, 2);
+    }else {
+      this.backStaffList = [];
     }
   }
 

@@ -2,14 +2,14 @@
   <div class="title-container"></div>
   <h1 class="title-h1">川高系统高速公路收费综合管理平台</h1>
   <ul class="navbar-items">
-    <li class="navbar-item">
+    <li class="navbar-item" (mouseover)="showNoteDetail()" (mouseleave)="hideNoteDetail()">
       <i class="fa fa-bell-o"></i>
-      <span>0</span>
+      <span>{{noteCount}}</span>
     </li>
-    <li class="navbar-item">
+    <!-- <li class="navbar-item">
       <i class="fa fa-star-o"></i>
       <span>0</span>
-    </li>
+    </li> -->
     <li class="navbar-item user-item">
       <p>{{role}}</p>
     </li>
