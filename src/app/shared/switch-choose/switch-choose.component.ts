@@ -33,6 +33,7 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
   _userId: string;
   switchTableShow = false;
   _username: string;
+  loadingSchedule: boolean = false;
 
   constructor(
     private http: Http,
@@ -53,9 +54,11 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
   }
 
   getSchedule() {
+    this.loadingSchedule = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getScheduleByTeams?stationCode=${this.orgCode}&teams=${this._teams}&userId=${this._userId}`)
-            .map(res => res.json())
-            .subscribe(res => {
+    .map(res => res.json())
+    .subscribe(res => {
+              this.loadingSchedule = false;
               this.scheduleList = res.data;
             });
   }
