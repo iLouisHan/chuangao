@@ -23,6 +23,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { ClothSearchComponent } from './cloth-search/cloth-search.component';
 import { ClothHistoryComponent } from './cloth-history/cloth-history.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
+import { EditPasswordComponent } from './edit-password/edit-password.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { TollStationComponent } from './toll-station/toll-station.component';
     CheckSearchComponent,
     ClothSearchComponent,
     ClothHistoryComponent,
-    TollStationComponent
+    TollStationComponent,
+    EditPasswordComponent
   ],
   exports: [
     DropOrgTreeComponent,
@@ -73,7 +75,8 @@ import { TollStationComponent } from './toll-station/toll-station.component';
     CheckSearchComponent,
     ClothSearchComponent,
     ClothHistoryComponent,
-    TollStationComponent
+    TollStationComponent,
+    EditPasswordComponent
   ]
 })
 export class SharedModule { }
