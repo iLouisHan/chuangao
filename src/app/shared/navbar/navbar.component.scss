@@ -35,6 +35,35 @@
       padding: 0 10px;
       margin: 0 10px;
 
+      .note-detail{
+        padding: 12px 20px;
+        position: absolute;
+        top: 45px;
+        right: 0px;
+        width: 200px;
+        height: 110px;
+        background-color: #fff;
+        box-shadow: 4px 4px 12px #888888;
+        border-radius: 3px;
+
+        .note-item {
+          height: 30px;
+
+          .title{
+            float: left;
+          }
+
+          .content{
+            float: left;
+            font-size: 16px;
+            font-style: normal;
+            color:#a8c6ff;
+            margin: 0 5px;
+            cursor: pointer;
+          }
+        }
+      }
+
       i{
         font-size: 28px;
         color: #a8c6ff;

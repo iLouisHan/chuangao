@@ -16,6 +16,8 @@ export class NavbarComponent implements OnInit {
   orgLevel = ['超级', '路公司', '管理处', '收费站'];
   noteData: any = {};
   noteCount = 0;
+  isShowDetail: boolean = false;
+  orgType;
 
   logout(): void {
     this.store.dispatch(new Actions.SaveLogin(''));
@@ -31,37 +33,59 @@ export class NavbarComponent implements OnInit {
     this.login = store.select('login');
   }
 
-  
+
+  // 获取通知信息
   getNotification(orgCode, orgType) {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getNotification?orgCode=${orgCode}&orgType=${orgType}`)
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        this.noteData = res.data;
-        if(this.noteData){
-          this.noteCount = (this.noteData.shiftChangeCount || 0) + 
-          (this.noteData.returnCount || 0) +
-          (this.noteData.replaceCount || 0) +
-          (this.noteData.leaveCount || 0);
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.noteData = res.data;
+          if (this.noteData) {
+            this.noteCount = (this.noteData.shiftChangeCount || 0) +
+              (this.noteData.returnCount || 0) +
+              (this.noteData.replaceCount || 0) +
+              (this.noteData.leaveCount || 0);
+          }
+        } else {
+          alert(res.message);
         }
-              }else {
-                alert(res.message);
-              }
-            });
+      });
   }
 
-  showNoteDetail(){
-    console.log('showNoteDetail');
+  // 显示通知详情
+  showNoteDetail() {
+    this.isShowDetail = true;
   }
-  
-  hideNoteDetail(){
-    console.log('hideNoteDetail');
+
+  // 隐藏通知详情
+  hideNoteDetail() {
+    this.isShowDetail = false;
+  }
+
+  // 调整对应通知详情页面
+  linkDetail(_type) {
+    let urlList = this.router.url.split('/');
+    let urlCount = urlList.length - 1;
+    let parentUrl = '';
+    for (let i = 0; i < urlCount; i++) {
+      parentUrl += '../';
+    }
+    if ('shift' === _type || 'return' === _type) {
+      this.router.navigate([parentUrl + urlList[1] + '/staff/switchEdit']);
+    }
+    else if ('replace' === _type) {
+      this.router.navigate([parentUrl + urlList[1] + '/staff/holdEdit']);
+    }
+    else if ('leave' === _type) {
+      this.router.navigate([parentUrl + urlList[1] + '/staff/leaveEdit']);
+    }
   }
 
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
-        console.log('res ： ', res);
+        this.orgType = res.orgType;
         this.role = `${this.orgLevel[res.orgType]}${res.isAdmin ? '管理员' : '普通'}账号`;
         this.getNotification(res.orgCode, res.orgType);
       }
