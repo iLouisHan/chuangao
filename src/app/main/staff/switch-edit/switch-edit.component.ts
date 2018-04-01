@@ -25,7 +25,7 @@ export class SwitchEditComponent implements OnInit {
   page = 0;
   size = 15;
   count: number;
-  selectedSwitch: string;
+  selectedSwitchId: string;
   applyStaffList: Array<any>;
   backStaffList: Array<any>;
   hasData: boolean;
@@ -47,14 +47,18 @@ export class SwitchEditComponent implements OnInit {
   backUserName: string;
   backUserId: string;
   applyInfo: any;
+  backInfo: any;
   applyChangeType = 1;
+  notUpdate = true;
   userId: string;
   shiftChangeDataList: Array<any>;
   returnDate: string;
   _returnDate: string;
   _returnShift: string;
   backDate: string;
+  selectedSwitch: any = {};
   view = 0;
+  checkItem = 1;
   _select: any;
   applyChangeTypeCN = {
     1: '调班',
@@ -63,6 +67,12 @@ export class SwitchEditComponent implements OnInit {
 
   loadingStaffs = false;
   loadingBackStaff = false;
+
+  requiredItems: any = {
+    applyTeams: '换班人所在班组',
+    applyUserId: '换班申请人',
+    applyDate: '换班信息'
+  };
 
   constructor(
     private http: Http,
@@ -95,15 +105,17 @@ export class SwitchEditComponent implements OnInit {
       { field: 'backTeamsCN', header: '替班班组' },
       { field: 'backDate', header: '替班日期' },
       { field: 'backShiftCN', header: '替班班次' },
+      { field: 'returnDate', header: '还班日期' },
+      { field: 'returnShiftCN', header: '还班班次' },
       { field: 'remark', header: '备注' }
     ];
     this.initForm = {
-      applyUserId: '-1',
-      applyTeams: '-1',
-      backUserId: '-1',
-      backTeams: '-1',
-      backShift: '0',
-      returnShift: '0'
+      applyUserId: '',
+      applyTeams: '',
+      backUserId: '',
+      backTeams: '',
+      returnShift: '0',
+      remark: ''
     };
   }
 
@@ -125,8 +137,12 @@ export class SwitchEditComponent implements OnInit {
       shiftId: this.data.applyShift
     };
     this.getStaff(this.applyTeams, 1);
+    this.notUpdate = false;
     if (this.backTeams) {
       this.getStaff(this.backTeams, 2);
+      this.checkItem = 1;
+    }else {
+      this.checkItem = 2;
     }
   }
 
@@ -148,6 +164,7 @@ export class SwitchEditComponent implements OnInit {
                     el.backTeamsCN = this.list_group[el.backTeams];
                     el.applyShiftCN = this.shiftId[el.applyShift];
                     el.backShiftCN = this.shiftId[el.backShift];
+                    el.returnShiftCN = this.shiftId[el.returnShift];
                     el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
                   });
                 }
@@ -192,6 +209,7 @@ export class SwitchEditComponent implements OnInit {
     this.form.patchValue(this.initForm);
     this.view = 1;
     this.isAdd = true;
+    this.notUpdate = true;
   }
 
   backUserChoose(id) {
@@ -204,6 +222,10 @@ export class SwitchEditComponent implements OnInit {
     this.form.value.applyUserId = id;
   }
 
+  test(val) {
+    return val === +this.checkItem;
+  }
+
   search() {
     // if (this.searchName && this.searchName.trim()) {
     //   this.param.userName = this.searchName;
@@ -214,40 +236,52 @@ export class SwitchEditComponent implements OnInit {
   }
 
   update() {
-    if (this.selectedSwitch) {
-      this.getSwitchInfo(this.selectedSwitch);
+    if (this.selectedSwitchId && !this.selectedSwitch.overDeadline) {
+      this.getSwitchInfo(this.selectedSwitchId);
       this.view = 1;
       this.isAdd = false;
-    }else {
+    }else if (!this.selectedSwitchId) {
       alert('请选择一个换班信息！');
+    }else if (this.selectedSwitch.overDeadline) {
+      alert('该信息已超过15天可修改期限！');
     }
   }
 
   delete() {
-    if (this.selectedSwitch) {
-      this.deleteLeave(this.selectedSwitch);
+    if (this.selectedSwitchId) {
+      this.deleteLeave(this.selectedSwitchId);
     }else {
       alert('请选择一个人员');
     }
   }
 
   return() {
-    if (this.selectedSwitch) {
-      this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitch)[0];
+    if (this.selectedSwitchId) {
+      this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitchId)[0];
       this.view = 2;
     }
   }
 
-  select(val) {
-    this.selectedSwitch = val === this.selectedSwitch ? '' : val;
+  select(item) {
+    if (item.id === this.selectedSwitchId) {
+      this.selectedSwitchId = '';
+      this.selectedSwitch = {};
+    }else {
+      this.selectedSwitchId = item.id;
+      this.selectedSwitch = item;
+    }
   }
 
   check(val) {
-    return val === this.selectedSwitch;
+    return val === this.selectedSwitchId;
   }
 
-  deleteLeave(selectedSwitch) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/delete?id=${selectedSwitch}`)
+  checkType($event) {
+    this.checkItem = +$event.target.value;
+  }
+
+  deleteLeave(selectedSwitchId) {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/delete?id=${selectedSwitchId}`)
             .map(res => res.json())
             .subscribe(res => {
               alert(res.message);
@@ -264,14 +298,20 @@ export class SwitchEditComponent implements OnInit {
     this.form.value.stationCode = this.orgCode;
     this.form.value.applyDate = this.applyInfo.scheduleDate;
     this.form.value.applyShift = this.applyInfo.shiftId;
-    this.form.value.applyTeams = +this.form.value.applyTeams;
+    this.form.value.userId = this.form.value.userId;
+    if (this.form.value.applyTeams) {
+      this.form.value.applyTeams = +this.form.value.applyTeams;
+    }
     this.form.value.applyChangeType = this.applyChangeType;
-    this.form.value.backTeams = +this.form.value.backTeams;
-    this.form.value.checkUserId = this.userId;
-    this.form.value.applyUserId = this.applyUserId;
-    this.form.value.backUserId = this.backUserId;
-    this.form.value.backDate = this.dateFormat(this.backDate);
-    this.form.value.returnDate = this.dateFormat(this.returnDate);
+    if (this.checkItem === 1) {
+      // this.form
+    }
+    // this.form.value.backTeams = +this.form.value.backTeams;
+    // this.form.value.checkUserId = this.userId;
+    // this.form.value.applyUserId = this.applyUserId;
+    // this.form.value.backUserId = this.backUserId;
+    // this.form.value.backDate = this.dateFormat(this.backDate);
+    // this.form.value.returnDate = this.dateFormat(this.returnDate);
     this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
@@ -367,24 +407,33 @@ export class SwitchEditComponent implements OnInit {
     this.applyInfo = $event;
   }
 
+  chooseBackSchedule($event) {
+    this.backInfo = $event;
+  }
+
   changeCheckStatus(id, type) {
-    // const myHeaders: Headers = new Headers();
-    // myHeaders.append('Content-Type', 'application/json');
-    // this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/checkLeave`, JSON.stringify({
-    //   id: id,
-    //   checkUserId: this.adminId,
-    //   checkType: type
-    // }), {
-    //   headers: myHeaders
-    // }).map(res => res.json())
-    // .subscribe(res => {
-    //   if (res.code) {
-    //     alert(res.message);
-    //     this.toFirstPage();
-    //   }else {
-    //     alert(res.message);
-    //   }
-    // });
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/check?id=${id}&checkResult=${type}&userId=${this.userId}`).map(res => res.json())
+    .subscribe(res => {
+      if (res.code) {
+        alert(res.message);
+        this.toFirstPage();
+      }else {
+        alert(res.message);
+      }
+    });
+  }
+
+  changeReturnStatus(id, type) {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/returnCheck?id=${id}&checkResult=${type}&userId=${this.userId}`)
+    .map(res => res.json())
+    .subscribe(res => {
+      if (res.code) {
+        alert(res.message);
+        this.toFirstPage();
+      }else {
+        alert(res.message);
+      }
+    });
   }
 
   applyTeamsChange($event) {

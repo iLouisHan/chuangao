@@ -7,7 +7,7 @@
         <div class="form-item">
           <p>换班人所在班组</p>
           <select (change)="applyTeamsChange($event)" formControlName="applyTeams">
-            <option value="-1">请选择</option>
+            <option value="0">请选择</option>
             <option value="1">一班</option>
             <option value="2">二班</option>
             <option value="3">三班</option>
@@ -33,11 +33,18 @@
           <span>换班日期：{{applyInfo.scheduleDate}}&nbsp;换班班次：{{shiftId[applyInfo.shiftId]}}</span>
         </div>
       </form>
-      <form [formGroup]="form">
+      <div *ngIf="notUpdate" class="form-checkbox">
+        <p>请选择调班类型</p>
+        <div>
+          <label><div [class.checked]="test(1)"></div><input (click)="checkType($event)" [checked]="test(1)" value="1" type="checkbox"><span>替班</span></label>
+          <label><div [class.checked]="test(2)"></div><input (click)="checkType($event)" [checked]="test(2)" value="2" type="checkbox"><span>还班</span></label>
+        </div>
+      </div>
+      <form *ngIf="checkItem === 1" [formGroup]="form">
         <div class="form-item">
           <p>替班人所在班组</p>
           <select (change)="backTeamsChange($event)" formControlName="backTeams">
-            <option value="-1">请选择</option>
+            <option value="0">请选择</option>
             <option value="1">一班</option>
             <option value="2">二班</option>
             <option value="3">三班</option>
@@ -55,18 +62,15 @@
           <div *ngIf="loadingBackStaff" class="loading" style="top: 290px;"></div>
         </div>
         <div class="form-item">
-          <p>替班日期</p>
-          <p-calendar [(ngModel)]="backDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+          <p>替班信息</p>
+          <app-switch-choose [userName]="backUserName" (chosenSchedule)="chooseBackSchedule($event)" [userId]="backUserId" [teams]="backTeams"></app-switch-choose>
         </div>
-        <div class="form-item">
-          <p>替班班次</p>
-          <select formControlName="backShift">
-            <option value="0">请选择</option>
-            <option value="1">白班</option>
-            <option value="2">夜班</option>
-            <option value="3">中班</option>
-          </select>
+        <div *ngIf="backInfo" class="form-item">
+          <p>替班详细信息</p>
+          <span>替班日期：{{backInfo.scheduleDate}}&nbsp;替班班次：{{shiftId[backInfo.shiftId]}}</span>
         </div>
+      </form>
+      <form *ngIf="checkItem === 2" [formGroup]="form">
         <div class="form-item">
           <p>还班日期</p>
           <p-calendar [(ngModel)]="returnDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
@@ -77,9 +81,10 @@
             <option value="0">请选择</option>
             <option value="1">白班</option>
             <option value="2">夜班</option>
-            <option value="3">中班</option>
           </select>
         </div>
+      </form>
+      <form [formGroup]="form">
         <div class="form-item form-textarea">
           <p>备注</p>
           <textarea type="text" formControlName="remark"></textarea>
@@ -143,20 +148,32 @@
             <tr>
               <th></th>
               <th *ngFor="let field of cols">{{field.header}}</th>
-              <th>审核</th>
+              <th>调（顶）班申请审核</th>
+              <th>还班审核</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of shiftChangeDataList">
-              <td><input type="checkbox" (click)="select(item.id)" [checked]="check(item.id)"></td>
+              <td><input type="checkbox" (click)="select(item)" [checked]="check(item.id)"></td>
               <td *ngFor="let field of cols">{{item[field.field]}}</td>
               <td>
-                <div *ngIf="item.checkResult === 0">
+                <div *ngIf="item.checkResult === 0 && !item.overDeadline">
                   <button (click)="changeCheckStatus(item.id, 1)" class="btn btn-success">通过</button>
                   <button (click)="changeCheckStatus(item.id, 2)" class="btn btn-danger">不通过</button>
                 </div>
                 <span *ngIf="item.checkResult === 1">通过</span>
                 <span *ngIf="item.checkResult === 2">未通过</span>
+                <span *ngIf="item.checkResult === 0 && item.overDeadline">已超时</span>
+              </td>
+              <td>
+                <div *ngIf="item.returnCheck === 0 && !item.overDeadline && item.returnStatus && item.checkResult === 1">
+                  <button (click)="changeReturnStatus(item.id, 1)" class="btn btn-success">通过</button>
+                  <button (click)="changeReturnStatus(item.id, 2)" class="btn btn-danger">不通过</button>
+                </div>
+                <span *ngIf="item.returnCheck === 1 && item.returnStatus">通过</span>
+                <span *ngIf="item.returnCheck === 2 && item.returnStatus">未通过</span>
+                <span *ngIf="item.returnCheck === 0 && item.overDeadline && item.returnStatus && item.checkResult === 1">已超时</span>
+                <span *ngIf="!item.returnStatus || item.checkResult !== 1">无记录</span>
               </td>
             </tr>
           </tbody>
