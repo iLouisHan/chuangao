@@ -2,17 +2,17 @@ form{
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-  
+
     .form-item{
       width: 20%;
       margin-right: 5%;
       margin-bottom: 20px;
-  
+
       p{
         font-size: 16px;
         color: #333;
         margin-bottom: 5px;
-  
+
         .form-required{
           color: red;
         }
@@ -23,7 +23,7 @@ form{
         border-radius: 5px;
         border: 1px solid #d9d9d9;
       }
-      
+
       .upload-photo{
         width: calc(100% - 2px);
         padding-right: 0px;
@@ -31,11 +31,11 @@ form{
         border-radius: 5px;
         box-shadow: none;
         border: 1px solid #d9d9d9;
-  
+
         input{
           display: none;
         }
-  
+
         span{
           display: inline-block;
           line-height: 40px;
@@ -44,7 +44,7 @@ form{
           overflow: hidden;
           text-indent: 15px;
         }
-  
+
         .upload-photo-btn{
           float: right;
           margin: 5px;
@@ -59,7 +59,7 @@ form{
           cursor: pointer;
         }
       }
-  
+
       input{
         width: calc(100% - 15px);
         padding-right: 15px;
@@ -68,21 +68,21 @@ form{
         border-radius: 5px;
         box-shadow: none;
         border: 1px solid #d9d9d9;
-  
+
         &:disabled{
           background: #eee;
         }
       }
-  
+
       select{
         width: 100%;
         height: 40px;
         background: #fff;
       }
-  
+
       &.form-textarea{
         width: 95%;
-  
+
         textarea{
           width: calc(100% - 30px);
           height: 70px;
@@ -92,14 +92,14 @@ form{
           resize: none;
         }
       }
-  
+
       &.form-checkbox{
         p{
           display: inline-block;
           line-height: 40px;
         }
       }
-  
+
       button{
         width: 120px;
         height: 40px;
@@ -115,7 +115,7 @@ form{
     .form-checkbox{
       width: 20%;
       margin-right: 5%;
-  
+
       p{
         font-size: 16px;
         color: #333;
@@ -123,11 +123,11 @@ form{
         display: inline-block;
         line-height: 40px;
       }
-  
+
       label{
         font-size: 14px;
         margin-right: 5px;
-  
+
         div{
           display: inline-block;
           height: 22px;
@@ -137,7 +137,7 @@ form{
           position: relative;
           top: 7px;
           margin-right: 5px;
-  
+
           &.checked{
             background: #6c9cff url('/assets/images/checked.png') no-repeat center center;
             border: none;
@@ -145,7 +145,7 @@ form{
             width: 24px;
           }
         }
-  
+
         input{
           display: none;
         }
@@ -154,21 +154,21 @@ form{
   }
   .form-btn-container{
     width: 100%;
-  
+
     >div{
       float: right;
       width: auto;
     }
   }
-  
+
   .staff-navbar{
-  
+
     .part-content{
       padding: 15px;
-  
+
       .btn-list{
         float: left;
-  
+
         .btn-list-li{
           float: left;
           width: 100px;
@@ -182,25 +182,25 @@ form{
           cursor: pointer;
         }
       }
-  
+
       .searchbar-container{
         float: right;
       }
     }
-  
+
   }
-  
+
   .table-container{
-  
+
     .part-content{
-  
+
       >div {
         overflow: scroll;
         padding-bottom: 10px;
-  
+
         .myTable{
           min-width: 100%;
-  
+
           th{
             background: #e2ebff;
             padding: 0 30px;
@@ -212,7 +212,7 @@ form{
             color: #666;
             white-space: nowrap;
           }
-  
+
           td{
             padding: 0 30px;
             white-space: nowrap;
@@ -223,7 +223,7 @@ form{
             height: 40px;
             line-height: 40px;
             color: #666;
-  
+
             img{
               cursor: pointer;
             }
@@ -232,11 +232,11 @@ form{
       }
     }
   }
-  
+
   .searchbar-container{
     width: 400px;
     height: 40px;
-  
+
     .tree-container{
       width: 299px;
       float: left;
@@ -248,7 +248,7 @@ form{
       border-radius: 5px 0 0 5px;
       text-indent: 15px;
     }
-  
+
     div{
       width: 100px;
       float: left;
@@ -262,4 +262,196 @@ form{
       font-size: 18px;
     }
   }
-  
+
+
+.attendance-container{
+  position: relative;
+  width: 95%;
+  margin-bottom: 30px;
+
+  p{
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  .staff-container{
+    height: 80px;
+    padding: 10px 20px;
+    margin: -1px;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    margin-top: 10px;
+
+  .staffList-li{
+    padding: 0 10px;
+    height: 30px;
+    background: #ffb472;
+    border-radius: 15px;
+    line-height: 30px;
+    float: left;
+    margin-right: 20px;
+
+      p{
+        float: left;
+        color: #fff;
+      }
+
+      div{
+        float: right;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        margin: 4px 0;
+        background: url('/assets/images/uncheck.png') no-repeat center center;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.add-button{
+  width: 80px;
+  height: 30px;
+  line-height: 30px;
+  background: #6c9cff url('/assets/images/add-icon.png') no-repeat 15px center;
+  border-radius: 5px;
+  text-indent: 20px;
+  font-size: 14px;
+  color: #fff;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  border: none;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+
+.popup-container{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: rgba($color: #000000, $alpha: 0.5);
+  display: none;
+
+  &.show{
+    display: block;
+  }
+
+  .popup{
+    width: 640px;
+    height: 430px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+
+    h1{
+      font-size: 16px;
+      height: 40px;
+      background: #6097ff;
+      color: #fff;
+      line-height: 40px;
+      font-size: 16px;
+      text-indent: 10px;
+      font-weight: 300;
+    }
+
+    .teams-select-container{
+      margin: 20px;
+
+      p{
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      select{
+        width: 348px;
+        height: 48px;
+        border: 1px solid #d9d9d9;
+        line-height: 48px;
+      }
+    }
+  }
+}
+
+.staffList-container{
+  margin: 20px;
+  border: 1px solid #d9d9d9;
+  height: 128px;
+  padding: 10px 0 10px 20px;
+  border-radius: 5px;
+
+  .staffList-li{
+    min-width: 78px;
+    padding: 0 10px;
+    height: 28px;
+    border: 1px solid #ebebeb;
+    border-radius: 15px;
+    line-height: 28px;
+    float: left;
+    margin-right: 20px;
+    cursor: pointer;
+
+    p{
+      float: left;
+    }
+
+    div{
+      float: right;
+      width: 18px;
+      height: 18px;
+      border: 1px solid #d8d8d8;
+      border-radius: 10px;
+      margin: 4px 0;
+
+      &.chosen{
+        width: 20px;
+        height: 20px;
+        border: 0;
+        background: #ffa740 url('/assets/images/checked.png') no-repeat center center;
+      }
+    }
+  }
+}
+
+.button-group{
+  width: 260px;
+  height: 40px;
+  margin: auto;
+
+  .button-submit{
+    width: 120px;
+    height: 40px;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 40px;
+    color: #fff;
+    font-size: 18px;
+    float: left;
+    background: #6c9cff;
+    cursor: pointer;
+  }
+
+  .button-cancel{
+    width: 120px;
+    height: 40px;
+    border: 1px solid #6c9cff;
+    color: #6c9cff;
+    font-size: 18px;
+    float: right;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+  }
+}

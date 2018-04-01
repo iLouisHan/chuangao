@@ -13,12 +13,12 @@ import { Observable } from 'rxjs/Observable';
 export class StationInputComponent implements OnInit {
   data: any = {};
   form: FormGroup;
+  myOrgCode: string;
   requiredItems = {
     meetingName: '会议名称',
     meetingPlace: '会议地址',
     meetingHost: '主持人',
     meetingNote: '记录人',
-    meetingJoinPeople: '参会人员',
     meetingContent: '会议内容'
   };
   startDate: string;
@@ -50,6 +50,11 @@ export class StationInputComponent implements OnInit {
     startDate: '',
     endDate: ''
   };
+  isShow = false;
+  teams = 0;
+  activedStaffList: Array<any> = [];
+  joinStaffList: Array<any> = [];
+
   constructor(
     private http: Http,
     private store: Store<any>
@@ -213,12 +218,15 @@ export class StationInputComponent implements OnInit {
       alert('请选择所属机构！');
     } else if (!this.startDate) {
       alert('请选择会议时间');
-    } else {
+    } else if (!this.activedStaffList.length) {
+      alert('请选择参与人员！');
+    }else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       this.form.value.meetingDate = this.dateFormat(this.startDate);
       // this.form.value.orgType = +this.orgType;
       this.form.value.stationCode = this.orgCode[0].data;
+      this.form.value.meetingJoinPeople = this.activedStaffList.join(',');
       // this.form.value.politicalStatus = +this.form.value.politicalStatus;
       // this.form.value.positionalTitle = +this.form.value.positionalTitle;
       // this.form.value.userId = '' + Math.round(1000 * Math.random());
@@ -289,6 +297,66 @@ export class StationInputComponent implements OnInit {
     }
   }
 
+  addStaffs() {
+    this.isShow = true;
+  }
+
+  teamsChange() {
+    if (this.teams) {
+      this.getStaffs();
+    }
+  }
+
+  getStaffs() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.myOrgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.joinStaffList = res.data;
+                const selected = this.activedStaffList;
+                this.joinStaffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
+                  el.choose = true;
+                });
+              }
+            });
+  }
+
+  chooseStaff(staff) {
+    this.joinStaffList.forEach(el => {
+      if (el.userId === staff.userId) {
+        el.choose = !el.choose;
+      }
+    });
+  }
+
+  staffSubmit() {
+    this.joinStaffList.filter(user => !user.choose).forEach(user => {
+      const index = this.activedStaffList.findIndex(staff => staff.userId === user.userId);
+      if (index > -1) {
+        this.activedStaffList.splice(index, 1);
+      }
+    });
+    const arr = this.activedStaffList.concat(this.joinStaffList.filter(user => user.choose));
+    this.activedStaffList = [];
+    arr.forEach(staff => {
+      if (this.activedStaffList.findIndex(item => item.userId === staff.userId) === -1) {
+        this.activedStaffList.push(staff);
+      }
+    });
+    this.teams = 0;
+    this.isShow = false;
+    this.joinStaffList = [];
+  }
+
+  removeStaff(id) {
+    this.activedStaffList = this.activedStaffList.filter(user => user.userId !== id);
+  }
+
+  staffCancel() {
+    this.isShow = false;
+    this.staffList = [];
+  }
+
   upload(userId) {
     const formdata = new FormData();
     formdata.append('file', this.file);
@@ -319,6 +387,7 @@ export class StationInputComponent implements OnInit {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
         this.searchOrg = [{data: res.orgCode, label: res.orgName}];
+        this.myOrgCode = res.orgCode;
         this.getInfo();
       }
     });

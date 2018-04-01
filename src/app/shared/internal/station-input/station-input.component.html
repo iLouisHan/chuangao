@@ -30,9 +30,21 @@
         <p>记录人</p>
         <input type="text" formControlName="meetingNote">
       </div>
-      <div class="form-item form-textarea">
+      <!-- <div class="form-item form-textarea">
         <p>参与人员</p>
         <textarea type="text" formControlName="meetingJoinPeople" placeholder="填写参会人员，用逗号隔开"></textarea>
+      </div> -->
+
+      <div class="attendance-container">
+        <button class="add-button" (click)="addStaffs()">添加</button>
+        <p>参与人员</p>
+        <div class="staff-container">
+          <ul class="clearfix">
+            <li class="staffList-li clearfix" *ngFor="let staff of activedStaffList">
+              <p>{{staff.userName}}</p><div (click)="removeStaff(staff.userId)"></div>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="form-item form-textarea">
         <p>会议内容</p>
@@ -94,3 +106,34 @@
     </div>
   </div>
 </div>
+<div class="popup-container" [class.show]="isShow">
+    <div class="popup">
+      <h1>添加</h1>
+      <div class="teams-select-container">
+        <p>班组选择</p>
+        <select (change)="teamsChange()" [(ngModel)]="teams">
+          <option value="0">请选择</option>
+          <option value="1">一班</option>
+          <option value="2">二班</option>
+          <option value="3">三班</option>
+          <option value="4">四班</option>
+          <option value="5">五班</option>
+          <option value="6">六班</option>
+          <option value="7">机动班</option>
+          <option value="8">常白班</option>
+          <option value="100">站监控站</option>
+        </select>
+      </div>
+      <div class="staffList-container">
+        <ul class="clearfix">
+          <li (click)="chooseStaff(staff)" class="staffList-li clearfix" *ngFor="let staff of joinStaffList">
+            <p>{{staff.userName}}</p><div [class.chosen]="staff.choose"></div>
+          </li>
+        </ul>
+      </div>
+      <div class="clearfix button-group">
+        <button (click)="staffSubmit()" class="button-submit">确定</button>
+        <button (click)="staffCancel()" class="button-cancel">取消</button>
+      </div>
+    </div>
+  </div>

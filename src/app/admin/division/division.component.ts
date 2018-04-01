@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, Router } from '@angular/router';
+import { work_post } from '../../store/translate';
 
 @Component({
   selector: 'app-division',
@@ -13,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DivisionComponent implements OnInit {
   data: any = {};
   login: Observable<any>;
+  workTrans = work_post;
 
   constructor(
     private http: Http,

@@ -109,7 +109,7 @@
     <li [routerLink]="['/admin/staffDetail']" [queryParams]="{id: staff.userId}" class="staff-item" *ngFor="let staff of data.staffList">
       <img [attr.src]="staff.userIcon || '/assets/images/photo.png'" alt="">
       <p>{{staff.userName}}</p>
-      <span>收费站站长</span>
+      <span>{{workTrans[staff.workPost]}}</span>
     </li>
   </ul>
 </div>

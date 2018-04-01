@@ -45,29 +45,27 @@ export class SwitchEditComponent implements OnInit {
   applyUserId: string;
   applyUserName: string;
   backTeams: string;
+  returnDate: string;
   backUserName: string;
   backUserId: string;
   applyInfo: any;
   backInfo: any;
   applyChangeType = 1;
   userId: string;
+  checkItem = 1;
   shiftChangeDataList: Array<any>;
-  requiredItems = {
-    applyTeams: '换班人所在班组',
-    applyUserName: '换班申请人',
-    scheduleDate: '换班信息'
-  };
+  requiredItems: any = {};
 
   constructor(
     private http: Http,
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      // applyUserId: new FormControl('', Validators.nullValidator),
-      // backUserId: new FormControl('', Validators.nullValidator),
       remark: new FormControl('', Validators.nullValidator),
       applyTeams: new FormControl('', Validators.nullValidator),
-      backTeams: new FormControl('', Validators.nullValidator)
+      backTeams: new FormControl('', Validators.nullValidator),
+      backShift: new FormControl('', Validators.nullValidator),
+      returnShift: new FormControl('', Validators.nullValidator)
     });
     this.en = {
       firstDayOfWeek: 0,
@@ -120,6 +118,14 @@ export class SwitchEditComponent implements OnInit {
     };
     this.getStaff(this.applyTeams, 1);
     this.getStaff(this.backTeams, 2);
+  }
+
+  test(val) {
+    return val === +this.checkItem;
+  }
+
+  checkType($event) {
+    this.checkItem = +$event.target.value;
   }
 
   getInfo() {
@@ -223,33 +229,104 @@ export class SwitchEditComponent implements OnInit {
   }
 
   addSwitch() {
+    this.form.value.stationCode = this.orgCode;
+    if (this.applyInfo) {
+      this.form.value.applyDate = this.applyInfo.scheduleDate;
+      this.form.value.applyShift = this.applyInfo.shiftId;
+    }
+    if (this.applyUserId) {
+      this.form.value.applyUserId = this.applyUserId;
+    }
+    if (this.form.value.applyTeams) {
+      this.form.value.applyTeams = +this.form.value.applyTeams;
+    }
+    this.form.value.applyChangeType = this.applyChangeType;
+    if (this.checkItem === 1) {
+      if (this.backInfo) {
+        this.form.value.backDate = this.backInfo.scheduleDate;
+        this.form.value.backShift = this.backInfo.shiftId;
+      }
+      if (this.backUserId) {
+        this.form.value.backUserId = this.backUserId;
+      }
+      if (this.form.value.backTeams) {
+        this.form.value.backTeams = +this.form.value.backTeams;
+      }
+      this.requiredItems = {
+        backTeams: '替班人所在班组',
+        backUserId: '替班人姓名',
+        backDate: '替班信息',
+        applyTeams: '换班人所在班组',
+        applyUserId: '换班申请人',
+        applyDate: '换班信息'
+      };
+      const keys = Object.keys(this.requiredItems);
+      const param: any = {};
+      const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
+      if (spaceArr.length > 0) {
+        alert(`${spaceArr.join(',')}为空`);
+      }else {
+        param.backTeams = this.form.value.backTeams;
+        param.backUserId = this.form.value.backUserId;
+        param.backDate = this.form.value.backDate;
+        param.applyTeams = this.form.value.applyTeams;
+        param.applyUserId = this.form.value.applyUserId;
+        param.applyDate = this.form.value.applyDate;
+        param.applyShift = this.form.value.applyShift;
+        param.backShift = this.form.value.backShift;
+        param.stationCode = this.orgCode;
+        param.applyChangeType = this.applyChangeType;
+        param.remark = this.form.value.remark;
+        this.postHttp(param);
+      }
+    }else {
+      this.form.value.returnShift = +this.form.value.returnShift;
+      this.form.value.returnDate = this.dateFormat(this.returnDate);
+      this.requiredItems = {
+        applyTeams: '换班人所在班组',
+        applyUserId: '换班申请人',
+        applyDate: '换班信息'
+      };
+      const keys = Object.keys(this.requiredItems);
+      const param: any = {};
+      const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
+      if (spaceArr.length > 0) {
+        alert(`${spaceArr.join(',')}为空`);
+      }else {
+        param.applyTeams = this.form.value.applyTeams;
+        param.applyUserId = this.form.value.applyUserId;
+        param.applyDate = this.form.value.applyDate;
+        param.applyShift = this.form.value.applyShift;
+        param.stationCode = this.orgCode;
+        param.applyChangeType = this.applyChangeType;
+        param.remark = this.form.value.remark;
+        this.postHttp(param);
+      }
+    }
+  }
+
+  postHttp(param) {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.stationCode = this.orgCode;
-    this.form.value.applyDate = this.applyInfo.scheduleDate;
-    this.form.value.applyShift = this.applyInfo.shiftId;
-    this.form.value.applyTeams = +this.form.value.applyTeams;
-    this.form.value.applyChangeType = this.applyChangeType;
-    this.form.value.backShift = this.backInfo.shiftId;
-    this.form.value.backDate = this.backInfo.scheduleDate;
-    this.form.value.backTeams = +this.form.value.backTeams;
-    this.form.value.checkUserId = this.userId;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                alert(res.message);
-                this.isChosen = false;
-                this.applyInfo = undefined;
-                this.toFirstPage();
-                this.form.reset();
-                this.form.patchValue(this.initForm);
-              }else {
-                alert(res.message);
-              }
-            });
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(param), {
+      headers: myHeaders
+    })
+    .map(res => res.json())
+    .subscribe(res => {
+      if (res.code) {
+        alert(res.message);
+        this.toFirstPage();
+      }else {
+        alert(res.message);
+      }
+      this.applyInfo = undefined;
+      this.backInfo = undefined;
+      this.form.patchValue(this.initForm);
+      this.backUserName = '';
+      this.applyUserName = '';
+      this.backUserId = '';
+      this.applyUserId = '';
+    });
   }
 
   updateLeave() {
@@ -286,11 +363,7 @@ export class SwitchEditComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addSwitch();
-    }else {
-      this.updateLeave();
-    }
+    this.addSwitch();
   }
 
   toFirstPage() {
@@ -327,26 +400,6 @@ export class SwitchEditComponent implements OnInit {
     this.backInfo = $event;
   }
 
-  changeCheckStatus(id, type) {
-    // const myHeaders: Headers = new Headers();
-    // myHeaders.append('Content-Type', 'application/json');
-    // this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/checkLeave`, JSON.stringify({
-    //   id: id,
-    //   checkUserId: this.adminId,
-    //   checkType: type
-    // }), {
-    //   headers: myHeaders
-    // }).map(res => res.json())
-    // .subscribe(res => {
-    //   if (res.code) {
-    //     alert(res.message);
-    //     this.toFirstPage();
-    //   }else {
-    //     alert(res.message);
-    //   }
-    // });
-  }
-
   applyTeamsChange($event) {
     this.applyTeams = $event.target.value;
     if (this.applyTeams !== '-1') {
@@ -363,10 +416,11 @@ export class SwitchEditComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.isAdmin) {
+      if (res && !res.isAdmin) {
         this.orgCode = res.orgCode;
         this.userId = res.userId;
         this.param.orgList = [res.orgCode];
+        this.param.applyUserId = res.userId;
         this.getInfo();
       }
     });

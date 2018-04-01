@@ -1,5 +1,5 @@
 <h1 class="page-title"><div class="page-title-icon"></div>调班登记</h1>
-<div class="part-container">
+<!-- <div class="part-container">
   <h1 class="part-title">调班信息填报</h1>
   <div class="part-content">
     <form [formGroup]="form">
@@ -66,6 +66,104 @@
     </form>
     <div class="form-item">
       <button (click)="submit()" class="form-btn">提&nbsp;交</button>
+    </div>
+  </div>
+</div> -->
+
+<div class="part-container">
+  <h1 class="part-title">调班信息填报</h1>
+  <div class="part-content">
+    <div>
+      <form [formGroup]="form">
+        <div class="form-item">
+          <p>换班人所在班组</p>
+          <select (change)="applyTeamsChange($event)" formControlName="applyTeams">
+            <option value="0">请选择</option>
+            <option value="1">一班</option>
+            <option value="2">二班</option>
+            <option value="3">三班</option>
+            <option value="4">四班</option>
+            <option value="5">五班</option>
+            <option value="6">六班</option>
+            <option value="7">机动班</option>
+            <option value="8">常白班</option>
+            <option value="100">站监控站</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>换班申请人</p>
+          <app-input-select (selectUser)="applyUserChoose($event)" [staffList]="applyStaffList" [initUser]="applyUserName"></app-input-select>
+          <div *ngIf="loadingStaffs" class="loading" style="top: 205px;"></div>
+        </div>
+        <div class="form-item">
+          <p>换班信息</p>
+          <app-switch-choose [userName]="applyUserName" (chosenSchedule)="chooseApplySchedule($event)" [userId]="applyUserId" [teams]="applyTeams"></app-switch-choose>
+        </div>
+        <div *ngIf="applyInfo" class="form-item">
+          <p>换班详细信息</p>
+          <span>换班日期：{{applyInfo.scheduleDate}}&nbsp;换班班次：{{shiftId[applyInfo.shiftId]}}</span>
+        </div>
+      </form>
+      <div class="form-checkbox">
+        <p>请选择调班类型</p>
+        <div>
+          <label><div [class.checked]="test(1)"></div><input (click)="checkType($event)" [checked]="test(1)" value="1" type="checkbox"><span>替班</span></label>
+          <label><div [class.checked]="test(2)"></div><input (click)="checkType($event)" [checked]="test(2)" value="2" type="checkbox"><span>还班</span></label>
+        </div>
+      </div>
+      <form *ngIf="checkItem === 1" [formGroup]="form">
+        <div class="form-item">
+          <p>替班人所在班组</p>
+          <select (change)="backTeamsChange($event)" formControlName="backTeams">
+            <option value="0">请选择</option>
+            <option value="1">一班</option>
+            <option value="2">二班</option>
+            <option value="3">三班</option>
+            <option value="4">四班</option>
+            <option value="5">五班</option>
+            <option value="6">六班</option>
+            <option value="7">机动班</option>
+            <option value="8">常白班</option>
+            <option value="100">站监控站</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <p>替班申请人</p>
+          <app-input-select (selectUser)="backUserChoose($event)" [staffList]="backStaffList" [initUser]="backUserName"></app-input-select>
+          <div *ngIf="loadingBackStaff" class="loading" style="top: 290px;"></div>
+        </div>
+        <div class="form-item">
+          <p>替班信息</p>
+          <app-switch-choose [userName]="backUserName" (chosenSchedule)="chooseBackSchedule($event)" [userId]="backUserId" [teams]="backTeams"></app-switch-choose>
+        </div>
+        <div *ngIf="backInfo" class="form-item">
+          <p>替班详细信息</p>
+          <span>替班日期：{{backInfo.scheduleDate}}&nbsp;替班班次：{{shiftId[backInfo.shiftId]}}</span>
+        </div>
+      </form>
+      <form *ngIf="checkItem === 2" [formGroup]="form">
+        <div class="form-item">
+          <p>还班日期</p>
+          <p-calendar [(ngModel)]="returnDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        </div>
+        <div class="form-item">
+          <p>还班班次</p>
+          <select formControlName="returnShift">
+            <option value="0">请选择</option>
+            <option value="1">白班</option>
+            <option value="2">夜班</option>
+          </select>
+        </div>
+      </form>
+      <form [formGroup]="form">
+        <div class="form-item form-textarea">
+          <p>备注</p>
+          <textarea type="text" formControlName="remark"></textarea>
+        </div>
+      </form>
+      <div class="form-item">
+        <button (click)="submit()" class="form-btn">提&nbsp;交</button>
+      </div>
     </div>
   </div>
 </div>

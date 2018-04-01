@@ -46,6 +46,11 @@ export class TrainExecuteComponent implements OnInit {
     page: this.page,
     size: this.size
   };
+  isShow = false;
+  teams = 0;
+  activedStaffList: Array<any> = [];
+  joinStaffList: Array<any> = [];
+
   constructor(
     private http: Http,
     private store: Store<any>
@@ -267,7 +272,7 @@ export class TrainExecuteComponent implements OnInit {
     this.trainForm.value.id = this.selectedUser;
     this.trainForm.value.trainDoStartDate = this.dateFormat(this.doStartDate);
     this.trainForm.value.trainDoEndDate = this.dateFormat(this.doEndDate);
-    this.trainForm.value.userIdList = this.userList.map(el => el.data);
+    this.trainForm.value.userIdList = this.activedStaffList.map(el => el.userId);
     const tmpObj = {};
     const keys = Object.keys(this.trainForm.value);
     keys.forEach(el => {
@@ -299,6 +304,66 @@ export class TrainExecuteComponent implements OnInit {
 
   submit() {
     this.addStaff();
+  }
+
+  addStaffs() {
+    this.isShow = true;
+  }
+
+  teamsChange() {
+    if (this.teams) {
+      this.getStaffs();
+    }
+  }
+
+  getStaffs() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.joinStaffList = res.data;
+                const selected = this.activedStaffList;
+                this.joinStaffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
+                  el.choose = true;
+                });
+              }
+            });
+  }
+
+  chooseStaff(staff) {
+    this.joinStaffList.forEach(el => {
+      if (el.userId === staff.userId) {
+        el.choose = !el.choose;
+      }
+    });
+  }
+
+  staffSubmit() {
+    this.joinStaffList.filter(user => !user.choose).forEach(user => {
+      const index = this.activedStaffList.findIndex(staff => staff.userId === user.userId);
+      if (index > -1) {
+        this.activedStaffList.splice(index, 1);
+      }
+    });
+    const arr = this.activedStaffList.concat(this.joinStaffList.filter(user => user.choose));
+    this.activedStaffList = [];
+    arr.forEach(staff => {
+      if (this.activedStaffList.findIndex(item => item.userId === staff.userId) === -1) {
+        this.activedStaffList.push(staff);
+      }
+    });
+    this.teams = 0;
+    this.isShow = false;
+    this.joinStaffList = [];
+  }
+
+  removeStaff(id) {
+    this.activedStaffList = this.activedStaffList.filter(user => user.userId !== id);
+  }
+
+  staffCancel() {
+    this.isShow = false;
+    this.staffList = [];
   }
 
   upload(userId) {

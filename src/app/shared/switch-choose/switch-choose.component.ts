@@ -17,7 +17,13 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
   userId: string;
 
   @Input()
-  userName: string;
+  set userName(userName: string) {
+    this.userName = userName;
+  }
+
+  get userName() {
+    return this.userName;
+  }
 
   @Output()
   chosenSchedule: EventEmitter<any> = new EventEmitter<any>();
@@ -33,7 +39,7 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
   _userId: string;
   switchTableShow = false;
   _username: string;
-  loadingSchedule: boolean = false;
+  loadingSchedule = false;
 
   constructor(
     private http: Http,

@@ -31,10 +31,21 @@
         <p>培训地点</p>
         <input type="text" formControlName="trainAddress">
       </div>
-      <div class="form-item">
+      <!-- <div class="form-item">
         <p>培训人员</p>
         <div class="tree-container">
           <app-drop-staff-tree [selectionMode]="selectionStaffMode" (selectedOrg)="selectedStaff($event)"></app-drop-staff-tree>
+        </div>
+      </div> -->
+      <div class="attendance-container">
+        <button class="add-button" (click)="addStaffs()">添加</button>
+        <p>参与人员</p>
+        <div class="staff-container">
+          <ul class="clearfix">
+            <li class="staffList-li clearfix" *ngFor="let staff of activedStaffList">
+              <p>{{staff.userName}}</p><div (click)="removeStaff(staff.userId)"></div>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="form-item form-textarea">
@@ -135,7 +146,7 @@
     <h1 class="part-title">培训计划信息</h1>
     <div class="part-content clearfix">
       <div class="searchbar-container">
-          <form [formGroup]="searchForm"> 
+          <form [formGroup]="searchForm">
               <div class="form-group">
                   <label>落实状态</label>
                   <select formControlName="hasDo">
@@ -169,7 +180,7 @@
               </div>
               <div (click)="search()" class="searchBtn">查询</div>
       </form>
-        
+
       </div>
     </div>
   </div>
@@ -195,3 +206,35 @@
     </div>
   </div>
 </div>
+
+<div class="popup-container" [class.show]="isShow">
+    <div class="popup">
+      <h1>添加</h1>
+      <div class="teams-select-container">
+        <p>班组选择</p>
+        <select (change)="teamsChange()" [(ngModel)]="teams">
+          <option value="0">请选择</option>
+          <option value="1">一班</option>
+          <option value="2">二班</option>
+          <option value="3">三班</option>
+          <option value="4">四班</option>
+          <option value="5">五班</option>
+          <option value="6">六班</option>
+          <option value="7">机动班</option>
+          <option value="8">常白班</option>
+          <option value="100">站监控站</option>
+        </select>
+      </div>
+      <div class="staffList-container">
+        <ul class="clearfix">
+          <li (click)="chooseStaff(staff)" class="staffList-li clearfix" *ngFor="let staff of joinStaffList">
+            <p>{{staff.userName}}</p><div [class.chosen]="staff.choose"></div>
+          </li>
+        </ul>
+      </div>
+      <div class="clearfix button-group">
+        <button (click)="staffSubmit()" class="button-submit">确定</button>
+        <button (click)="staffCancel()" class="button-cancel">取消</button>
+      </div>
+    </div>
+  </div>
