@@ -21,6 +21,7 @@ export class StationInputComponent implements OnInit {
     meetingNote: '记录人',
     meetingContent: '会议内容'
   };
+  orgType: number;
   startDate: string;
   orgCode: Array<any> = [];
   en: any;
@@ -64,7 +65,6 @@ export class StationInputComponent implements OnInit {
       meetingPlace: new FormControl('', Validators.nullValidator),
       meetingHost: new FormControl('', Validators.nullValidator),
       meetingNote: new FormControl('', Validators.nullValidator),
-      meetingJoinPeople: new FormControl('', Validators.nullValidator),
       meetingContent: new FormControl('', Validators.nullValidator)
     });
     this.searchOrg = [];
@@ -112,6 +112,8 @@ export class StationInputComponent implements OnInit {
         this.form.patchValue(item);
         this.startDate = item.meetingDate;
         this.stationName = item.stationName;
+        this.activedStaffList = item.meetingJoinPeople;
+        console.log(item);
       }
     });
   }
@@ -226,7 +228,7 @@ export class StationInputComponent implements OnInit {
       this.form.value.meetingDate = this.dateFormat(this.startDate);
       // this.form.value.orgType = +this.orgType;
       this.form.value.stationCode = this.orgCode[0].data;
-      this.form.value.meetingJoinPeople = this.activedStaffList.join(',');
+      this.form.value.meetingJoinPeople = this.activedStaffList.map(el => el.userName).join(',');
       // this.form.value.politicalStatus = +this.form.value.politicalStatus;
       // this.form.value.positionalTitle = +this.form.value.positionalTitle;
       // this.form.value.userId = '' + Math.round(1000 * Math.random());
@@ -357,6 +359,22 @@ export class StationInputComponent implements OnInit {
     this.staffList = [];
   }
 
+  chooseAll() {
+    if (this.teams) {
+      this.joinStaffList.forEach(el => {
+        el.choose = true;
+      });
+    }
+  }
+
+  unChooseAll() {
+    if (this.teams) {
+      this.joinStaffList.forEach(el => {
+        el.choose = false;
+      });
+    }
+  }
+
   upload(userId) {
     const formdata = new FormData();
     formdata.append('file', this.file);
@@ -387,6 +405,14 @@ export class StationInputComponent implements OnInit {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
         this.searchOrg = [{data: res.orgCode, label: res.orgName}];
+        this.orgType = res.orgType;
+        this.stationName = res.orgName;
+        if (this.orgType === 3) {
+          this.orgCode = [{
+            data: res.orgCode,
+            orgType: res.orgType
+          }];
+        }
         this.myOrgCode = res.orgCode;
         this.getInfo();
       }

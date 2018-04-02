@@ -316,6 +316,22 @@ export class TrainExecuteComponent implements OnInit {
     }
   }
 
+  chooseAll() {
+    if (this.teams) {
+      this.joinStaffList.forEach(el => {
+        el.choose = true;
+      });
+    }
+  }
+
+  unChooseAll() {
+    if (this.teams) {
+      this.joinStaffList.forEach(el => {
+        el.choose = false;
+      });
+    }
+  }
+
   getStaffs() {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`)
             .map(res => res.json())
