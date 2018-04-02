@@ -16,7 +16,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   selectionMode: string;
   @Input()
   set initOrgName(initOrgName: string) {
-    this.selected = this.initOrgName;
+    this.selected = initOrgName;
   }
 
   get initOrgName() {
@@ -121,7 +121,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
             const dom = item.getElementsByClassName('ng-star-inserted');
             if (dom[0]) {
               return this.initArr.includes(dom[0].innerHTML);
-            }else {
+            } else {
               return false;
             }
           })
