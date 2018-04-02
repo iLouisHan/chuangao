@@ -115,7 +115,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
             const dom = item.getElementsByClassName('ng-star-inserted');
             if (dom[0]) {
               return this.initArr.includes(dom[0].innerHTML);
-            }else {
+            } else {
               return false;
             }
           })
