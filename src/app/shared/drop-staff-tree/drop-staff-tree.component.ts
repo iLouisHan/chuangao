@@ -15,8 +15,17 @@ export class DropStaffTreeComponent implements OnInit, DoCheck {
   @Input()
   selectionMode: string;
   @Input()
-  initOrgName: string;
-
+  set initOrgName(initOrgName: string) {
+    if (this.selected !== initOrgName) {
+      this.clear();
+      this.selected = initOrgName;
+      this.hasClicked = false;
+      console.log(this.selected);
+    }
+  }
+  get initOrgName() {
+    return this.selected;
+  }
   login: Observable<any>;
   treeNodes: Array<any> = [];
   selectedFiles2: any;
@@ -57,7 +66,24 @@ export class DropStaffTreeComponent implements OnInit, DoCheck {
       });
     });
   }
-
+  clear() {
+    if (this.selectedFiles2) {
+      const arr = this.selectedFiles2.map(el => el.label);
+      Array.from(document.getElementsByClassName('ui-treenode-label'))
+      .filter(item => {
+        const dom = item.getElementsByClassName('ng-star-inserted');
+        if (dom[0]) {
+          return arr.includes(dom[0].innerHTML);
+        } else {
+          return false;
+        }
+      })
+      .forEach(item => {
+        const dom = item as HTMLElement;
+        dom.click();
+      });
+    }
+  }
   tab() {
     this.isShow = !this.isShow;
   }
@@ -91,9 +117,9 @@ export class DropStaffTreeComponent implements OnInit, DoCheck {
         this.getOrgInfo(res.orgCode);
       }
     });
-    this.selected = this.initOrgName || '';
+    this.selected = this.selected || '';
     this.initArr = this.selected.split(',');
-    console.log(this.initArr);
+    // console.log(this.selected);
   }
   ngDoCheck() {
     if (!this.hasClicked && this.initArr.length && this.selectionMode === 'checkbox') {

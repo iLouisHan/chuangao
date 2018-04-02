@@ -86,6 +86,10 @@ export class TalkInputComponent implements OnInit {
   selectedOrg($event) {
     this.orgList = ($event);
   }
+  selectedSearchOrg($event) {
+    console.log($event);
+    this.searchOrg = ($event);
+  }
   selectedStaff($event) {
     this.staffList = ($event);
     console.log(this.staffList);
@@ -111,8 +115,8 @@ export class TalkInputComponent implements OnInit {
     });
   }
   getInfo() {
-    if (this.orgList.length !== 0) {
-      this.param.orgList = this.orgList.map(el => el.data);
+    if (this.searchOrg.length !== 0) {
+      this.param.orgList = this.searchOrg.map(el => el.data);
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -293,6 +297,7 @@ export class TalkInputComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.searchOrg = [{data: res.orgCode, label: res.orgName}];
         this.orgList = [{data: res.orgCode}];
         this.getInfo();
       }

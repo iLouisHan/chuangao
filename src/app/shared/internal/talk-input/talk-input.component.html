@@ -67,9 +67,9 @@
         <li (click)="delete()" class="btn-list-li">删除</li>
       </ul>
       <div class="searchbar-container">
-          <div class="container">
-              <input type="text"[(ngModel)]="param.fileName" placeholder="请输入查询的谈心人员">
-            </div>
+        <div class="tree-container">
+          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedSearchOrg($event)" [initOrgName]="searchOrg[0].label"></app-drop-org-tree>
+        </div>
         <div (click)="search()">查询</div>
       </div>
     </div>

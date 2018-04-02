@@ -16,7 +16,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   selectionMode: string;
   @Input()
   set initOrgName(initOrgName: string) {
-    this.selected = this.initOrgName;
+    this.selected = initOrgName;
   }
 
   get initOrgName() {
