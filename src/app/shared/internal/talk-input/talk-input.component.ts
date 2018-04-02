@@ -21,6 +21,7 @@ export class TalkInputComponent implements OnInit {
   page = 0;
   size = 15;
   orgList: Array<any>;
+  org: string;
   count: number;
   deviceList: Array<any>;
   hasData: boolean;
@@ -30,6 +31,7 @@ export class TalkInputComponent implements OnInit {
   isAdd: boolean;
   keys: Array<any>;
   file: any;
+  initstaff: string;
   filename: string;
   selectedDevice: string;
   selectionMode = 'checkbox';
@@ -63,6 +65,7 @@ export class TalkInputComponent implements OnInit {
       monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
     };
     this.login = store.select('login');
+    this.initstaff = '';
     this.cols = [
       { field: 'orgName', header: '单位名称' },
       { field: 'chatType', header: '谈心类型' },
@@ -83,22 +86,35 @@ export class TalkInputComponent implements OnInit {
   selectedOrg($event) {
     this.orgList = ($event);
   }
+  selectedSearchOrg($event) {
+    this.searchOrg = ($event);
+  }
   selectedStaff($event) {
     this.staffList = ($event);
-    console.log(this.staffList);
   }
   getStaffInfo(staffId) {
     this.deviceList.forEach(item => {
       if (item.id === staffId) {
+        if (item.chatType === '一般谈心') {
+          item.chatType = '0';
+        } else {
+          item.chatType = '1';
+        }
         this.form.patchValue(item);
-        this.endDate = item.scrapDate;
-        this.startDate = item.buyDate;
+        this.initstaff = item.chatUserName;
+        this.startDate = item.chatDate;
+        if (item.chatContent) {
+          this.filename = item.chatContent.split('fileName=')[1];
+        } else {
+          this.filename = '';
+        }
+        this.org = item.orgName;
       }
     });
   }
   getInfo() {
-    if (this.orgList.length !== 0) {
-      this.param.orgList = this.orgList.map(el => el.data);
+    if (this.searchOrg.length !== 0) {
+      this.param.orgList = this.searchOrg.map(el => el.data);
     }
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -111,15 +127,15 @@ export class TalkInputComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  res.data.chatDataList.forEach(item => {
-                    if (item.chatType === '0') {
-                      item.chatType = '一般谈心';
-                    } else {
-                      item.chatType = '重要谈心';
-                    }
-                  });
-                  this.deviceList = res.data.chatDataList;
                 }
+                res.data.chatDataList.forEach(item => {
+                  if (item.chatType === 0) {
+                    item.chatType = '一般谈心';
+                  } else {
+                    item.chatType = '重要谈心';
+                  }
+                });
+                this.deviceList = res.data.chatDataList;
               } else {
                 alert(res.message);
               }
@@ -156,7 +172,7 @@ export class TalkInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个设备');
+      alert('请选择一个谈心记录');
     }
   }
 
@@ -164,7 +180,7 @@ export class TalkInputComponent implements OnInit {
     if (this.selectedDevice) {
       this.staffLeave(this.selectedDevice);
     } else {
-      alert('请选择一个设备');
+      alert('请选择一个谈心记录');
     }
   }
 
@@ -279,6 +295,7 @@ export class TalkInputComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.searchOrg = [{data: res.orgCode, label: res.orgName}];
         this.orgList = [{data: res.orgCode}];
         this.getInfo();
       }
