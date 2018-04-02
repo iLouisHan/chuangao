@@ -16,7 +16,11 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   selectionMode: string;
   @Input()
   set initOrgName(initOrgName: string) {
-    this.selected = this.initOrgName;
+    if (this.selected !== initOrgName) {
+      this.clear();
+      this.selected = initOrgName;
+      this.hasClicked = false;
+    }
   }
 
   get initOrgName() {
@@ -102,6 +106,25 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
                   alert(res.message);
                 }
               });
+  }
+
+  clear() {
+    if (this.selectedFiles2) {
+      const arr = this.selectedFiles2.map(el => el.label);
+      Array.from(document.getElementsByClassName('ui-treenode-label'))
+      .filter(item => {
+        const dom = item.getElementsByClassName('ng-star-inserted');
+        if (dom[0]) {
+          return arr.includes(dom[0].innerHTML);
+        }else {
+          return false;
+        }
+      })
+      .forEach(item => {
+        const dom = item as HTMLElement;
+        dom.click();
+      });
+    }
   }
 
   ngOnInit() {
