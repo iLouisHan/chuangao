@@ -207,7 +207,13 @@ export class DeviceInputComponent implements OnInit {
   }
 
   addDevice() {
-    const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
+    const spaceArr = [];
+    Object.keys(this.requiredItems).forEach(item => {
+      if (this.form.value[item] === '') {
+        spaceArr.push(this.requiredItems[item]);
+      }
+    });
+    // const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
       alert(`${spaceArr.join(',')}为空`);
     } else if (!this.startDate) {

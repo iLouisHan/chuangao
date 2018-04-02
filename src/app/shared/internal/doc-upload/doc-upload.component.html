@@ -35,11 +35,9 @@
       </div>
       <div class="form-item">
           <p>最低浏览权限</p>
-          <select formControlName="browsePermission">
-              <option value="公司">公司</option>
-            <option value="管理处">管理处</option>
-            <option value="收费站">收费站</option>
-          </select>
+          <div class="tree-container">
+            <app-drop-org-tree [selectionMode]="checkMode" (selectedOrg)="selectedOrg($event)" [initOrgName]="level"></app-drop-org-tree>
+          </div>
         </div>
       <div class="form-item">
           <p>文件关键字以‘|’隔开</p>
