@@ -2,7 +2,7 @@
   <div class="title-container"></div>
   <h1 class="title-h1">川高系统高速公路收费综合管理平台</h1>
   <ul class="navbar-items">
-    <li *ngIf="3 === orgType" class="navbar-item" (mouseover)="showNoteDetail()" (mouseleave)="hideNoteDetail()">
+    <li *ngIf="3 === orgType && isAdmin" class="navbar-item" (mouseover)="showNoteDetail()" (mouseleave)="hideNoteDetail()">
       <i class="fa fa-bell-o"></i>
       <span>{{noteCount}}</span>
       <div *ngIf="isShowDetail" class="note-detail">
@@ -28,7 +28,10 @@
       <i class="fa fa-star-o"></i>
       <span>0</span>
     </li> -->
-    <li class="navbar-item user-item" (click)="showUserManager()">
+    <li *ngIf="2 === isAdmin" class="navbar-item user-item" style="cursor: auto;">
+      <p>{{role}}</p>
+    </li>
+    <li *ngIf="2 !== isAdmin" class="navbar-item user-item" (click)="showUserManager()">
       <p>{{role}}</p>
       <div *ngIf="isShowManager" class="manager-list" (click)="linkDetail('editPassword')">
           <div class="manager-item">
