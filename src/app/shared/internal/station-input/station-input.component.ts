@@ -85,7 +85,7 @@ export class StationInputComponent implements OnInit {
       { field: 'meetingDate', header: '会议时间' },
       { field: 'meetingHost', header: '主持人' },
       { field: 'meetingNote', header: '记录人' },
-      { field: 'meetingJoinPeople', header: '参会人员' },
+      { field: 'meetingJoinPeopleStr', header: '参会人员' },
       { field: 'meetingContent', header: '会议内容' }
     ];
     this.initForm = {
@@ -132,6 +132,9 @@ export class StationInputComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
+                  res.data.stationMeetingDataList.forEach(el => {
+                    el.meetingJoinPeopleStr = el.meetingJoinPeople.map(item => item.userName).join(',');
+                  });
                   this.staffList = res.data.stationMeetingDataList;
                 }
               } else {
@@ -228,7 +231,7 @@ export class StationInputComponent implements OnInit {
       this.form.value.meetingDate = this.dateFormat(this.startDate);
       // this.form.value.orgType = +this.orgType;
       this.form.value.stationCode = this.orgCode[0].data;
-      this.form.value.meetingJoinPeople = this.activedStaffList.map(el => el.userName).join(',');
+      this.form.value.meetingJoinPeople = this.activedStaffList.map(el => el.userId);
       // this.form.value.politicalStatus = +this.form.value.politicalStatus;
       // this.form.value.positionalTitle = +this.form.value.positionalTitle;
       // this.form.value.userId = '' + Math.round(1000 * Math.random());
@@ -241,6 +244,7 @@ export class StationInputComponent implements OnInit {
                   if (this.file) {
                     this.upload(res.data.id);
                   } else {
+                    alert('添加成功！');
                     this.toFirstPage();
                   }
                 } else {
@@ -268,6 +272,8 @@ export class StationInputComponent implements OnInit {
       this.data.meetingDate = this.dateFormat(this.startDate);
       this.data.stationCode = this.orgCode[0].data;
       this.data.id = this.selectedUser;
+      this.data.meetingJoinPeople = this.activedStaffList.map(el => el.userId);
+      console.log(this.data);
       this.http.post(`http://119.29.144.125:8080/cgfeesys/StationMeeting/update`, JSON.stringify(this.data), {
                 headers: myHeaders
               })

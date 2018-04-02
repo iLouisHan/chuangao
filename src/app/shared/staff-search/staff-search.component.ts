@@ -141,6 +141,18 @@ export class StaffSearchComponent implements OnInit {
             });
   }
 
+  resetPwd(id) {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/resetPassword?userId=${id}`)
+        .map(res => res.json())
+        .subscribe(res => {
+          if (res.code) {
+            alert('重置成功');
+          }else {
+            alert(res.message);
+          }
+        });
+  }
+
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {

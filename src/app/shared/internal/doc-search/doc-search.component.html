@@ -7,7 +7,10 @@
         <form [formGroup]="form">
           <div class="form-item">
             <p>发文单位</p>
-            <input formControlName="fileUnit">
+            <div *ngIf="orgType !== 3" class="tree-container">
+              <app-drop-org-tree [initOrgName]="orgName" [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+            </div>
+            <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
           </div>
           <div class="form-item">
             <p>发文文号</p>

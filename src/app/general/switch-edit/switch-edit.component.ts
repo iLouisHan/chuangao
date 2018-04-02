@@ -21,6 +21,7 @@ export class SwitchEditComponent implements OnInit {
   en: any;
   file: any;
   isChosen = false;
+  listGroup: number;
   login: Observable<any> = new Observable<any>();
   orgCode: string;
   page = 0;
@@ -41,7 +42,6 @@ export class SwitchEditComponent implements OnInit {
   };
   applyDate: string;
   applyDateEnd: string;
-  applyTeams: string;
   applyUserId: string;
   applyUserName: string;
   backTeams: string;
@@ -63,7 +63,6 @@ export class SwitchEditComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       remark: new FormControl('', Validators.nullValidator),
-      applyTeams: new FormControl('', Validators.nullValidator),
       backTeams: new FormControl('', Validators.nullValidator),
       backShift: new FormControl('', Validators.nullValidator),
       returnShift: new FormControl('', Validators.nullValidator)
@@ -79,8 +78,6 @@ export class SwitchEditComponent implements OnInit {
     this.login = store.select('login');
     this.cols = [
       { field: 'orgName', header: '组织名称' },
-      { field: 'applyUserName', header: '换/顶班申请人' },
-      { field: 'applyTeams', header: '换/顶班班组' },
       { field: 'applyDate', header: '换/顶班日期' },
       { field: 'applyShift', header: '换/顶班班次' },
       { field: 'applyChangeType', header: '排班类型' },
@@ -91,8 +88,6 @@ export class SwitchEditComponent implements OnInit {
       { field: 'remark', header: '备注' }
     ];
     this.initForm = {
-      applyUserId: '-1',
-      applyTeams: '-1',
       backUserId: '-1',
       backTeams: '-1'
     };
@@ -101,7 +96,6 @@ export class SwitchEditComponent implements OnInit {
   getSwitchInfo(leaveId) {
     this.data = this.shiftChangeDataList.filter(el => el.id === leaveId)[0];
     this.isChosen = true;
-    this.applyTeams = this.data.applyTeams;
     this.applyUserName = this.data.applyUserName;
     this.backUserName = this.data.backUserName;
     this.backTeams = this.data.backTeams;
@@ -117,7 +111,6 @@ export class SwitchEditComponent implements OnInit {
       scheduleDate: this.data.backDate,
       shiftId: this.data.backShift
     };
-    this.getStaff(this.applyTeams, 1);
     this.getStaff(this.backTeams, 2);
   }
 
@@ -143,7 +136,6 @@ export class SwitchEditComponent implements OnInit {
                   this.hasData = true;
                   this.shiftChangeDataList = res.data.shiftChangeDataList;
                   this.shiftChangeDataList.forEach(el => {
-                    el.applyTeams = this.list_group[el.applyTeams];
                     el.backTeams = this.list_group[el.backTeams];
                     el.applyShift = this.shiftId[el.applyShift];
                     el.backShift = this.shiftId[el.backShift];
@@ -235,12 +227,6 @@ export class SwitchEditComponent implements OnInit {
       this.form.value.applyDate = this.applyInfo.scheduleDate;
       this.form.value.applyShift = this.applyInfo.shiftId;
     }
-    if (this.applyUserId) {
-      this.form.value.applyUserId = this.applyUserId;
-    }
-    if (this.form.value.applyTeams) {
-      this.form.value.applyTeams = +this.form.value.applyTeams;
-    }
     this.form.value.applyChangeType = this.applyChangeType;
     if (this.checkItem === 1) {
       if (this.backInfo) {
@@ -257,8 +243,6 @@ export class SwitchEditComponent implements OnInit {
         backTeams: '替班人所在班组',
         backUserId: '替班人姓名',
         backDate: '替班信息',
-        applyTeams: '换班人所在班组',
-        applyUserId: '换班申请人',
         applyDate: '换班信息'
       };
       const keys = Object.keys(this.requiredItems);
@@ -270,8 +254,8 @@ export class SwitchEditComponent implements OnInit {
         param.backTeams = this.form.value.backTeams;
         param.backUserId = this.form.value.backUserId;
         param.backDate = this.form.value.backDate;
-        param.applyTeams = this.form.value.applyTeams;
-        param.applyUserId = this.form.value.applyUserId;
+        param.applyTeams = this.listGroup;
+        param.applyUserId = this.userId;
         param.applyDate = this.form.value.applyDate;
         param.applyShift = this.form.value.applyShift;
         param.backShift = this.form.value.backShift;
@@ -284,8 +268,6 @@ export class SwitchEditComponent implements OnInit {
       this.form.value.returnShift = +this.form.value.returnShift;
       this.form.value.returnDate = this.dateFormat(this.returnDate);
       this.requiredItems = {
-        applyTeams: '换班人所在班组',
-        applyUserId: '换班申请人',
         applyDate: '换班信息'
       };
       const keys = Object.keys(this.requiredItems);
@@ -294,8 +276,8 @@ export class SwitchEditComponent implements OnInit {
       if (spaceArr.length > 0) {
         alert(`${spaceArr.join(',')}为空`);
       }else {
-        param.applyTeams = this.form.value.applyTeams;
-        param.applyUserId = this.form.value.applyUserId;
+        param.applyTeams = this.listGroup;
+        param.applyUserId = this.userId;
         param.applyDate = this.form.value.applyDate;
         param.applyShift = this.form.value.applyShift;
         param.stationCode = this.orgCode;
@@ -335,7 +317,7 @@ export class SwitchEditComponent implements OnInit {
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.applyInfo.scheduleDate;
     this.form.value.applyShift = this.applyInfo.shiftId;
-    this.form.value.applyTeams = +this.form.value.applyTeams;
+    this.form.value.applyTeams = +this.listGroup;
     this.form.value.applyChangeType = this.applyChangeType;
     this.form.value.backShift = this.backInfo.shiftId;
     this.form.value.backDate = this.backInfo.scheduleDate;
@@ -401,13 +383,6 @@ export class SwitchEditComponent implements OnInit {
     this.backInfo = $event;
   }
 
-  applyTeamsChange($event) {
-    this.applyTeams = $event.target.value;
-    if (this.applyTeams !== '-1') {
-      this.getStaff(this.applyTeams, 1);
-    }
-  }
-
   backTeamsChange($event) {
     this.backTeams = $event.target.value;
     if (this.backTeams !== '-1') {
@@ -418,6 +393,7 @@ export class SwitchEditComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && !res.isAdmin) {
+        this.listGroup = res.listGroup;
         this.orgCode = res.orgCode;
         this.userId = res.userId;
         this.param.orgList = [res.orgCode];

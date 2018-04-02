@@ -17,6 +17,7 @@ export class DocUploadComponent implements OnInit {
   endDate: string;
   en: any;
   isChosen = false;
+  orgCode: string;
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
@@ -25,7 +26,6 @@ export class DocUploadComponent implements OnInit {
     fileType: '文件类别',
     fileNum: '发文文号',
     fileUnit: '发文单位',
-    browsePermission: '浏览权限',
     fileLevel: '文件级别',
     keyWord: '关键字'
   };
@@ -40,9 +40,12 @@ export class DocUploadComponent implements OnInit {
   file: any;
   filename: string;
   selectedUser: string;
-  selectionMode = 'single';
+  selectionMode = 'checkbox';
+  canSeeOrgList: Array<any>;
   searchOrg: Array<any>;
   initForm: any;
+  orgType: number;
+  orgName: string;
   param: any = {
     page: this.page,
     size: this.size,
@@ -156,6 +159,10 @@ export class DocUploadComponent implements OnInit {
     } else {
       alert('请选择一个人员');
     }
+  }
+
+  selectedOrg($event) {
+    this.canSeeOrgList = $event;
   }
 
   delete() {
@@ -298,7 +305,12 @@ export class DocUploadComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.orgName = res.orgName;
+        this.orgType = res.orgType;
         this.orgList = [{data: res.orgCode, label: res.orgName}];
+        this.canSeeOrgList = [{data: res.orgCode, label: res.orgName}];
+        this.orgCode = res.orgCode;
+        this.param.orgCode = res.orgCode;
         this.initForm.fileUnit = this.orgList[0].label;
         this.getInfo();
       }

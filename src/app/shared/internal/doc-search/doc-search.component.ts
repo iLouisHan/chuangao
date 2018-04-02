@@ -19,6 +19,8 @@ export class DocSearchComponent implements OnInit {
   hasDo: number;
   orgList: Array<any>;
   planList: Array<any>;
+  orgName: string;
+  orgType: number;
   selectedDoc: string;
   page = 0;
   size = 15;
@@ -44,8 +46,7 @@ export class DocSearchComponent implements OnInit {
       fileNum: new FormControl('', Validators.nullValidator),
       keyWord: new FormControl('', Validators.nullValidator),
       fileType: new FormControl('', Validators.nullValidator),
-      fileLevel: new FormControl('', Validators.nullValidator),
-      fileUnit: new FormControl('', Validators.nullValidator)
+      fileLevel: new FormControl('', Validators.nullValidator)
     });
     this.cols = [
       { field: 'fileType', header: '文件类型' },
@@ -71,6 +72,7 @@ export class DocSearchComponent implements OnInit {
   }
 
   selectedOrg($event) {
+    console.log($event);
     this.orgList = $event;
   }
 
@@ -100,6 +102,7 @@ export class DocSearchComponent implements OnInit {
   getInfo(page: number, size: number) {
     this.form.value.filePublishStartTime = this.dateFormat(this.startTime);
     this.form.value.filePublishEndTime = this.dateFormat(this.endTime);
+    this.form.value.orgCode = this.orgList[0].data;
     const param = {
       page: page,
       size: size,
@@ -137,8 +140,12 @@ export class DocSearchComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.isAdmin) {
-        this.form.patchValue({fileUnit: res.orgName});
+      if (res && res.isAdmin !== 2) {
+        this.orgType = res.orgType;
+        this.orgList = [{
+          data: res.orgCode
+        }];
+        this.orgName = res.orgName;
         this.getInfo(this.page, this.size);
       }
     });
