@@ -38,7 +38,9 @@ export class DocUploadComponent implements OnInit {
   isAdd: boolean;
   keys: Array<any>;
   file: any;
+  level: string;
   filename: string;
+  checkMode = 'checkbox';
   selectedUser: string;
   selectionMode = 'checkbox';
   canSeeOrgList: Array<any>;
@@ -61,7 +63,6 @@ export class DocUploadComponent implements OnInit {
       fileType: new FormControl('', Validators.nullValidator),
       fileNum: new FormControl('', Validators.nullValidator),
       fileUnit: new FormControl('', Validators.nullValidator),
-      browsePermission: new FormControl('', Validators.nullValidator),
       keyWord: new FormControl('', Validators.nullValidator),
       fileLevel: new FormControl('', Validators.nullValidator)
     });
@@ -92,22 +93,27 @@ export class DocUploadComponent implements OnInit {
       fileNum: '',
       fileType: '',
       fileLevel: '',
-      browsePermission: '',
       keyWord: ''
     };
+  }
+  selectedOrg($event) {
+    console.log($event[0].data);
+    this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
     this.deviceList.forEach(item => {
       if (item.id === staffId) {
         this.form.patchValue(item);
         this.endDate = item.filePublishTime;
-        // this.initOrgName = item.orgList.map(el => el.);
+        this.level = item['orgList'].join(',');
+        this.filename = item.filePath.split('ileName=')[1];
       }
     });
   }
   getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    this.param.orgCode = this.orgList[0].data;
     this.http.post('http://119.29.144.125:8080/cgfeesys/FileManager/get', JSON.stringify(this.param) , {
               headers: myHeaders
             })
@@ -139,6 +145,9 @@ export class DocUploadComponent implements OnInit {
   add() {
     this.form.reset();
     this.form.patchValue(this.initForm);
+    this.endDate = '';
+    this.file = '';
+    this.level = '';
     // this.form.patchValue({orgName: this.orgName});
     this.isChosen = true;
     this.isAdd = true;
@@ -161,10 +170,6 @@ export class DocUploadComponent implements OnInit {
     } else {
       alert('请选择一个人员');
     }
-  }
-
-  selectedOrg($event) {
-    this.canSeeOrgList = $event;
   }
 
   delete() {
@@ -203,14 +208,14 @@ export class DocUploadComponent implements OnInit {
       alert('请上传文档！');
     } else if (!this.endDate) {
       alert('请选择发文时间');
-    } else if (this.canSeeOrgList.length <= 0) {
-      alert('请选择可浏览单位！');
-    }else {
+    } else if (this.searchOrg.length === 0) {
+      alert('请选择浏览权限！');
+    } else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       this.form.value.filePublishTime = this.dateFormat(this.endDate);
       this.form.value.fileOwner = this.orgList[0].data;
-      this.form.value.orgList = this.canSeeOrgList.map(el => el.data);
+      this.form.value.orgList = this.searchOrg.map(el => el.data);
       this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/add`, JSON.stringify(this.form.value), {
                 headers: myHeaders
               })
@@ -235,6 +240,8 @@ export class DocUploadComponent implements OnInit {
       alert(`${spaceArr.join(',')}为空`);
     } else if (!this.endDate) {
       alert('请选择发文时间');
+    } else if (this.searchOrg.length === 0) {
+      alert('请选择浏览权限！');
     } else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
@@ -245,7 +252,8 @@ export class DocUploadComponent implements OnInit {
       this.data.id = this.selectedUser;
       this.data.filePublishTime = this.dateFormat(this.endDate);
       this.data.fileOwner = this.orgList[0].data;
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/upload`, JSON.stringify(this.data), {
+      this.form.value.orgList = this.searchOrg.map(el => el.data);
+      this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/update`, JSON.stringify(this.data), {
                 headers: myHeaders
               })
               .map(res => res.json())
