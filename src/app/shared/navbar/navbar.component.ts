@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit {
   isShowDetail: boolean = false;
   isShowManager: boolean = false;
   orgType;
+  isAdmin;
 
   logout(): void {
     this.store.dispatch(new Actions.SaveLogin(''));
@@ -93,9 +94,17 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
-        this.orgType = res.orgType;
-        this.role = `${this.orgLevel[res.orgType]}${res.isAdmin ? '管理员' : '普通'}账号`;
-        this.getNotification(res.orgCode, res.orgType);
+        let orgTypeDes;
+        this.isAdmin = res.isAdmin;
+        if(2 === this.isAdmin){
+          orgTypeDes = '超级';
+          this.orgType = '';
+        }else{
+          this.orgType = res.orgType;
+          orgTypeDes = this.orgLevel[res.orgType];
+          this.getNotification(res.orgCode, res.orgType);
+        }
+        this.role = `${orgTypeDes}${res.isAdmin ? '管理员' : '普通'}账号`;
       }
     });
   }
