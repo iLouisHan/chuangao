@@ -5,7 +5,6 @@ import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-
 @Component({
   selector: 'app-device-search',
   templateUrl: './device-search.component.html',

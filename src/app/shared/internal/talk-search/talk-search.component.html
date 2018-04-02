@@ -28,7 +28,7 @@
           <div class="form-item">
             <p>单位名称</p>
             <div class="tree-container">
-              <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+              <app-drop-org-tree [initOrgName]="orgName" [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
             </div>
           </div>
           <!-- <div class="form-item">

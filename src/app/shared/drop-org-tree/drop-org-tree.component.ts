@@ -15,7 +15,13 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   @Input()
   selectionMode: string;
   @Input()
-  initOrgName: string;
+  set initOrgName(initOrgName: string) {
+    this.selected = this.initOrgName;
+  }
+
+  get initOrgName() {
+    return this.selected;
+  }
 
   login: Observable<any>;
   treeNodes: Array<any> = [];
@@ -104,7 +110,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
         this.getOrgInfo(res.orgCode);
       }
     });
-    this.selected = this.initOrgName || '';
+    this.selected = this.selected || '';
     this.initArr = this.selected.split(',');
   }
 

@@ -55,6 +55,7 @@ export class SwitchEditComponent implements OnInit {
   checkItem = 1;
   shiftChangeDataList: Array<any>;
   requiredItems: any = {};
+  loadingStaffs = false;
 
   constructor(
     private http: Http,

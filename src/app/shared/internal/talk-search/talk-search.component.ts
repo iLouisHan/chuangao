@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-talk-search',
@@ -9,6 +11,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./talk-search.component.scss']
 })
 export class TalkSearchComponent implements OnInit {
+  login: Observable<any> = new Observable<any>();
   form: FormGroup;
   startTime: string;
   endTime: string;
@@ -18,6 +21,7 @@ export class TalkSearchComponent implements OnInit {
   doFilePath: string;
   hasDo: number;
   orgList: Array<any>;
+  orgName: string;
   planList: Array<any>;
   trainWay: string;
   trainType: string;
@@ -38,8 +42,10 @@ export class TalkSearchComponent implements OnInit {
   checkItem: number;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     this.form = new FormGroup({
     });
     this.isChosen = false;
@@ -138,6 +144,11 @@ export class TalkSearchComponent implements OnInit {
     }
   }
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgName = res.orgName;
+      }
+    });
   }
 
 }

@@ -2,14 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
 @Component({
   selector: 'app-station-search',
   templateUrl: './station-search.component.html',
   styleUrls: ['./station-search.component.scss']
 })
 export class StationSearchComponent implements OnInit {
+  login: Observable<any> = new Observable<any>();
   form: FormGroup;
   startDate: string;
+  orgName: string;
   endDate: string;
   count: number;
   isChosen: boolean;
@@ -33,8 +38,10 @@ export class StationSearchComponent implements OnInit {
   checkItem: number;
 
   constructor(
-    private http: Http
+    private http: Http,
+    private store: Store<any>
   ) {
+    this.login = store.select('login');
     this.form = new FormGroup({
       meetingName: new FormControl('', Validators.nullValidator)
     });
@@ -132,6 +139,11 @@ export class StationSearchComponent implements OnInit {
     }
   }
   ngOnInit() {
+    this.login.subscribe(res => {
+      if (res) {
+        this.orgName = res.orgName;
+      }
+    });
   }
 
 }

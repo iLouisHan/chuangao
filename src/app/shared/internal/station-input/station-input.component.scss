@@ -379,6 +379,35 @@ form{
         height: 48px;
         border: 1px solid #d9d9d9;
         line-height: 48px;
+        float: left;
+      }
+
+      .all-group{
+        float: right;
+
+        button {
+          width: 90px;
+          height: 48px;
+          line-height: 48px;
+          border-radius: 25px;
+          font-size: 18px;
+          text-align: center;
+
+          &.button-choose-all{
+            color: #fff;
+            float: left;
+            background: #6c9cff;
+            cursor: pointer;
+          }
+
+          &.button-unchoose-all{
+            border: 1px solid #6c9cff;
+            color: #6c9cff;
+            float: right;
+            cursor: pointer;
+            margin-left: 20px;
+          }
+        }
       }
     }
   }

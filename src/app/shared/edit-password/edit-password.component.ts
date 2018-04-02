@@ -13,9 +13,10 @@ import * as Actions from '../../store/cacheStore.actions';
 export class EditPasswordComponent implements OnInit {
   login: Observable<any>;
   userData: any = {};
-  showOldPassword: boolean = false;
-  showPassword: boolean = false;
-  showConfirmPassword: boolean = false;
+  showOldPassword = false;
+  showPassword = false;
+  showConfirmPassword = false;
+  view: number;
 
   constructor(
     private http: Http,
@@ -80,11 +81,11 @@ export class EditPasswordComponent implements OnInit {
   }
 
   getParams() {
-    let params = {
+    const params = {
       'userId': this.userData.userId,
       'oldPwd': this.userData.oldPassword,
       'newPwd': this.userData.password
-    }
+    };
     return params;
   }
 
@@ -93,7 +94,7 @@ export class EditPasswordComponent implements OnInit {
       return;
     }
     console.log('userData: ', this.userData);
-    let params = this.getParams();
+    const params = this.getParams();
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.http.post(`http://119.29.144.125:8080/cgfeesys/updatePassword`, JSON.stringify(params), {

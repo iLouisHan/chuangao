@@ -5,10 +5,10 @@
     <form [formGroup]="form">
       <div class="form-item">
           <p>所属机构</p>
-          <div class="tree-container" *ngIf="isAdd">
+          <div class="tree-container" *ngIf="isAdd && orgType !== 3">
             <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
           </div>
-          <input type="text" [(ngModel)]="stationName" *ngIf="!isAdd" [ngModelOptions]="{standalone: true}" disabled='true'>
+          <input type="text" [(ngModel)]="stationName" *ngIf="!isAdd || orgType === 3" [ngModelOptions]="{standalone: true}" disabled='true'>
         </div>
       <div class="form-item">
         <p>会议名称</p>
@@ -109,7 +109,7 @@
 <div class="popup-container" [class.show]="isShow">
     <div class="popup">
       <h1>添加</h1>
-      <div class="teams-select-container">
+      <div class="teams-select-container clearfix">
         <p>班组选择</p>
         <select (change)="teamsChange()" [(ngModel)]="teams">
           <option value="0">请选择</option>
@@ -123,6 +123,10 @@
           <option value="8">常白班</option>
           <option value="100">站监控站</option>
         </select>
+        <div class="all-group">
+          <button (click)="chooseAll()" class="button-choose-all">全选</button>
+          <button (click)="unChooseAll()" class="button-unchoose-all">清空</button>
+        </div>
       </div>
       <div class="staffList-container">
         <ul class="clearfix">
