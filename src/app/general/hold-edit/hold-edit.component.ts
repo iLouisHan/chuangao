@@ -20,6 +20,7 @@ export class HoldEditComponent implements OnInit {
   page = 0;
   size = 15;
   param: any;
+  listGroup: number;
   holdList: Array<any>;
   cols: any;
   count: number;
@@ -37,7 +38,6 @@ export class HoldEditComponent implements OnInit {
       applyChangeType: 2
     };
     this.form = new FormGroup({
-      applyTeams: new FormControl('', Validators.nullValidator),
       shiftId: new FormControl('', Validators.nullValidator),
       remark: new FormControl('', Validators.nullValidator)
     });
@@ -79,6 +79,7 @@ export class HoldEditComponent implements OnInit {
     this.form.value.applyDate = this.dateFormat(this.applyDate);
     this.form.value.stationCode = this.orgCode;
     this.form.value.applyUserId = this.userId;
+    this.form.value.applyTeams = this.listGroup;
     this.form.value.applyChangeType = 2;
     this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
               headers: myHeaders
@@ -121,6 +122,7 @@ export class HoldEditComponent implements OnInit {
       if (res) {
         this.orgCode = res.orgCode;
         this.userId = res.userId;
+        this.listGroup = res.listGroup;
         this.param.orgList = [res.orgCode];
         this.param.applyUserId = res.userId;
         this.getInfo();

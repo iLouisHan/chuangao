@@ -36,7 +36,7 @@
       <div class="form-item">
         <p>最低浏览权限</p>
         <div *ngIf="orgType !== 3" class="tree-container">
-          <app-drop-org-tree [initOrgName]="orgName" [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+          <app-drop-org-tree [initOrgName]="initOrgName" [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
         </div>
         <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
       </div>

@@ -46,6 +46,7 @@ export class DocUploadComponent implements OnInit {
   initForm: any;
   orgType: number;
   orgName: string;
+  initOrgName: string;
   param: any = {
     page: this.page,
     size: this.size,
@@ -100,6 +101,7 @@ export class DocUploadComponent implements OnInit {
       if (item.id === staffId) {
         this.form.patchValue(item);
         this.endDate = item.filePublishTime;
+        // this.initOrgName = item.orgList.map(el => el.);
       }
     });
   }
@@ -201,11 +203,14 @@ export class DocUploadComponent implements OnInit {
       alert('请上传文档！');
     } else if (!this.endDate) {
       alert('请选择发文时间');
-    } else {
+    } else if (this.canSeeOrgList.length <= 0) {
+      alert('请选择可浏览单位！');
+    }else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       this.form.value.filePublishTime = this.dateFormat(this.endDate);
       this.form.value.fileOwner = this.orgList[0].data;
+      this.form.value.orgList = this.canSeeOrgList.map(el => el.data);
       this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/add`, JSON.stringify(this.form.value), {
                 headers: myHeaders
               })
@@ -307,6 +312,7 @@ export class DocUploadComponent implements OnInit {
       if (res && res.isAdmin) {
         this.orgName = res.orgName;
         this.orgType = res.orgType;
+        this.initOrgName = res.orgName;
         this.orgList = [{data: res.orgCode, label: res.orgName}];
         this.canSeeOrgList = [{data: res.orgCode, label: res.orgName}];
         this.orgCode = res.orgCode;

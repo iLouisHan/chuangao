@@ -31,17 +31,21 @@ export class AttendanceCheckComponent implements OnInit {
     private store: Store<any>
   ) {
     this.login = store.select('login');
+    this.initList();
+  }
+
+  selectedOrg($event) {
+    this.orgList = $event;
+    this.getStaff();
+  }
+
+  initList() {
     for (let i = 0; i < 12; i++) {
       this.attendanceList[i] = [];
       for (let j = 0; j < 20; j++) {
         this.attendanceList[i][j] = 0;
       }
     }
-  }
-
-  selectedOrg($event) {
-    this.orgList = $event;
-    this.getStaff();
   }
 
   search() {
@@ -70,6 +74,7 @@ export class AttendanceCheckComponent implements OnInit {
     }).map(res => res.json())
       .subscribe(res => {
         if (res.code) {
+          this.initList();
           this.classify(res.data);
         }
       });
