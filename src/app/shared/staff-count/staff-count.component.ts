@@ -76,11 +76,48 @@ export class StaffCountComponent implements OnInit {
                     data: data3
                   }
                 };
-                this.updateOptions4 = {
-                  series: {
-                    type: 'pie',
-                    // data:
+                const series4: any = {
+                  type: 'pie',
+                  radius: [20, 70],
+                  roseType: 'area',
+                  data: [
+                    { value: res.data.educational[0], name: '研究生'},
+                    { value: res.data.educational[1], name: '本科'},
+                    { value: res.data.educational[2], name: '专科'},
+                    { value: res.data.educational[3], name: '中专'},
+                    { value: res.data.educational[4], name: '高中'}
+                  ]
+                };
+                switch (this.orgType) {
+                  case 1: {
+                    series4.data = [
+                      { value: res.data.workPostList[0], name: '营运公司高级管理人员'},
+                      { value: res.data.workPostList[1], name: '营运公司中级管理人员'},
+                      { value: res.data.workPostList[2], name: '营运公司一般管理人员'}
+                    ];
+                    break;
                   }
+                  case 2: {
+                    series4.data = [
+                      { value: res.data.workPostList[0], name: '管理处高级管理人员'},
+                      { value: res.data.workPostList[1], name: '管理处中级管理人员'},
+                      { value: res.data.workPostList[2], name: '管理处一般管理人员'}
+                    ];
+                    break;
+                  }
+                  case 3: {
+                    series4.data = [
+                      { value: res.data.starList[0], name: '一星'},
+                      { value: res.data.starList[1], name: '两星'},
+                      { value: res.data.starList[2], name: '三星'},
+                      { value: res.data.starList[3], name: '四星'},
+                      { value: res.data.starList[4], name: '五星'}
+                    ];
+                    break;
+                  }
+                }
+                this.updateOptions4 = {
+                  series: series4
                 };
               }
             });
@@ -148,7 +185,7 @@ export class StaffCountComponent implements OnInit {
       },
       series: {
         type: 'pie',
-        radius: [30, 110],
+        radius: [20, 70],
         roseType: 'area',
         data: [
           { value: 0, name: '研究生'},
@@ -178,15 +215,34 @@ export class StaffCountComponent implements OnInit {
 
     this.options4 = {
       title: {
-        text: '岗位统计图',
         x: 'center',
         y: 'bottom'
       },
       legend: {
-        type: 'scroll',
-        data: ['收费站站长', '收费站副站长', '收费员', '管理处中级管理员', '管理处一般管理人员', '营运公司中级管理人员', '营运公司一般管理人员', '收费班长', '收费副班长']
-      }
+        type: 'scroll'
+      },
+      tooltip: {
+        formatter: '{c}'
+      },
     };
+
+    switch (this.orgType) {
+      case 1: {
+        this.options4.title.text = '岗位统计图';
+        this.options4.legend.data = ['营运公司高级管理人员', '营运公司中级管理人员', '营运公司一般管理人员'];
+        break;
+      }
+      case 2: {
+        this.options4.title.text = '岗位统计图';
+        this.options4.legend.data = ['管理处高级管理员', '管理处中级管理员', '管理处一般管理人员'];
+        break;
+      }
+      case 3: {
+        this.options4.title.text = '星评统计图';
+        this.options4.legend.data = ['一星', '两星', '三星', '四星', '五星'];
+        break;
+      }
+    }
   }
 
 }
