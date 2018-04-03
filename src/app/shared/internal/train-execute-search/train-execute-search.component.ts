@@ -20,6 +20,7 @@ export class TrainExecuteSearchComponent implements OnInit {
   staffList: Array<any>;
   planData: any = {};
   doData: any = {};
+  selectorgList: Array<any> = [];
   orgList: Array<any>;
   doFilePath: string;
   planFilePath: string;
@@ -89,7 +90,7 @@ export class TrainExecuteSearchComponent implements OnInit {
   }
 
   selectedOrg($event) {
-    this.orgList = $event;
+    this.selectorgList = $event;
   }
 
   selectedExOrg($event) {
@@ -119,7 +120,7 @@ export class TrainExecuteSearchComponent implements OnInit {
   getInfo(page: number, size: number) {
     this.form.value.trainStartDate = this.dateFormat(this.startTime);
     this.form.value.trainEndDate = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
+    this.form.value.orgList = [];
     this.form.value.trainDoOrgList = this.trainDoOrgList.map(el => el.data);
     const param = {
       page: page,

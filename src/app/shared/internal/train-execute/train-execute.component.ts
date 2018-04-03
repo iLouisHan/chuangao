@@ -72,11 +72,11 @@ export class TrainExecuteComponent implements OnInit {
     this.trainForm = new FormGroup({
       trainPlanName: new FormControl('', Validators.nullValidator),
       trainDoOrgName: new FormControl('', Validators.nullValidator),
-      trainAddress: new FormControl('', Validators.nullValidator),
+      trainDoAddress: new FormControl('', Validators.nullValidator),
       trainDoStartDate: new FormControl('', Validators.nullValidator),
       trainDoEndDate: new FormControl('', Validators.nullValidator),
-      trainTeacher: new FormControl('', Validators.nullValidator),
-      trainTimeLong: new FormControl('', Validators.nullValidator),
+      trainDoTeacher: new FormControl('', Validators.nullValidator),
+      trainDoTimeLong: new FormControl('', Validators.nullValidator),
       trainContent: new FormControl('', Validators.nullValidator),
       userIdList: new FormControl('', Validators.nullValidator)
     });
@@ -151,6 +151,7 @@ export class TrainExecuteComponent implements OnInit {
                 this.trainForm.patchValue(res.data);
                 this.doEndDate = res.data.trainDoEndDate;
                 this.doStartDate = res.data.trainDoStartDate;
+                this.filename = res.data.trainDoFile.split('fileName=')[1];
                 this.doFilePath = res.data.trainDoFile;
               } else {
                 alert(res.message);
@@ -177,7 +178,7 @@ export class TrainExecuteComponent implements OnInit {
     keys.forEach(el => {
       this.param[el] = this.searchForm.value[el];
     });
-    this.param.orgList = [this.orgCode];
+    this.param.orgList = [];
     this.param.trainDoOrgList = [this.orgCode];
     this.http.post('http://119.29.144.125:8080/cgfeesys/Train/doGet', JSON.stringify(this.param) , {
               headers: myHeaders
