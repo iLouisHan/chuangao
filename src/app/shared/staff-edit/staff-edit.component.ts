@@ -257,7 +257,12 @@ export class StaffEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.upload(res.data.userId);
+                if (this.file) {
+                  this.upload(res.data.userId);
+                }else {
+                  alert('人员录入成功！');
+                  this.toFirstPage();
+                }
               }else {
                 alert(res.message);
               }
@@ -324,6 +329,7 @@ export class StaffEditComponent implements OnInit {
 
   toFirstPage() {
     const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    this.selectedUser = '';
     this.isChosen = false;
     element.click();
   }

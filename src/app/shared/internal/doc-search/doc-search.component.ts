@@ -71,11 +71,6 @@ export class DocSearchComponent implements OnInit {
     }
   }
 
-  selectedOrg($event) {
-    console.log($event);
-    this.orgList = $event;
-  }
-
   submit() {
     this.getInfo(this.page, this.size);
   }

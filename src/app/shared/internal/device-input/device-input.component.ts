@@ -284,6 +284,7 @@ export class DeviceInputComponent implements OnInit {
   }
 
   toFirstPage() {
+    this.selectedDevice = '';
     if (document.getElementsByClassName('ui-paginator-page')[0]) {
       const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
       this.isChosen = false;

@@ -149,7 +149,7 @@ export class TrainPlanSearchComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.isAdmin) {
+      if (res) {
         this.orgList = [{data: res.orgCode, label: res.orgName}];
         this.getInfo(this.page, this.size);
       }

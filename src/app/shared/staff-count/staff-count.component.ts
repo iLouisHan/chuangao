@@ -210,6 +210,9 @@ export class StaffCountComponent implements OnInit {
       xAxis: {
         name: '人数',
         minInterval: 3
+      },
+      tooltip: {
+        formatter: '{c}'
       }
     };
 

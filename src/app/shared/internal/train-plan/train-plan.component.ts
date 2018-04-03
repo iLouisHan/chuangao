@@ -323,6 +323,7 @@ export class TrainPlanComponent implements OnInit {
 
   toFirstPage() {
     const element = document.getElementsByClassName('ui-paginator-page')[0] as HTMLElement;
+    this.selectedUser = '';
     this.isChosen = false;
     element.click();
   }
