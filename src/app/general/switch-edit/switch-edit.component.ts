@@ -49,6 +49,7 @@ export class SwitchEditComponent implements OnInit {
   backUserName: string;
   backUserId: string;
   applyInfo: any;
+  userName = '';
   backInfo: any;
   applyChangeType = 1;
   userId: string;

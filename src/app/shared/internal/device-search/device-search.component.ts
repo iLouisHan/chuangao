@@ -16,6 +16,7 @@ export class DeviceSearchComponent implements OnInit {
   endTime: string;
   count: number;
   orgList: Array<any>;
+  orgName: string;
   deviceList: Array<any>;
   assetName: string;
   deviceStartDate: string;
@@ -130,6 +131,7 @@ export class DeviceSearchComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.orgName = res.orgName;
         this.orgList = [{data: res.orgCode}];
         this.getInfo(this.page, this.size);
       }

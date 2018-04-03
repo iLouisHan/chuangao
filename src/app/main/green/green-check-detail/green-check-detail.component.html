@@ -62,7 +62,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="btnShow" class="button-group">
+  <div *ngIf="orgType === 3 && notCheck" class="button-group">
     <button (click)="passSubmit()" class="button-submit">合格</button>
     <button (click)="notpassSubmit()" class="button-cancel">不合格</button>
   </div>
