@@ -64,7 +64,8 @@
           <h1>机构管理员列表</h1>
           <ul class="staffList clearfix">
             <li class="staffList-li" *ngFor="let user of staffList; index as i">
-              <label><input (click)="changeIsAdmin(i)" [checked]="user.isAdmin" type="checkbox"><span>{{user.adminName}}{{user.adminCode}}</span></label>
+              <label><input (click)="changeIsAdmin(i)" [checked]="user.isAdmin" type="checkbox"><span>{{user.adminName}}&nbsp;{{user.adminCode}}&nbsp;</span></label>
+              <span class="reset" (click)="resetPwd(user.adminCode)">重置密码</span>
             </li>
           </ul>
           <div class="form-item">

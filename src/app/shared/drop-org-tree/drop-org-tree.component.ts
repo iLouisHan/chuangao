@@ -129,7 +129,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res) {
+      if (res && res.isAdmin !== 2) {
         this.getOrgInfo(res.orgCode);
       }
     });

@@ -50,7 +50,7 @@
           <span>替班日期：{{backInfo.scheduleDate}}&nbsp;替班班次：{{shiftId[backInfo.shiftId]}}</span>
         </div>
       </form>
-      <form *ngIf="checkItem === 2" [formGroup]="form">
+      <!-- <form *ngIf="checkItem === 2" [formGroup]="form">
         <div class="form-item">
           <p>还班日期</p>
           <p-calendar [(ngModel)]="returnDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
@@ -63,7 +63,7 @@
             <option value="2">夜班</option>
           </select>
         </div>
-      </form>
+      </form> -->
       <form [formGroup]="form">
         <div class="form-item form-textarea">
           <p>备注</p>

@@ -66,7 +66,7 @@ export class SwitchEditComponent implements OnInit {
       remark: new FormControl('', Validators.nullValidator),
       backTeams: new FormControl('', Validators.nullValidator),
       backShift: new FormControl('', Validators.nullValidator),
-      returnShift: new FormControl('', Validators.nullValidator)
+      // returnShift: new FormControl('', Validators.nullValidator)
     });
     this.en = {
       firstDayOfWeek: 0,
@@ -266,8 +266,8 @@ export class SwitchEditComponent implements OnInit {
         this.postHttp(param);
       }
     }else {
-      this.form.value.returnShift = +this.form.value.returnShift;
-      this.form.value.returnDate = this.dateFormat(this.returnDate);
+      // this.form.value.returnShift = +this.form.value.returnShift;
+      // this.form.value.returnDate = this.dateFormat(this.returnDate);
       this.requiredItems = {
         applyDate: '换班信息'
       };

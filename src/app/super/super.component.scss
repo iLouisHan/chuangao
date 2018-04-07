@@ -217,12 +217,21 @@ form{
 
   .staffList-li{
     float: left;
-    width: 25%;
+    min-width: 25%;
     text-indent: 20px;
     margin-bottom: 20px;
 
     input{
       margin-right: 10px;
+    }
+
+    span{
+      white-space: nowrap;
+    }
+
+    .reset{
+      cursor: pointer;
+      color: #6c9cff;
     }
   }
 }
