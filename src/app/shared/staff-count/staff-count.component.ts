@@ -48,19 +48,21 @@ export class StaffCountComponent implements OnInit {
                     data: res.data.womem
                   }]
                 };
+                const series2 = {
+                  type: 'pie',
+                  radius: [20, 70],
+                  roseType: 'area',
+                  data: [
+                    { value: res.data.educational[0], name: '研究生'},
+                    { value: res.data.educational[1], name: '本科'},
+                    { value: res.data.educational[2], name: '专科'},
+                    { value: res.data.educational[3], name: '中专'},
+                    { value: res.data.educational[4], name: '高中'}
+                  ]
+                };
+                series2.data = series2.data.filter(el => el.value > 0);
                 this.updateOptions2 = {
-                  series: {
-                    type: 'pie',
-                    radius: [30, 110],
-                    roseType: 'area',
-                    data: [
-                      { value: res.data.educational[0], name: '研究生'},
-                      { value: res.data.educational[1], name: '本科'},
-                      { value: res.data.educational[2], name: '专科'},
-                      { value: res.data.educational[3], name: '中专'},
-                      { value: res.data.educational[4], name: '高中'}
-                    ]
-                  }
+                  series: series2
                 };
                 const data3 = [];
                 const keys = Object.keys(res.data.workAge);
@@ -116,6 +118,7 @@ export class StaffCountComponent implements OnInit {
                     break;
                   }
                 }
+                series4.data = series4.data.filter(el => el.value > 0);
                 this.updateOptions4 = {
                   series: series4
                 };
@@ -186,14 +189,7 @@ export class StaffCountComponent implements OnInit {
       series: {
         type: 'pie',
         radius: [20, 70],
-        roseType: 'area',
-        data: [
-          { value: 0, name: '研究生'},
-          { value: 0, name: '本科'},
-          { value: 0, name: '专科'},
-          { value: 0, name: '中专'},
-          { value: 0, name: '高中'}
-        ]
+        roseType: 'area'
       }
     };
 
@@ -233,11 +229,13 @@ export class StaffCountComponent implements OnInit {
       case 1: {
         this.options4.title.text = '岗位统计图';
         this.options4.legend.data = ['营运公司高级管理人员', '营运公司中级管理人员', '营运公司一般管理人员'];
+        this.options4.legend.orient = 'vertical';
         break;
       }
       case 2: {
         this.options4.title.text = '岗位统计图';
         this.options4.legend.data = ['管理处高级管理员', '管理处中级管理员', '管理处一般管理人员'];
+        this.options4.legend.orient = 'vertical';
         break;
       }
       case 3: {

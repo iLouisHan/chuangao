@@ -147,6 +147,9 @@ export class TalkSearchComponent implements OnInit {
     this.login.subscribe(res => {
       if (res) {
         this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
       }
     });
   }

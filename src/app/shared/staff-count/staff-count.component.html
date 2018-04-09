@@ -1,21 +1,23 @@
 <h1 class="page-title"><div class="page-title-icon"></div>人员统计</h1>
 <div class="part-container">
   <h1 class="part-title">人员分析统计</h1>
-  <div class="part-content">
-    <div class="clearfix">
-      <div class="left-chart">
-        <div echarts [options]="options1" [merge]="updateOptions1"></div>
+  <div class="center-container">
+    <div class="part-content">
+      <div class="clearfix">
+        <div class="left-chart">
+          <div echarts [options]="options1" [merge]="updateOptions1"></div>
+        </div>
+        <div class="right-chart">
+          <div echarts [options]="options2" [merge]="updateOptions2"></div>
+        </div>
       </div>
-      <div class="right-chart">
-        <div echarts [options]="options2" [merge]="updateOptions2"></div>
-      </div>
-    </div>
-    <div class="clearfix">
-      <div class="left-chart">
-        <div echarts [options]="options3" [merge]="updateOptions3"></div>
-      </div>
-      <div class="right-chart">
-        <div echarts [options]="options4" [merge]="updateOptions4"></div>
+      <div class="clearfix">
+        <div class="left-chart">
+          <div echarts [options]="options3" [merge]="updateOptions3"></div>
+        </div>
+        <div class="right-chart">
+          <div echarts [options]="options4" [merge]="updateOptions4"></div>
+        </div>
       </div>
     </div>
   </div>

@@ -128,13 +128,13 @@
       flex-wrap: wrap;
 
       .oneTalk {
-        width: 10%;
+        min-width: 10%;
         padding: 10px 1.25%;
 
         .talkName{
           background: url('/assets/images/icon-staff.png') no-repeat 10% center;
           font-size: 16px;
-          text-align: center;
+          text-indent: 40px;
           line-height: 30px;
         }
         .orangeState{

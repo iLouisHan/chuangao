@@ -66,11 +66,13 @@
             <div class="talkName">
               {{item.userName}}
             </div>
-            <div class="orangeState" *ngIf="item['reason'] && item['reason'].length" (click)="show(item)">
-              <span>已填写原因</span>
-            </div>
-            <div class="blueState" *ngIf="!item['reason']" (click)="show(item)">
-              <span>未填写原因</span>
+            <div *ngIf="orgType === 3">
+              <div class="orangeState" *ngIf="item['reason'] && item['reason'].length" (click)="show(item)">
+                <span>已填写原因</span>
+              </div>
+              <div class="blueState" *ngIf="!item['reason']" (click)="show(item)">
+                <span>未填写原因</span>
+              </div>
             </div>
           </div>
         </div>

@@ -24,6 +24,7 @@ export class TrainExecuteComponent implements OnInit {
   file: any;
   filename: string;
   isChosen = false;
+  orgType: number;
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
@@ -138,7 +139,6 @@ export class TrainExecuteComponent implements OnInit {
   }
   selectedStaff($event) {
     this.userList = ($event);
-    console.log(this.userList);
   }
   getStaffInfo(staffId, planId) {
     this.selectedUser  = staffId;
@@ -151,7 +151,9 @@ export class TrainExecuteComponent implements OnInit {
                 this.trainForm.patchValue(res.data);
                 this.doEndDate = res.data.trainDoEndDate;
                 this.doStartDate = res.data.trainDoStartDate;
-                this.filename = res.data.trainDoFile.split('fileName=')[1];
+                if (res.data.trainDoFile) {
+                  this.filename = res.data.trainDoFile.split('fileName=')[1];
+                }
                 this.doFilePath = res.data.trainDoFile;
               } else {
                 alert(res.message);
@@ -309,6 +311,19 @@ export class TrainExecuteComponent implements OnInit {
 
   addStaffs() {
     this.isShow = true;
+    if (this.orgType !== 3) {
+      this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
+          .map(res => res.json())
+          .subscribe(res => {
+            if (res.code) {
+              this.joinStaffList = res.data;
+              const selected = this.activedStaffList;
+              this.joinStaffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
+                el.choose = true;
+              });
+            }
+          });
+    }
   }
 
   teamsChange() {
@@ -415,6 +430,7 @@ export class TrainExecuteComponent implements OnInit {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
         this.orgCode = res.orgCode;
+        this.orgType = res.orgType;
         this.getInfo();
       }
     });

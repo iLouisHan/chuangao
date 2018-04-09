@@ -131,6 +131,7 @@ export class StaffEditComponent implements OnInit {
                 this.hireDate = res.data.hireDate;
                 this.birthday = res.data.birthday;
                 this.changeTime = res.data.changeTime;
+                this.filename = res.data.fileName;
               }else {
                 alert(res.message);
               }
@@ -320,6 +321,8 @@ export class StaffEditComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.file = null;
+          this.filename = '';
         }else {
           alert(res.message);
         }

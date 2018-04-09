@@ -40,7 +40,7 @@
         <textarea type="text" formControlName="chatContent"></textarea>
       </div>
       <div class="form-item">
-          <p>附件上传(仅支持pdf格式)</p>
+          <p>附件上传(仅支持jpg,png格式)</p>
           <div class="upload-photo">
             <input (change)="fileChange($event)" #photo type="file">
             <span [title]="filename">{{filename}}</span>

@@ -96,10 +96,11 @@ export class DocUploadComponent implements OnInit {
       keyWord: ''
     };
   }
+
   selectedOrg($event) {
-    console.log($event[0].data);
     this.searchOrg = ($event);
   }
+
   getStaffInfo(staffId) {
     this.deviceList.forEach(item => {
       if (item.id === staffId) {
@@ -110,6 +111,7 @@ export class DocUploadComponent implements OnInit {
       }
     });
   }
+
   getInfo() {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -322,7 +324,7 @@ export class DocUploadComponent implements OnInit {
         this.orgType = res.orgType;
         this.initOrgName = res.orgName;
         this.orgList = [{data: res.orgCode, label: res.orgName}];
-        this.canSeeOrgList = [{data: res.orgCode, label: res.orgName}];
+        this.searchOrg = [{data: res.orgCode, label: res.orgName}];
         this.orgCode = res.orgCode;
         this.param.orgCode = res.orgCode;
         this.initForm.fileUnit = this.orgList[0].label;

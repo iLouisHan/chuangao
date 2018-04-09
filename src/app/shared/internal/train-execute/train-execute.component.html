@@ -211,8 +211,8 @@
     <div class="popup">
       <h1>添加</h1>
       <div class="teams-select-container clearfix">
-        <p>班组选择</p>
-        <select (change)="teamsChange()" [(ngModel)]="teams">
+        <p *ngIf="orgType === 3">班组选择</p>
+        <select *ngIf="orgType === 3" (change)="teamsChange()" [(ngModel)]="teams">
           <option value="0">请选择</option>
           <option value="1">一班</option>
           <option value="2">二班</option>
@@ -224,7 +224,7 @@
           <option value="8">常白班</option>
           <option value="100">站监控站</option>
         </select>
-        <div class="all-group">
+        <div class="all-group" [class.not-station]="orgType !== 3">
           <button (click)="chooseAll()" class="button-choose-all">全选</button>
           <button (click)="unChooseAll()" class="button-unchoose-all">清空</button>
         </div>
