@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs/Observable';
+import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
+import {ElementRef} from '@angular/core';
 
 @Component({
   selector: 'app-self-edit',
@@ -27,10 +29,14 @@ export class SelfEditComponent implements OnInit {
   orgName: string;
   orgType: number;
 
-  constructor(
-    private http: Http,
-    private store: Store<any>
-  ) {
+  data2: any;
+  cropperSettings2: CropperSettings;
+  bounds: any;
+  srcImg: any;
+  @ViewChild('cropper', undefined) cropper: ImageCropperComponent;
+
+  constructor(private http: Http, private elementRef: ElementRef,
+              private store: Store<any>) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
       userName: new FormControl('', Validators.nullValidator),
@@ -59,22 +65,70 @@ export class SelfEditComponent implements OnInit {
       monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
     };
     this.login = store.select('login');
+
+    this.cropperSettings2 = new CropperSettings();
+    this.cropperSettings2.width = 150;
+    this.cropperSettings2.height = 200;
+    // this.cropperSettings2.keepAspect = false;
+
+    this.cropperSettings2.croppedWidth = 150;
+    this.cropperSettings2.croppedHeight = 200;
+
+    this.cropperSettings2.canvasWidth = 500;
+    this.cropperSettings2.canvasHeight = 300;
+
+    this.cropperSettings2.minWidth = 70;
+    this.cropperSettings2.minHeight = 100;
+
+    this.cropperSettings2.rounded = false;
+    this.cropperSettings2.minWithRelativeToResolution = false;
+
+    this.cropperSettings2.cropperDrawSettings.strokeColor = 'rgba(255,255,255,1)';
+    this.cropperSettings2.cropperDrawSettings.strokeWidth = 2;
+    this.cropperSettings2.noFileInput = true;
+
+    this.data2 = {};
+  }
+
+  cropped(bounds) {
+    console.log(bounds);
+    this.bounds = bounds;
+  }
+
+  /**
+   * Used to send image to second cropper
+   * @param $event
+   */
+  fileChangeListener($event) {
+    this.filename = $event.target.files[0].name;
+    this.file = $event.target.files[0];
+    const image: any = new Image();
+    const file: File = $event.target.files[0];
+    const myReader: FileReader = new FileReader();
+    const that = this;
+    myReader.onloadend = function (loadEvent: any) {
+      image.src = loadEvent.target.result;
+      that.cropper.setImage(image);
+      that.srcImg = that.cropper.inputImage;
+    };
+
+    myReader.readAsDataURL(file);
   }
 
   getStaffInfo(staffId) {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.hireDate = res.data.hireDate;
-                this.birthday = res.data.birthday;
-                this.changeTime = res.data.changeTime;
-              }else {
-                alert(res.message);
-              }
-            });
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          this.data = res.data;
+          this.form.patchValue(res.data);
+          this.hireDate = res.data.hireDate;
+          this.birthday = res.data.birthday;
+          this.changeTime = res.data.changeTime;
+        } else {
+          alert(res.message);
+        }
+      });
   }
 
   submit() {
@@ -92,7 +146,7 @@ export class SelfEditComponent implements OnInit {
       const _month = (_date.getMonth() + 1) <= 9 ? `0${(_date.getMonth() + 1)}` : _date.getMonth();
       const _day = _date.getDate() <= 9 ? `0${_date.getDate()}` : _date.getDate();
       return `${_date.getFullYear()}-${_month}-${_day}`;
-    }else {
+    } else {
       return '';
     }
   }
@@ -110,32 +164,38 @@ export class SelfEditComponent implements OnInit {
     this.data.politics = this.data.politics ? this.data.politics : 0;
     this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
     this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(this.data.userId);
-                }else {
-                  alert('修改成功！');
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+      headers: myHeaders
+    })
+      .map(res => res.json())
+      .subscribe(res => {
+        if (res.code) {
+          if (this.file) {
+            this.upload(this.data.userId);
+          } else {
+            alert('修改成功！');
+          }
+        } else {
+          alert(res.message);
+        }
+      });
   }
 
   upload(userId) {
     const formdata = new FormData();
     formdata.append('file', this.file);
+    if (this.bounds) {
+      formdata.append('imageX', this.bounds.x);
+      formdata.append('imageY', this.bounds.y);
+      formdata.append('imageW', this.bounds.w);
+      formdata.append('imageH', this.bounds.h);
+    }
     formdata.append('userId', userId);
     this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
-        }else {
+        } else {
           alert(res.message);
         }
       });
