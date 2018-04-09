@@ -1,4 +1,7 @@
-<h1 class="page-title"><div class="page-title-icon"></div>人员录入</h1>
+<h1 class="page-title">
+  <div class="page-title-icon"></div>
+  人员录入
+</h1>
 <div class="part-container">
   <h1 class="part-title">用户基本信息填报</h1>
   <div class="part-content">
@@ -21,11 +24,15 @@
       </div>
       <div class="form-item">
         <p>入职时间</p>
-        <p-calendar [(ngModel)]="hireDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p-calendar [(ngModel)]="hireDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}"
+                    dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>出生时间</p>
-        <p-calendar [(ngModel)]="birthday" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p-calendar [(ngModel)]="birthday" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}"
+                    dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>学历</p>
@@ -44,7 +51,9 @@
       </div>
       <div class="form-item">
         <p>变更时间</p>
-        <p-calendar [(ngModel)]="changeTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
+        <p-calendar [(ngModel)]="changeTime" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}"
+                    dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="1900:2030"></p-calendar>
       </div>
       <div class="form-item">
         <p>手机号</p>
@@ -121,9 +130,19 @@
       <div class="form-item">
         <p>照片上传(png/jpg/jpeg)</p>
         <div class="upload-photo">
-          <input (change)="fileChange($event)" #photo type="file">
+          <input id="custom-input" (change)="fileChangeListener($event)" #photo type="file">
           <span [title]="filename">{{filename}}</span>
           <div class="upload-photo-btn" (click)="photo.click()">选择文件</div>
+          <div *ngIf="filename" class="upload-photo-cropper">
+            <div class="pull-left">
+              <img-cropper #cropper [image]="data2" [settings]="cropperSettings2" (cropPositionChange)="cropped($event)"></img-cropper>
+              <br>
+              <span class="result" *ngIf="data2.image">
+                  <img id="image2" [src]="data2.image" [width]="cropperSettings2.croppedWidth"
+                       [height]="cropperSettings2.croppedHeight">
+                </span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-item form-textarea">
