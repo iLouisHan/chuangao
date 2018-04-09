@@ -91,7 +91,6 @@ export class SelfEditComponent implements OnInit {
   }
 
   cropped(bounds) {
-    console.log(bounds);
     this.bounds = bounds;
   }
 

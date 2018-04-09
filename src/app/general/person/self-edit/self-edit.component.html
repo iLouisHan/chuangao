@@ -138,8 +138,8 @@
               <img-cropper #cropper [image]="data2" [settings]="cropperSettings2" (cropPositionChange)="cropped($event)"></img-cropper>
               <br>
               <span class="result" *ngIf="data2.image">
-                  <img id="image2" [src]="data2.image" [width]="cropperSettings2.croppedWidth"
-                       [height]="cropperSettings2.croppedHeight">
+                <img id="image2" [src]="data2.image" [width]="cropperSettings2.croppedWidth"
+                      [height]="cropperSettings2.croppedHeight">
                 </span>
             </div>
           </div>
