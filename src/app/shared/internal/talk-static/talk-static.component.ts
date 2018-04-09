@@ -198,7 +198,7 @@ export class TalkStaticComponent implements OnInit {
       },
       yAxis: {
         type: 'value',
-        name: '培训次数',
+        name: '培训小时',
         minInterval: 1
       },
       series: [{
