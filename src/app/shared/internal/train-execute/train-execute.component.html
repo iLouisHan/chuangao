@@ -1,5 +1,5 @@
 <h1 class="page-title"><div class="page-title-icon"></div>培训落实</h1>
-<div *ngIf="isChosen" class="part-container">
+<div class="part-container">
   <h1 class="part-title">培训落实信息</h1>
   <div class="part-content">
     <form [formGroup]="trainForm">
@@ -25,7 +25,10 @@
       </div>
       <div class="form-item">
         <p>培训课时</p>
-        <input type="number" formControlName="trainDoTimeLong">
+        <div style="z-index: 99; float: left;position: absolute;width: 150px;border: none;height: 38px;margin: 2px;"></div>
+        <input type="text" formControlName="trainDoTimeLong" #trainDoTime (click)="trainTimerChanged($event)"
+                style="float: left;position: absolute;width: 150px;border: none;height: 38px;margin: 2px;">
+        <input type="number" formControlName="trainDoTimeNumber" (change)="trainDoTime.click()">
       </div>
       <div class="form-item">
         <p>培训地点</p>
