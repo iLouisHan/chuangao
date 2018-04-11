@@ -171,7 +171,7 @@ export class DocUploadComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个文档');
     }
   }
 
@@ -179,7 +179,7 @@ export class DocUploadComponent implements OnInit {
     if (this.selectedUser) {
       this.staffLeave(this.selectedUser);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个文档');
     }
   }
 
