@@ -120,6 +120,7 @@ export class TrainExecuteSearchComponent implements OnInit {
   getInfo(page: number, size: number) {
     this.form.value.trainStartDate = this.dateFormat(this.startTime);
     this.form.value.trainEndDate = this.dateFormat(this.endTime);
+    this.form.value.hasDo = +this.form.value.hasDo;
     this.form.value.orgList = [];
     this.form.value.trainDoOrgList = this.trainDoOrgList.map(el => el.data);
     const param = {
@@ -189,7 +190,6 @@ export class TrainExecuteSearchComponent implements OnInit {
       if (res && res.isAdmin) {
         this.orgList = [{data: res.orgCode, label: res.orgName}];
         this.trainDoOrgList = [{data: res.orgCode, label: res.orgName}];
-        this.form.value.trainPlanName = this.route.snapshot.queryParamMap.get('planName');
         this.getInfo(this.page, this.size);
       }
     });

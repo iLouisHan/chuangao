@@ -23,6 +23,7 @@ export class StationInputComponent implements OnInit {
   };
   orgType: number;
   startDate: string;
+  uploading = false;
   orgCode: Array<any> = [];
   en: any;
   stationName: string;
@@ -148,7 +149,6 @@ export class StationInputComponent implements OnInit {
     this.file = $event.target.files[0];
   }
 
-
   dateFormat(date) {
     if (date) {
       const _date = new Date(date);
@@ -226,6 +226,7 @@ export class StationInputComponent implements OnInit {
     } else if (!this.activedStaffList.length) {
       alert('请选择参与人员！');
     }else {
+      this.uploading = true;
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       this.form.value.meetingDate = this.dateFormat(this.startDate);
@@ -246,9 +247,11 @@ export class StationInputComponent implements OnInit {
                   } else {
                     alert('添加成功！');
                     this.toFirstPage();
+                    this.uploading = false;
                   }
                 } else {
                   alert(res.message);
+                  this.uploading = false;
                 }
               });
     }
@@ -263,6 +266,7 @@ export class StationInputComponent implements OnInit {
     } else if (!this.startDate) {
       alert('请选择会议时间');
     } else {
+      this.uploading = true;
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       const keys = Object.keys(this.form.value);
@@ -284,9 +288,11 @@ export class StationInputComponent implements OnInit {
                     this.upload(this.selectedUser);
                   } else {
                     this.toFirstPage();
+                    this.uploading = false;
                   }
                 } else {
                   alert(res.message);
+                  this.uploading = false;
                 }
               });
       }
@@ -298,10 +304,14 @@ export class StationInputComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addStaff();
-    } else {
-      this.updateStaff();
+    if (this.uploading) {
+      alert('正在上传中，请等待完成！');
+    }else {
+      if (this.isAdd) {
+        this.addStaff();
+      } else {
+        this.updateStaff();
+      }
     }
   }
 
@@ -394,6 +404,7 @@ export class StationInputComponent implements OnInit {
           alert(res.message);
         }
         this.toFirstPage();
+        this.uploading = false;
       });
   }
 
