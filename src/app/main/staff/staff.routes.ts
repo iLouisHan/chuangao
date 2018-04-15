@@ -18,6 +18,7 @@ import { CheckSearchComponent } from '../../shared/check-search/check-search.com
 import { ClothAddComponent } from './cloth-add/cloth-add.component';
 import { ClothSearchComponent } from '../../shared/cloth-search/cloth-search.component';
 import { ClothHistoryComponent } from '../../shared/cloth-history/cloth-history.component';
+import { ReturnEditComponent } from './return-edit/return-edit.component';
 
 export const StaffRoutes: Routes = [
   {
@@ -111,6 +112,10 @@ export const StaffRoutes: Routes = [
       {
         path: 'clothHistory',
         component: ClothHistoryComponent
+      },
+      {
+        path: 'returnEdit',
+        component: ReturnEditComponent
       }
     ]
   }

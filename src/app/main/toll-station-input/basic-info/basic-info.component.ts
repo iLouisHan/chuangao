@@ -28,7 +28,8 @@ export class BasicInfoComponent implements OnInit {
     totalMileage: '所辖路段里程（单位：公里）',
     longitude: '经度',
     latitude: '纬度',
-    stationClass: '收费站类别'
+    stationClass: '收费站类别',
+    stationUsedName: '曾用名'
   };
 
   constructor(

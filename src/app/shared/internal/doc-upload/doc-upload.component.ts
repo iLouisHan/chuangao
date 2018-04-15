@@ -21,6 +21,7 @@ export class DocUploadComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
+  uploading = false;
   requiredItems = {
     fileName	: '文件名称',
     fileType: '文件类别',
@@ -170,7 +171,7 @@ export class DocUploadComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个文档');
     }
   }
 
@@ -178,7 +179,7 @@ export class DocUploadComponent implements OnInit {
     if (this.selectedUser) {
       this.staffLeave(this.selectedUser);
     } else {
-      alert('请选择一个人员');
+      alert('请选择一个文档');
     }
   }
 
@@ -213,6 +214,7 @@ export class DocUploadComponent implements OnInit {
     } else if (this.searchOrg.length === 0) {
       alert('请选择浏览权限！');
     } else {
+      this.uploading = true;
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       this.form.value.filePublishTime = this.dateFormat(this.endDate);
@@ -224,13 +226,10 @@ export class DocUploadComponent implements OnInit {
               .map(res => res.json())
               .subscribe(res => {
                 if (res.code) {
-                  if (this.file) {
-                    this.upload(res.data.id);
-                  } else {
-                    this.toFirstPage();
-                  }
+                  this.upload(res.data.id);
                 } else {
                   alert(res.message);
+                  this.uploading = false;
                 }
               });
     }
@@ -245,6 +244,7 @@ export class DocUploadComponent implements OnInit {
     } else if (this.searchOrg.length === 0) {
       alert('请选择浏览权限！');
     } else {
+      this.uploading = true;
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       const keys = Object.keys(this.form.value);
@@ -254,7 +254,7 @@ export class DocUploadComponent implements OnInit {
       this.data.id = this.selectedUser;
       this.data.filePublishTime = this.dateFormat(this.endDate);
       this.data.fileOwner = this.orgList[0].data;
-      this.form.value.orgList = this.searchOrg.map(el => el.data);
+      this.data.orgList = this.searchOrg.map(el => el.data);
       this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/update`, JSON.stringify(this.data), {
                 headers: myHeaders
               })
@@ -265,9 +265,11 @@ export class DocUploadComponent implements OnInit {
                     this.upload(this.selectedUser);
                   } else {
                     this.toFirstPage();
+                    this.uploading = false;
                   }
                 } else {
                   alert(res.message);
+                  this.uploading = false;
                 }
               });
       }
@@ -279,10 +281,14 @@ export class DocUploadComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addDevice();
-    } else {
-      this.updateDevice();
+    if (this.uploading) {
+      alert('正在上传中！');
+    }else {
+      if (this.isAdd) {
+        this.addDevice();
+      } else {
+        this.updateDevice();
+      }
     }
   }
 
@@ -304,6 +310,7 @@ export class DocUploadComponent implements OnInit {
           alert(res.message);
         }
         this.toFirstPage();
+        this.uploading = false;
       });
   }
 

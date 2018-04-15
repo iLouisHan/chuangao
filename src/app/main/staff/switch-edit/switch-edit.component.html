@@ -94,26 +94,6 @@
         <button (click)="submit()" class="form-btn">提&nbsp;交</button>
       </div>
     </div>
-    <div *ngIf="view === 2">
-      <form>
-        <div class="form-item">
-          <p>还班日期</p>
-          <p-calendar [(ngModel)]="_returnDate" [locale]="en" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:2030"></p-calendar>
-        </div>
-        <div class="form-item">
-          <p>还班班次</p>
-          <select [(ngModel)]="_returnShift"  [ngModelOptions]="{standalone: true}">
-            <option value="0">请选择</option>
-            <option value="1">白班</option>
-            <option value="2">夜班</option>
-            <option value="3">中班</option>
-          </select>
-        </div>
-      </form>
-      <div class="form-item">
-        <button (click)="returnSubmit()" class="form-btn">提&nbsp;交</button>
-      </div>
-    </div>
   </div>
 </div>
 <div class="part-container">
@@ -124,7 +104,6 @@
         <li (click)="add()" class="btn-list-li">换班</li>
         <li (click)="update()" class="btn-list-li">修改</li>
         <li (click)="delete()" class="btn-list-li">删除</li>
-        <li (click)="return()" class="btn-list-li">还班</li>
       </ul>
       <div class="searchbar-container">
         <span>调班申请日期</span>
@@ -149,7 +128,6 @@
               <th></th>
               <th *ngFor="let field of cols">{{field.header}}</th>
               <th>调（顶）班申请审核</th>
-              <th>还班审核</th>
             </tr>
           </thead>
           <tbody>
@@ -164,16 +142,6 @@
                 <span *ngIf="item.checkResult === 1">通过</span>
                 <span *ngIf="item.checkResult === 2">未通过</span>
                 <span *ngIf="item.checkResult === 0 && item.overDeadline">已超时</span>
-              </td>
-              <td>
-                <div *ngIf="item.returnCheck === 0 && !item.overDeadline && item.returnStatus && item.checkResult === 1">
-                  <button (click)="changeReturnStatus(item.id, 1)" class="btn btn-success">通过</button>
-                  <button (click)="changeReturnStatus(item.id, 2)" class="btn btn-danger">不通过</button>
-                </div>
-                <span *ngIf="item.returnCheck === 1 && item.returnStatus">通过</span>
-                <span *ngIf="item.returnCheck === 2 && item.returnStatus">未通过</span>
-                <span *ngIf="item.returnCheck === 0 && item.overDeadline && item.returnStatus && item.checkResult === 1">已超时</span>
-                <span *ngIf="!item.returnStatus || item.checkResult !== 1">无记录</span>
               </td>
             </tr>
           </tbody>

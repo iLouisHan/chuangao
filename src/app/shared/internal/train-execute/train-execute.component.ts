@@ -20,6 +20,7 @@ export class TrainExecuteComponent implements OnInit {
   doEndDate: string;
   startDate: string;
   endDate: string;
+  uploading = false;
   en: any;
   file: any;
   filename: string;
@@ -181,6 +182,7 @@ export class TrainExecuteComponent implements OnInit {
       this.param[el] = this.searchForm.value[el];
     });
     this.param.orgList = [];
+    this.param.hasDo = +this.param.hasDo;
     this.param.trainDoOrgList = [this.orgCode];
     this.http.post('http://119.29.144.125:8080/cgfeesys/Train/doGet', JSON.stringify(this.param) , {
               headers: myHeaders
@@ -270,6 +272,7 @@ export class TrainExecuteComponent implements OnInit {
   // }
 
   addStaff() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.trainForm.value.id = this.selectedUser;
@@ -293,9 +296,11 @@ export class TrainExecuteComponent implements OnInit {
                   this.upload(this.selectedUser);
                 } else {
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               } else {
                 alert(res.message);
+                this.uploading = false;
               }
             });
   }
@@ -306,7 +311,11 @@ export class TrainExecuteComponent implements OnInit {
   }
 
   submit() {
-    this.addStaff();
+    if (this.uploading) {
+      alert('正在上传中，请等待完成！');
+    }else {
+      this.addStaff();
+    }
   }
 
   addStaffs() {
@@ -411,6 +420,7 @@ export class TrainExecuteComponent implements OnInit {
           alert(res.message);
         }
         this.toFirstPage();
+        this.uploading = false;
       });
   }
   downloadFile(type) {
@@ -432,6 +442,7 @@ export class TrainExecuteComponent implements OnInit {
         this.orgCode = res.orgCode;
         this.orgType = res.orgType;
         this.getInfo();
+        this.param.orgList = [res.orgCode];
       }
     });
   }

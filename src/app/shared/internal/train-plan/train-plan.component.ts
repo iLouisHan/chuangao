@@ -36,6 +36,7 @@ export class TrainPlanComponent implements OnInit {
   keys: Array<any>;
   orgList: Array<any>;
   selectionMode = 'single';
+  uploading = false;
   searchOrg: Array<any>;
   initForm: any;
   param: any = {
@@ -229,6 +230,7 @@ export class TrainPlanComponent implements OnInit {
   }
 
   addStaff() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
@@ -258,14 +260,17 @@ export class TrainPlanComponent implements OnInit {
                   });
                 } else {
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               } else {
                 alert(res.message);
+                this.uploading = false;
               }
             });
   }
 
   updateStaff() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.trainPlanOrg = '' + this.planOrg;
@@ -285,9 +290,11 @@ export class TrainPlanComponent implements OnInit {
                   this.upload(this.selectedUser);
                 } else {
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               } else {
                 alert(res.message);
+                this.uploading = false;
               }
             });
   }
@@ -298,10 +305,14 @@ export class TrainPlanComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addStaff();
-    } else {
-      this.updateStaff();
+    if (this.uploading) {
+      alert('正在上传中，请等待完成！');
+    }else {
+      if (this.isAdd) {
+        this.addStaff();
+      } else {
+        this.updateStaff();
+      }
     }
   }
 
@@ -318,6 +329,7 @@ export class TrainPlanComponent implements OnInit {
           alert(res.message);
         }
         this.toFirstPage();
+        this.uploading = false;
       });
   }
 

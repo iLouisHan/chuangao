@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { work_post, politics, educational } from '../../store/translate';
+import { applyType, shiftId, list_group } from '../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -16,6 +16,9 @@ export class SwitchSearchComponent implements OnInit {
   startDate: string;
   endDate: string;
   count: number;
+  applyType = applyType;
+  list_group = list_group;
+  shiftId = shiftId;
   shiftChangeDataList: Array<any>;
   orgList: Array<any>;
   page = 0;
@@ -39,6 +42,10 @@ export class SwitchSearchComponent implements OnInit {
   orgType: number;
   orgCode: string;
   orgName: string;
+  applyChangeTypeCN = {
+    1: '调班',
+    2: '顶班'
+  };
   login: Observable<any> = new Observable<any>();
 
   constructor(
@@ -53,10 +60,10 @@ export class SwitchSearchComponent implements OnInit {
     this.cols = [
       { field: 'orgName', header: '组织名称' },
       { field: 'applyUserName', header: '换/顶班申请人' },
-      { field: 'applyTeams', header: '换/顶班班组' },
+      { field: 'applyTeamsCN', header: '换/顶班班组' },
       { field: 'applyDate', header: '换/顶班日期' },
-      { field: 'applyShift', header: '换/顶班班次' },
-      { field: 'applyChangeType', header: '排班类型' },
+      { field: 'applyShiftCN', header: '换/顶班班次' },
+      { field: 'applyChangeTypeCN', header: '排班类型' },
       { field: 'backUserName', header: '替班收费员' },
       { field: 'backTeams', header: '替班班组' },
       { field: 'backDate', header: '替班日期' },
@@ -118,6 +125,14 @@ export class SwitchSearchComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   this.shiftChangeDataList = res.data.shiftChangeDataList;
+                  this.shiftChangeDataList.forEach(el => {
+                    el.applyTeamsCN = this.list_group[el.applyTeams];
+                    el.backTeamsCN = this.list_group[el.backTeams];
+                    el.applyShiftCN = this.shiftId[el.applyShift];
+                    el.backShiftCN = this.shiftId[el.backShift];
+                    el.returnShiftCN = this.shiftId[el.returnShift];
+                    el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
+                  });
                 }
               }else {
                 alert(res.message);

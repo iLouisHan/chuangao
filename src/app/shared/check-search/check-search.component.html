@@ -15,7 +15,6 @@
           <div class="form-item">
             <p>评定年份</p>
             <select formControlName="year">
-              <option value="-1">请选择</option>
               <option *ngFor="let year of yearList" [value]="year">{{year}}</option>
             </select>
           </div>

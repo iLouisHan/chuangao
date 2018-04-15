@@ -16,6 +16,7 @@ import { AttendanceEditComponent } from './attendance-edit/attendance-edit.compo
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ClothAddComponent } from './cloth-add/cloth-add.component';
 import { ClothChooseComponent } from './cloth-choose/cloth-choose.component';
+import { ReturnEditComponent } from './return-edit/return-edit.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { ClothChooseComponent } from './cloth-choose/cloth-choose.component';
     AttendanceCompareComponent,
     AttendanceEditComponent,
     ClothAddComponent,
-    ClothChooseComponent
+    ClothChooseComponent,
+    ReturnEditComponent
   ]
 })
 export class StaffModule { }

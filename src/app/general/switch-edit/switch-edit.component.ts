@@ -81,7 +81,6 @@ export class SwitchEditComponent implements OnInit {
       { field: 'orgName', header: '组织名称' },
       { field: 'applyDate', header: '换/顶班日期' },
       { field: 'applyShift', header: '换/顶班班次' },
-      { field: 'applyChangeType', header: '排班类型' },
       { field: 'backUserName', header: '替班收费员' },
       { field: 'backTeams', header: '替班班组' },
       { field: 'backDate', header: '替班日期' },
@@ -399,6 +398,7 @@ export class SwitchEditComponent implements OnInit {
         this.userId = res.userId;
         this.param.orgList = [res.orgCode];
         this.param.applyUserId = res.userId;
+        this.param.applyChangeType = 1;
         this.getInfo();
       }
     });

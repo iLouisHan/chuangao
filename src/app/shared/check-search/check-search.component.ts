@@ -149,6 +149,10 @@ export class CheckSearchComponent implements OnInit {
     for (let i = 0; i < 10; i++) {
       this.yearList[i] = year - i;
     }
+
+    this.form.patchValue({
+      year: this.yearList[0]
+    });
   }
 
 }

@@ -22,6 +22,7 @@ export class StaffEditComponent implements OnInit {
   file: any;
   filename: string;
   isChosen = false;
+  uploading = false;
   login: Observable<any> = new Observable<any>();
   orgCode: string;
   page = 0;
@@ -237,6 +238,7 @@ export class StaffEditComponent implements OnInit {
   }
 
   addStaff() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.hireDate = this.dateFormat(this.hireDate);
@@ -263,6 +265,7 @@ export class StaffEditComponent implements OnInit {
                 }else {
                   alert('人员录入成功！');
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               }else {
                 alert(res.message);
@@ -271,6 +274,7 @@ export class StaffEditComponent implements OnInit {
   }
 
   updateStaff() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
@@ -292,6 +296,7 @@ export class StaffEditComponent implements OnInit {
                   this.upload(this.data.userId);
                 }else {
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               }else {
                 alert(res.message);
@@ -305,10 +310,14 @@ export class StaffEditComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addStaff();
+    if (this.uploading) {
+      alert('正在发送请求中，请等待完成！');
     }else {
-      this.updateStaff();
+      if (this.isAdd) {
+        this.addStaff();
+      }else {
+        this.updateStaff();
+      }
     }
   }
 
@@ -326,6 +335,7 @@ export class StaffEditComponent implements OnInit {
         }else {
           alert(res.message);
         }
+        this.uploading = false;
         this.toFirstPage();
       });
   }

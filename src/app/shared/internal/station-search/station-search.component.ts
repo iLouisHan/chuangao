@@ -20,6 +20,7 @@ export class StationSearchComponent implements OnInit {
   isChosen: boolean;
   doData: any = {};
   doFilePath: string;
+  orgType: string;
   orgList: Array<any>;
   planList: Array<any>;
   page = 0;
@@ -141,7 +142,11 @@ export class StationSearchComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
+        this.orgType = res.orgType;
         this.orgName = res.orgName;
+        this.orgList = [{
+          data: res.orgCode
+        }];
       }
     });
   }

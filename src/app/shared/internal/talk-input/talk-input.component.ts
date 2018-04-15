@@ -15,6 +15,7 @@ export class TalkInputComponent implements OnInit {
   form: FormGroup;
   startDate: string;
   endDate: string;
+  orgName: string;
   en: any;
   isChosen = false;
   login: Observable<any> = new Observable<any>();
@@ -22,6 +23,8 @@ export class TalkInputComponent implements OnInit {
   size = 15;
   orgList: Array<any>;
   org: string;
+  uploading = false;
+  orgType: string;
   count: number;
   deviceList: Array<any>;
   hasData: boolean;
@@ -204,6 +207,7 @@ export class TalkInputComponent implements OnInit {
   }
 
   addDevice() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.chatDate = this.dateFormat(this.startDate);
@@ -219,14 +223,17 @@ export class TalkInputComponent implements OnInit {
                   this.upload(res.data.id);
                 } else {
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               } else {
                 alert(res.message);
+                this.uploading = false;
               }
             });
   }
 
   updateDevice() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
@@ -247,9 +254,11 @@ export class TalkInputComponent implements OnInit {
                   this.upload(this.selectedDevice);
                 } else {
                   this.toFirstPage();
+                  this.uploading = false;
                 }
               } else {
                 alert(res.message);
+                this.uploading = false;
               }
             });
   }
@@ -260,10 +269,14 @@ export class TalkInputComponent implements OnInit {
   }
 
   submit() {
-    if (this.isAdd) {
-      this.addDevice();
-    } else {
-      this.updateDevice();
+    if (this.uploading) {
+      alert('正在上传中，请等待完成！');
+    }else {
+      if (this.isAdd) {
+        this.addDevice();
+      } else {
+        this.updateDevice();
+      }
     }
   }
 
@@ -290,13 +303,16 @@ export class TalkInputComponent implements OnInit {
           alert(res.message);
         }
         this.toFirstPage();
+        this.uploading = false;
       });
   }
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.orgType = res.orgType;
         this.searchOrg = [{data: res.orgCode, label: res.orgName}];
         this.orgList = [{data: res.orgCode}];
+        this.orgName = res.orgName;
         this.getInfo();
       }
     });

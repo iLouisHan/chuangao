@@ -209,7 +209,7 @@ export class AttendanceCompareComponent implements OnInit {
   ngOnInit() {
     this.getTime();
     this.login.subscribe(res => {
-      if (res) {
+      if (res && res.orgType === 3) {
         this.orgCode = res.orgCode;
         this.getInfo();
       }
