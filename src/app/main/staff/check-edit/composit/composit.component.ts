@@ -212,7 +212,7 @@ export class CompositComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res) {
+      if (res && res.orgType === 3) {
         this.orgCode = res.orgCode;
         this.getInfo();
       }

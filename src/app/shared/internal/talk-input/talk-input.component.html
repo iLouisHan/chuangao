@@ -5,10 +5,10 @@
     <form [formGroup]="form">
       <div class="form-item">
         <p>单位名称</p>
-        <div class="tree-container" *ngIf="!isChosen">
-          <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
+        <div *ngIf="orgType !== 3" class="tree-container">
+          <app-drop-org-tree [initOrgName]="orgName" [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
         </div>
-        <input type="text" [(ngModel)]="org" *ngIf="isChosen" [ngModelOptions]="{standalone: true}" disabled="true">
+        <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
       </div>
       <div class="form-item">
         <p>谈心类型</p>

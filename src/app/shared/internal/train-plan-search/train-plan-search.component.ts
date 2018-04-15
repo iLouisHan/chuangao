@@ -19,6 +19,7 @@ export class TrainPlanSearchComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
+  orgType: string;
   planData: any;
   hasData = false;
   isChosen: boolean;
@@ -150,6 +151,7 @@ export class TrainPlanSearchComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
+        this.orgType = res.orgType;
         this.orgList = [{data: res.orgCode, label: res.orgName}];
         this.getInfo(this.page, this.size);
       }

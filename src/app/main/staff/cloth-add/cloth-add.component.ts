@@ -319,7 +319,7 @@ export class ClothAddComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.isAdmin) {
+      if (res && res.isAdmin && res.orgType === 3) {
         this.checkUserId = res.userId;
         this.orgCode = res.orgCode;
         this.orgType = res.orgType;

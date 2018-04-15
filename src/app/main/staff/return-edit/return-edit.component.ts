@@ -4,7 +4,8 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { applyType, shiftId, list_group } from '../../store/translate';
+import { applyType, shiftId, list_group } from '../../../store/translate';
+
 @Component({
   selector: 'app-return-edit',
   templateUrl: './return-edit.component.html',
@@ -45,12 +46,10 @@ export class ReturnEditComponent implements OnInit {
       { field: 'applyTeamsCN', header: '换/顶班班组' },
       { field: 'applyDate', header: '换/顶班日期' },
       { field: 'applyShiftCN', header: '换/顶班班次' },
-      { field: 'returnDate', header: '还班日期' },
       { field: 'returnShiftCN', header: '还班班次' },
+      { field: 'returnDate', header: '还班日期' },
       { field: 'remark', header: '备注' },
-      { field: 'returnStatusCN', header: '还班状态' },
-      { field: 'checkResultCN', header: '换班审核状态' },
-      { field: 'returnCheckCN', header: '还班审核状态' }
+      { field: 'returnStatusCN', header: '还班状态' }
     ];
     this.form = new FormGroup({
       remark: new FormControl('', Validators.nullValidator),
@@ -86,7 +85,6 @@ export class ReturnEditComponent implements OnInit {
                     el.applyTeamsCN = this.list_group[el.applyTeams];
                     el.applyShiftCN = this.shiftId[el.applyShift];
                     el.returnStatusCN = this.returnStatus[el.returnStatus];
-                    el.checkResultCN = this.checkResult[el.checkResult];
                     el.returnCheckCN = this.checkResult[el.returnCheck];
                     el.returnShiftCN = this.shiftId[el.returnShift];
                   });
@@ -131,10 +129,9 @@ export class ReturnEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                alert('还班信息申请提交成功！');
+                alert(res.message);
                 this.toFirstPage();
                 this._select = '';
-                this.view = 0;
               }else {
                 alert(res.message);
               }
@@ -168,8 +165,8 @@ export class ReturnEditComponent implements OnInit {
         this.orgCode = res.orgCode;
         this.userId = res.userId;
         this.param.orgList = [res.orgCode];
-        this.param.applyUserId = res.userId;
         this.param.applyChangeType = 1;
+        this.param.back = false;
         this.getInfo();
       }
     });

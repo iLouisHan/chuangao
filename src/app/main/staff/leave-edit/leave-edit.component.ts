@@ -304,7 +304,7 @@ export class LeaveEditComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.isAdmin) {
+      if (res && res.isAdmin && res.orgType === 3) {
         this.adminId = res.userId;
         this.orgCode = res.orgCode;
         this.orgType = res.orgType;

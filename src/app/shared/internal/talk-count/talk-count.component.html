@@ -24,11 +24,11 @@
         <div class="searchbar-container clearfix">
           <div>
             <div>
-              <span>收费站</span>
-              <div class="tree-container">
-                <app-drop-org-tree [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)" [initOrgName]="orgList[0].label"></app-drop-org-tree>
+              <span>选择机构</span>
+              <div *ngIf="orgType !== 3" class="tree-container">
+                <app-drop-org-tree [initOrgName]="orgName" [selectionMode]="selectionMode" (selectedOrg)="selectedOrg($event)"></app-drop-org-tree>
               </div>
-              <!-- <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div> -->
+              <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
             </div>
             <div>
               <span>年份</span>
@@ -60,9 +60,9 @@
     <div class="table-container">
       <h1 class="part-title">未谈心人员</h1>
       <div class="part-content">
-        <div class="talkNum">未谈心人员：{{staffList.length}}</div>
+        <div class="talkNum">未谈心人员：{{reasonList.length}}</div>
         <div class="talkList">
-          <div class="oneTalk" *ngFor = "let item of staffList">
+          <div class="oneTalk" *ngFor = "let item of reasonList">
             <div class="talkName">
               {{item.userName}}
             </div>

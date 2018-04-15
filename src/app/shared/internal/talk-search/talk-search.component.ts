@@ -17,6 +17,7 @@ export class TalkSearchComponent implements OnInit {
   endTime: string;
   count: number;
   isChosen: boolean;
+  orgType: string;
   doData: any = {};
   doFilePath: string;
   hasDo: number;
@@ -146,6 +147,7 @@ export class TalkSearchComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
+        this.orgType = res.orgType;
         this.orgName = res.orgName;
         this.orgList = [{
           data: res.orgCode

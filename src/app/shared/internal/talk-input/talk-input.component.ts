@@ -15,6 +15,7 @@ export class TalkInputComponent implements OnInit {
   form: FormGroup;
   startDate: string;
   endDate: string;
+  orgName: string;
   en: any;
   isChosen = false;
   login: Observable<any> = new Observable<any>();
@@ -23,6 +24,7 @@ export class TalkInputComponent implements OnInit {
   orgList: Array<any>;
   org: string;
   uploading = false;
+  orgType: string;
   count: number;
   deviceList: Array<any>;
   hasData: boolean;
@@ -307,8 +309,10 @@ export class TalkInputComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res && res.isAdmin) {
+        this.orgType = res.orgType;
         this.searchOrg = [{data: res.orgCode, label: res.orgName}];
         this.orgList = [{data: res.orgCode}];
+        this.orgName = res.orgName;
         this.getInfo();
       }
     });

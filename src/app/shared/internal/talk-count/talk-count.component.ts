@@ -45,7 +45,7 @@ export class TalkCountComponent implements OnInit {
 
   selectedOrg($event) {
     this.orgList = $event;
-    this.getStaff();
+    // this.getStaff();
   }
 
   search() {
@@ -70,15 +70,16 @@ export class TalkCountComponent implements OnInit {
         }
       });
   }
-  getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }
-            });
-  }
+
+  // getStaff() {
+  //   this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
+  //           .map(res => res.json())
+  //           .subscribe(res => {
+  //             if (res.code) {
+  //               this.staffList = res.data;
+  //             }
+  //           });
+  // }
   updateChart(arr) {
     this.data1 = [];
     this.data2 = [];
@@ -220,7 +221,7 @@ export class TalkCountComponent implements OnInit {
         }
       }]
     };
-    this.getStaff();
+    // this.getStaff();
     this.getInfo();
   }
 }

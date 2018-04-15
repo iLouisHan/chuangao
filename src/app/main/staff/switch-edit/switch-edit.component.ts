@@ -60,10 +60,6 @@ export class SwitchEditComponent implements OnInit {
   view = 0;
   checkItem = 1;
   _select: any;
-  applyChangeTypeCN = {
-    1: '调班',
-    2: '顶班'
-  };
 
   loadingStaffs = false;
   loadingBackStaff = false;
@@ -96,13 +92,11 @@ export class SwitchEditComponent implements OnInit {
       { field: 'applyTeamsCN', header: '换/顶班班组' },
       { field: 'applyDate', header: '换/顶班日期' },
       { field: 'applyShiftCN', header: '换/顶班班次' },
-      { field: 'applyChangeTypeCN', header: '排班类型' },
       { field: 'backUserName', header: '替班收费员' },
       { field: 'backTeamsCN', header: '替班班组' },
+      { field: 'backCN', header: '换班方式' },
       { field: 'backDate', header: '替班日期' },
       { field: 'backShiftCN', header: '替班班次' },
-      { field: 'returnDate', header: '还班日期' },
-      { field: 'returnShiftCN', header: '还班班次' },
       { field: 'remark', header: '备注' }
     ];
     this.initForm = {
@@ -124,7 +118,6 @@ export class SwitchEditComponent implements OnInit {
     this.applyUserId = this.data.applyUserId;
     this.backUserId = this.data.backUserId;
     this.backDate = this.data.backDate;
-    this.returnDate = this.data.returnDate;
     this.form.patchValue(this.data);
     this.form.patchValue({applyUserId: this.data.userId});
     this.applyInfo = {
@@ -159,8 +152,7 @@ export class SwitchEditComponent implements OnInit {
                     el.backTeamsCN = this.list_group[el.backTeams];
                     el.applyShiftCN = this.shiftId[el.applyShift];
                     el.backShiftCN = this.shiftId[el.backShift];
-                    el.returnShiftCN = this.shiftId[el.returnShift];
-                    el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
+                    el.backCN = el.back ? '替班' : '还班';
                   });
                 }
               }else {
@@ -178,26 +170,6 @@ export class SwitchEditComponent implements OnInit {
     }else {
       return '';
     }
-  }
-
-  returnSubmit() {
-    this._select.returnDate = this.dateFormat(this._returnDate);
-    this._select.returnShift = +this._returnShift;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/update`, JSON.stringify(this._select), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                alert(res.message);
-                this.toFirstPage();
-                this._select = '';
-              }else {
-                alert(res.message);
-              }
-            });
   }
 
   add() {
@@ -247,19 +219,6 @@ export class SwitchEditComponent implements OnInit {
       this.deleteLeave(this.selectedSwitchId);
     }else {
       alert('请选择一个人员');
-    }
-  }
-
-  return() {
-    if (this.selectedSwitchId) {
-      this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitchId)[0];
-      if (this._select.backDate) {
-        alert('该记录为替班！');
-      }else if (this._select.returnStatus) {
-        alert('该记录已有还班记录！');
-      }else {
-        this.view = 2;
-      }
     }
   }
 
@@ -523,10 +482,12 @@ export class SwitchEditComponent implements OnInit {
 
   ngOnInit() {
     this.login.subscribe(res => {
-      if (res && res.isAdmin) {
+      if (res && res.isAdmin && res.orgType === 3) {
         this.orgCode = res.orgCode;
         this.userId = res.userId;
         this.param.orgList = [res.orgCode];
+        this.param.applyChangeType = 1;
+        this.param.back = true;
         this.getInfo();
       }
     });
