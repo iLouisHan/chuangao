@@ -62,6 +62,7 @@ export class TrainPlanComponent implements OnInit {
       trainEndDate: new FormControl('', Validators.nullValidator),
       trainUnit: new FormControl('', Validators.nullValidator),
       trainTimeLong: new FormControl('', Validators.nullValidator),
+      trainTimeNumber: new FormControl('', Validators.nullValidator),
       trainType: new FormControl('', Validators.nullValidator),
       trainWay: new FormControl('', Validators.nullValidator),
       trainContent: new FormControl('', Validators.nullValidator),
@@ -99,6 +100,7 @@ export class TrainPlanComponent implements OnInit {
       trainEndDate: '',
       trainUnit: '',
       trainTimeLong: '',
+      trainTimeNumber: '',
       trainType: '',
       trainWay: '',
       trainContent: '',
@@ -106,6 +108,10 @@ export class TrainPlanComponent implements OnInit {
     };
   }
 
+  trainTimerChanged($event){
+    $event.target.value = this.form.value.trainTimeNumber * 0.5;
+    this.form.value.trainTimeLong = $event.target.value;
+  }
   // selectedOrg($event) {
   //   console.log($event);
   //   this.planOrg = ($event)[0].data;
@@ -235,6 +241,7 @@ export class TrainPlanComponent implements OnInit {
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
     this.form.value.trainEndDate = this.dateFormat(this.endDate);
+    this.form.value.trainTimeLong = this.form.value.trainTimeNumber * 0.5;
     // this.form.value.orgType = +this.orgType;
     if (this.exOrg.length !== 0) {
       this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
@@ -275,6 +282,7 @@ export class TrainPlanComponent implements OnInit {
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.trainPlanOrg = '' + this.planOrg;
     this.form.value.trainDoOrg = '' + this.exOrg;
+    this.form.value.trainTimeLong = this.form.value.trainTimeNumber * 0.5;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];

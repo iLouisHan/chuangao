@@ -79,6 +79,7 @@ export class TrainExecuteComponent implements OnInit {
       trainDoEndDate: new FormControl('', Validators.nullValidator),
       trainDoTeacher: new FormControl('', Validators.nullValidator),
       trainDoTimeLong: new FormControl('', Validators.nullValidator),
+      trainDoTimeNumber: new FormControl('', Validators.nullValidator),
       trainContent: new FormControl('', Validators.nullValidator),
       userIdList: new FormControl('', Validators.nullValidator)
     });
@@ -135,6 +136,12 @@ export class TrainExecuteComponent implements OnInit {
     //   trainLoc: ''
     // };
   }
+  
+  trainTimerChanged($event){
+    $event.target.value = this.trainForm.value.trainDoTimeNumber * 0.5;
+    this.trainForm.value.trainDoTimeLong = $event.target.value;
+  }
+
   selectedOrg($event) {
     this.searchOrg[0] = ($event);
   }
@@ -276,6 +283,7 @@ export class TrainExecuteComponent implements OnInit {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.trainForm.value.id = this.selectedUser;
+    this.trainForm.value.trainDoTimeLong = this.trainForm.value.trainDoTimeNumber * 0.5;
     this.trainForm.value.trainDoStartDate = this.dateFormat(this.doStartDate);
     this.trainForm.value.trainDoEndDate = this.dateFormat(this.doEndDate);
     this.trainForm.value.userIdList = this.activedStaffList.map(el => el.userId);

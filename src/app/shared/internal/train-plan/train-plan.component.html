@@ -34,7 +34,10 @@
       </div>
       <div class="form-item">
         <p>培训课时</p>
-        <input type="number" formControlName="trainTimeLong">
+        <div style="z-index: 99; float: left;position: absolute;width: 170px;border: none;height: 38px;margin: 2px;"></div>
+        <input type="text" formControlName="trainTimeLong" #trainTime (click)="trainTimerChanged($event)"
+                style="float: left;position: absolute;width: 170px;border: none;height: 38px;margin: 2px;">
+        <input type="number" formControlName="trainTimeNumber" (change)="trainTime.click()">
       </div>
       <div class="form-item">
         <p>培训地点</p>
