@@ -4,7 +4,7 @@
     <h1 class="part-title">基本信息</h1>
     <div class="part-content clearfix">
       <div class="img-container">
-        <img src="/assets/images/staff-photo.jpg" alt="">
+        <img [attr.src]="data.iconUrl || '/assets/images/staff-photo.jpg'" alt="">
       </div>
       <div class="basic-info-div">
         <ul class="basic-info-ul">

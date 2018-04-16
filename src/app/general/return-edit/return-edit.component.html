@@ -51,7 +51,7 @@
           </tbody>
         </table>
       </div>
-      <p-paginator *ngIf="hasData" [rows]="size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
+      <p-paginator *ngIf="hasData" [rows]="param.size" [totalRecords]="count" (onPageChange)="paginate($event)"></p-paginator>
     </div>
   </div>
 </div>

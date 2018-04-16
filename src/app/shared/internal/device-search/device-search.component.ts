@@ -18,7 +18,7 @@ export class DeviceSearchComponent implements OnInit {
   orgList: Array<any>;
   orgName: string;
   deviceList: Array<any>;
-  orgType: string;
+  orgType: number;
   assetName: string;
   deviceStartDate: string;
   deviceEndDate: string;

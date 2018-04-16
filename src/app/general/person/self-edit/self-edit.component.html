@@ -133,7 +133,7 @@
           <input id="custom-input" (change)="fileChangeListener($event)" #photo type="file">
           <span [title]="filename">{{filename}}</span>
           <div class="upload-photo-btn" (click)="photo.click()">选择文件</div>
-          <div *ngIf="filename" class="upload-photo-cropper">
+          <!-- <div *ngIf="filename" class="upload-photo-cropper">
             <div class="pull-left">
               <img-cropper #cropper [image]="data2" [settings]="cropperSettings2" (cropPositionChange)="cropped($event)"></img-cropper>
               <br>
@@ -142,7 +142,7 @@
                       [height]="cropperSettings2.croppedHeight">
                 </span>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="form-item form-textarea">
@@ -165,3 +165,4 @@
     </form>
   </div>
 </div>
+<div [class.active]="uploading" class="liubi-loading"></div>

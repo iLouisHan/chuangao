@@ -97,7 +97,8 @@ export class SwitchEditComponent implements OnInit {
       { field: 'backCN', header: '换班方式' },
       { field: 'backDate', header: '替班日期' },
       { field: 'backShiftCN', header: '替班班次' },
-      { field: 'remark', header: '备注' }
+      { field: 'remark', header: '备注' },
+      { field: 'createTime', header: '登记时间' }
     ];
     this.initForm = {
       applyTeams: 0,
@@ -152,7 +153,7 @@ export class SwitchEditComponent implements OnInit {
                     el.backTeamsCN = this.list_group[el.backTeams];
                     el.applyShiftCN = this.shiftId[el.applyShift];
                     el.backShiftCN = this.shiftId[el.backShift];
-                    el.backCN = el.back ? '替班' : '还班';
+                    el.backCN = el.backTeams ? '替班' : '还班';
                   });
                 }
               }else {
@@ -487,7 +488,6 @@ export class SwitchEditComponent implements OnInit {
         this.userId = res.userId;
         this.param.orgList = [res.orgCode];
         this.param.applyChangeType = 1;
-        this.param.back = true;
         this.getInfo();
       }
     });

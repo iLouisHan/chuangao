@@ -49,6 +49,7 @@ export class ReturnEditComponent implements OnInit {
       { field: 'returnShiftCN', header: '还班班次' },
       { field: 'returnDate', header: '还班日期' },
       { field: 'remark', header: '备注' },
+      { field: 'createTime', header: '登记时间' },
       { field: 'returnStatusCN', header: '还班状态' }
     ];
     this.form = new FormGroup({

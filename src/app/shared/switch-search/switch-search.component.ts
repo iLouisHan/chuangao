@@ -68,7 +68,8 @@ export class SwitchSearchComponent implements OnInit {
       { field: 'backTeams', header: '替班班组' },
       { field: 'backDate', header: '替班日期' },
       { field: 'backShift', header: '替班班次' },
-      { field: 'remark', header: '备注' }
+      { field: 'remark', header: '备注' },
+      { field: 'createTime', header: '登记时间' }
     ];
   }
 

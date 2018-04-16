@@ -271,6 +271,9 @@ export class DocUploadComponent implements OnInit {
                   alert(res.message);
                   this.uploading = false;
                 }
+              }, error => {
+                alert('上传失败，请重试！');
+                this.uploading = false;
               });
       }
   }

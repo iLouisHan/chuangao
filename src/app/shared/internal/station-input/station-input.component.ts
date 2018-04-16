@@ -405,6 +405,9 @@ export class StationInputComponent implements OnInit {
         }
         this.toFirstPage();
         this.uploading = false;
+      }, error => {
+        alert('上传失败，请重试！');
+        this.uploading = false;
       });
   }
 

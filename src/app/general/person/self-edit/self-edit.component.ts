@@ -28,6 +28,7 @@ export class SelfEditComponent implements OnInit {
   keys: Array<any>;
   orgName: string;
   orgType: number;
+  uploading = false;
 
   data2: any;
   cropperSettings2: CropperSettings;
@@ -105,13 +106,13 @@ export class SelfEditComponent implements OnInit {
     const file: File = $event.target.files[0];
     const myReader: FileReader = new FileReader();
     const that = this;
-    myReader.onloadend = function (loadEvent: any) {
-      image.src = loadEvent.target.result;
-      that.cropper.setImage(image);
-      that.srcImg = that.cropper.inputImage;
-    };
+    // myReader.onloadend = function (loadEvent: any) {
+    //   image.src = loadEvent.target.result;
+    //   that.cropper.setImage(image);
+    //   that.srcImg = that.cropper.inputImage;
+    // };
 
-    myReader.readAsDataURL(file);
+    // myReader.readAsDataURL(file);
   }
 
   getStaffInfo(staffId) {
@@ -124,6 +125,7 @@ export class SelfEditComponent implements OnInit {
           this.hireDate = res.data.hireDate;
           this.birthday = res.data.birthday;
           this.changeTime = res.data.changeTime;
+          this.filename = res.data.fileName;
         } else {
           alert(res.message);
         }
@@ -180,6 +182,7 @@ export class SelfEditComponent implements OnInit {
   }
 
   upload(userId) {
+    this.uploading = true;
     const formdata = new FormData();
     formdata.append('file', this.file);
     if (this.bounds) {
@@ -194,9 +197,14 @@ export class SelfEditComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.uploading = false;
         } else {
           alert(res.message);
+          this.uploading = false;
         }
+      }, error => {
+        alert('上传失败，请重试！');
+        this.uploading = false;
       });
   }
 

@@ -62,7 +62,8 @@ export class LeaveSearchComponent implements OnInit {
       { field: 'applyDate', header: '开始请假时间' },
       { field: 'applyDateEnd', header: '结束请假时间' },
       { field: 'remark', header: '请假理由' },
-      { field: 'leaveTipDownload', header: '请假条下载' }
+      { field: 'leaveTipDownload', header: '请假条下载' },
+      { field: 'createTime', header: '登记时间' }
     ];
   }
 

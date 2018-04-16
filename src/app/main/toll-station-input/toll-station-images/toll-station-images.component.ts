@@ -15,6 +15,7 @@ export class TollStationImagesComponent implements OnInit {
   bigNewsImgArr: Array<any> = [];
   hisHorImgArr: Array<any> = [];
   orgCode: string;
+  uploading = false;
 
   constructor(
     private http: Http,
@@ -81,15 +82,21 @@ export class TollStationImagesComponent implements OnInit {
     formdata.append('file', $event.target.files[0]);
     formdata.append('stationCode', this.orgCode);
     formdata.append('type', type);
+    this.uploading = true;
     this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/station`, formdata)
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.uploading = false;
           this.getInfo();
         }else {
           alert(res.message);
+          this.uploading = false;
         }
+      }, error => {
+        alert('上传失败，请重试！');
+        this.uploading = false;
       });
   }
 

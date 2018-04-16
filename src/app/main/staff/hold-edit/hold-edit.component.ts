@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { applyType } from '../../../store/translate';
+import { applyType, list_group } from '../../../store/translate';
 
 @Component({
   selector: 'app-hold-edit',
@@ -13,6 +13,7 @@ import { applyType } from '../../../store/translate';
 })
 export class HoldEditComponent implements OnInit {
   data: any = {};
+  list_group = list_group;
   form: FormGroup;
   staffId: string;
   applyType = applyType;
@@ -69,8 +70,9 @@ export class HoldEditComponent implements OnInit {
     this.cols = [
       { field: 'orgName', header: '组织名称' },
       { field: 'applyUserName', header: '顶班申请人' },
-      { field: 'applyTeams', header: '顶板班组' },
-      { field: 'applyDate', header: '顶板日期' }
+      { field: 'applyTeamsCN', header: '顶班班组' },
+      { field: 'applyDate', header: '顶班日期' },
+      { field: 'createTime', header: '登记时间' }
     ];
     this.initForm = {
       applyUserId: '',
@@ -102,6 +104,9 @@ export class HoldEditComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   this.holdList = res.data.shiftChangeDataList;
+                  this.holdList.forEach(el => {
+                    el.applyTeamsCN = this.list_group[el.applyTeams];
+                  })
                 }
               }else {
                 alert(res.message);

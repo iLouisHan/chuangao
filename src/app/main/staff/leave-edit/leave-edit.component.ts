@@ -70,7 +70,8 @@ export class LeaveEditComponent implements OnInit {
       { field: 'applyTypeCN', header: '请假类型' },
       { field: 'applyDate', header: '开始请假时间' },
       { field: 'applyDateEnd', header: '结束请假时间' },
-      { field: 'remark', header: '请假理由' }
+      { field: 'remark', header: '请假理由' },
+      { field: 'createTime', header: '登记时间' }
     ];
     this.initForm = {
       userId: '',

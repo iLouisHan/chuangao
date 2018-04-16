@@ -24,6 +24,7 @@ import { ClothSearchComponent } from './cloth-search/cloth-search.component';
 import { ClothHistoryComponent } from './cloth-history/cloth-history.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
 import { EditPasswordComponent } from './edit-password/edit-password.component';
+// import {ImageCropperComponent} from 'ng2-img-cropper';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { EditPasswordComponent } from './edit-password/edit-password.component';
     ClothSearchComponent,
     ClothHistoryComponent,
     TollStationComponent,
-    EditPasswordComponent
+    EditPasswordComponent,
+    // ImageCropperComponent
   ],
   exports: [
     DropOrgTreeComponent,

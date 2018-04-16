@@ -13,6 +13,7 @@ export class RoadCompanyImagesControlComponent implements OnInit {
   login: Observable<any>;
   imgArr: Array<any> = [];
   orgCode: string;
+  uploading = false;
 
   constructor(
     private http: Http,
@@ -32,6 +33,7 @@ export class RoadCompanyImagesControlComponent implements OnInit {
   }
 
   upload($event) {
+    this.uploading = true;
     const formdata = new FormData();
     formdata.append('file', $event.target.files[0]);
     formdata.append('orgCode', this.orgCode);
@@ -41,9 +43,14 @@ export class RoadCompanyImagesControlComponent implements OnInit {
         if (res.code) {
           alert(res.message);
           this.getImages(this.orgCode);
+          this.uploading = false;
         }else {
           alert(res.message);
+          this.uploading = false;
         }
+      }, error => {
+        alert('上传失败，请重试！');
+        this.uploading = false;
       });
   }
 

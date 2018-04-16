@@ -136,7 +136,7 @@ export class TrainExecuteComponent implements OnInit {
     //   trainLoc: ''
     // };
   }
-  
+
   trainTimerChanged($event){
     $event.target.value = this.trainForm.value.trainDoTimeNumber * 0.5;
     this.trainForm.value.trainDoTimeLong = $event.target.value;
@@ -428,6 +428,9 @@ export class TrainExecuteComponent implements OnInit {
           alert(res.message);
         }
         this.toFirstPage();
+        this.uploading = false;
+      }, error => {
+        alert('上传失败，请重试！');
         this.uploading = false;
       });
   }

@@ -14,7 +14,6 @@ import {LeaveEditComponent} from './leave-edit/leave-edit.component';
 import {SwitchEditComponent} from './switch-edit/switch-edit.component';
 import {HoldEditComponent} from './hold-edit/hold-edit.component';
 import {ReturnEditComponent} from './return-edit/return-edit.component';
-import {ImageCropperComponent} from 'ng2-img-cropper';
 
 @NgModule({
   imports: [
@@ -35,7 +34,6 @@ import {ImageCropperComponent} from 'ng2-img-cropper';
     SwitchEditComponent,
     HoldEditComponent,
     ReturnEditComponent,
-    ImageCropperComponent,
   ],
   providers: [
     HasLoginGuard
