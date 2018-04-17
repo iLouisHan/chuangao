@@ -6,21 +6,21 @@
       <i class="fa fa-bell-o"></i>
       <span>{{noteCount}}</span>
       <div *ngIf="isShowDetail" class="note-detail">
-        <div class="note-item">
+        <div class="note-item" (click)="linkDetail('shift')">
           <div class="title">待审核调班记录：</div>
-          <div class="content" (click)="linkDetail('shift')">{{noteData.shiftChangeCount || 0}}</div>条
+          <div class="content">{{noteData.shiftChangeCount || 0}}</div>条
         </div>
-        <div class="note-item">
+        <div class="note-item" (click)="linkDetail('return')">
           <div class="title">待审核还班记录：</div>
-          <div class="content" (click)="linkDetail('return')">{{noteData.returnCount || 0}}</div>条
+          <div class="content">{{noteData.returnCount || 0}}</div>条
         </div>
-        <div class="note-item">
+        <div class="note-item" (click)="linkDetail('replace')">
           <div class="title">待审核顶班记录：</div>
-          <div class="content" (click)="linkDetail('replace')">{{noteData.replaceCount || 0}}</div>条
+          <div class="content">{{noteData.replaceCount || 0}}</div>条
         </div>
-        <div class="note-item">
+        <div class="note-item" (click)="linkDetail('leave')">
           <div class="title">待审核请假记录：</div>
-          <div class="content" (click)="linkDetail('leave')">{{noteData.leaveCount || 0}}</div>条
+          <div class="content">{{noteData.leaveCount || 0}}</div>条
         </div>
       </div>
     </li>
