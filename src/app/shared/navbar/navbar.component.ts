@@ -22,7 +22,7 @@ export class NavbarComponent implements OnInit {
   isAdmin;
 
   logout(): void {
-    document.cookie = `login=`;
+    window.sessionStorage.setItem('login', '');
     this.store.dispatch(new Actions.SaveLogin(''));
     this.router.navigate(['/login']);
   }
