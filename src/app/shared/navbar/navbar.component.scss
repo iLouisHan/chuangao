@@ -36,19 +36,21 @@
       margin: 0 10px;
 
       .note-detail{
-        padding: 12px 20px;
         position: absolute;
         top: 45px;
         right: 0px;
         width: 200px;
-        height: 110px;
         background-color: #fff;
+        -webkit-box-shadow: 4px 4px 12px #dadada;
         box-shadow: 4px 4px 12px #dadada;
         border-radius: 3px;
         border: 1px solid #f7f7f7;
 
         .note-item {
-          height: 30px;
+          height: 20px;
+          cursor: pointer;
+          padding: 8px 15px;
+          border-bottom: 1px solid #f9f9f9;
 
           .title{
             float: left;
@@ -60,8 +62,15 @@
             font-style: normal;
             color:#a8c6ff;
             margin: 0 5px;
-            cursor: pointer;
           }
+        }
+
+        .note-item:hover {
+          background-color: #f1f1f1;
+        }
+
+        .note-item:last-child {
+          border-bottom: none;
         }
       }
 
