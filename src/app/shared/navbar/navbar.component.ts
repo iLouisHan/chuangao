@@ -22,8 +22,8 @@ export class NavbarComponent implements OnInit {
   isAdmin;
 
   logout(): void {
-    this.store.dispatch(new Actions.SaveLogin(''));
     document.cookie = `login=`;
+    this.store.dispatch(new Actions.SaveLogin(''));
     this.router.navigate(['/login']);
   }
 

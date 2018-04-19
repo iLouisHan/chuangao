@@ -49,6 +49,8 @@ export class TrainPlanComponent implements OnInit {
     trainStartDate: '',
     trainEndDate: ''
   };
+  trainTimeLong = 0.5;
+
   constructor(
     private http: Http,
     private store: Store<any>
@@ -117,11 +119,9 @@ export class TrainPlanComponent implements OnInit {
   //   this.planOrg = ($event)[0].data;
   // }
   selectedEXOrg($event) {
-    console.log($event);
     this.exOrg = ($event);
   }
   selectedSearchOrg($event) {
-    console.log($event);
     this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
@@ -135,11 +135,18 @@ export class TrainPlanComponent implements OnInit {
                 this.DoOrg = res.data.trainDoOrgName;
                 this.startDate = res.data.trainStartDate;
                 this.endDate = res.data.trainEndDate;
+                console.log(res.data);
               } else {
                 alert(res.message);
               }
             });
   }
+
+  timeFormat(num) {
+    num = Math.round(num * 2) / 2;
+    this.trainTimeLong = num < 0.5 ? 0.5 : num;
+  }
+
   getInfo() {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
@@ -236,9 +243,9 @@ export class TrainPlanComponent implements OnInit {
   }
 
   addStaff() {
-    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    this.form.value.trainTimeLong = this.trainTimeLong;
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
     this.form.value.trainEndDate = this.dateFormat(this.endDate);
     this.form.value.trainTimeLong = this.form.value.trainTimeNumber * 0.5;
@@ -254,6 +261,7 @@ export class TrainPlanComponent implements OnInit {
     // this.form.value.politicalStatus = +this.form.value.politicalStatus;
     // this.form.value.positionalTitle = +this.form.value.positionalTitle;
     // this.form.value.userId = '' + Math.round(1000 * Math.random());
+    this.uploading = true;
     this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planAdd`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
@@ -277,37 +285,40 @@ export class TrainPlanComponent implements OnInit {
   }
 
   updateStaff() {
-    this.uploading = true;
+    // this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.trainPlanOrg = '' + this.planOrg;
-    this.form.value.trainDoOrg = '' + this.exOrg;
+    this.form.value.trainTimeLong = this.trainTimeLong;
+    this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
     this.form.value.trainTimeLong = this.form.value.trainTimeNumber * 0.5;
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
     this.data.id = this.selectedUser;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planUpdate`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(this.selectedUser);
-                } else {
-                  this.toFirstPage();
-                  this.uploading = false;
-                }
-              } else {
-                alert(res.message);
-                this.uploading = false;
-              }
-            }, error => {
-              alert('上传失败，请重试！');
-              this.uploading = false;
-            });
+    this.data.trainDoOrg = this.DoOrg;
+    console.log(this.data);
+    // this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planUpdate`, JSON.stringify(this.data), {
+    //           headers: myHeaders
+    //         })
+    //         .map(res => res.json())
+    //         .subscribe(res => {
+    //           if (res.code) {
+    //             if (this.file) {
+    //               this.upload(this.selectedUser);
+    //             } else {
+    //               this.toFirstPage();
+    //               this.uploading = false;
+    //             }
+    //           } else {
+    //             alert(res.message);
+    //             this.uploading = false;
+    //           }
+    //         }, error => {
+    //           alert('上传失败，请重试！');
+    //           this.uploading = false;
+    //         });
   }
 
   paginate($event) {
@@ -336,6 +347,8 @@ export class TrainPlanComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.file = null;
+          this.filename = '';
         } else {
           alert(res.message);
         }

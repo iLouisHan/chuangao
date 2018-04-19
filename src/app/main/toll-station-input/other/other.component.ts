@@ -20,6 +20,7 @@ export class OtherComponent implements OnInit {
     stationHorstoryHonor: '收费站历史荣誉',
     stationEventHistory: '收费站大事件'
   };
+  uploading = false;
 
   constructor(
     private http: Http,
@@ -35,6 +36,7 @@ export class OtherComponent implements OnInit {
   }
 
   getInfo(orgCode) {
+    this.uploading = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -44,6 +46,10 @@ export class OtherComponent implements OnInit {
               }else {
                 alert(res.message);
               }
+              this.uploading = false;
+            }, error => {
+              alert('获取信息失败！');
+              this.uploading = false;
             });
   }
 

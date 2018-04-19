@@ -149,6 +149,11 @@ export class ReturnEditComponent implements OnInit {
     }
   }
 
+  paginate($event) {
+    this.param.page = $event.page;
+    this.getInfo();
+  }
+
   dateFormat(date) {
     if (date) {
       const _date = new Date(date);

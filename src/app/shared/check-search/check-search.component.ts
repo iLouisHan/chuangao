@@ -50,7 +50,6 @@ export class CheckSearchComponent implements OnInit {
       year: new FormControl('-1', Validators.nullValidator)
     });
     this.cols = [
-      { field: 'orgName', header: '操作' },
       { field: 'userName', header: '收费员名称' },
       { field: 'year', header: '考核年度' },
       { field: 'compositScore', header: '综合考核' },
@@ -82,6 +81,8 @@ export class CheckSearchComponent implements OnInit {
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
       alert('未选择机构');
+    }else if (this.orgList.filter(el => el.orgType !==3).length) {
+      alert('请选择收费站！');
     }else {
       this.getInfo(this.page, this.size);
     }
@@ -113,11 +114,11 @@ export class CheckSearchComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                // this.count = res.data.count;
+                this.count = res.data.count;
                 this.dataList = res.data.checkDetailDataList;
-                // if (res.data.count > 0) {
+                if (res.data.count > 0) {
                   this.hasData = true;
-                // }
+                }
               }else {
                 alert(res.message);
               }

@@ -7,12 +7,18 @@ import { StoreModule } from '@ngrx/store';
 import { LoginReducer, GreenReducer } from './store/cacheStore.reducer';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { PublicStaticService } from './shared/services/public-static.service';
+import { BootstrapModalModule } from 'ng2-bootstrap-modal';
+import { ConfirmComponent } from './shared/confirm/confirm.component';
 
 import { AppRoutes } from './app.routes';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ConfirmComponent
+  ],
+  entryComponents: [
+    ConfirmComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -21,7 +27,8 @@ import { AppRoutes } from './app.routes';
     StoreModule.forRoot({
       login: LoginReducer,
       green: GreenReducer
-    })
+    }),
+    BootstrapModalModule.forRoot({container:document.body})
   ],
   providers: [
     {

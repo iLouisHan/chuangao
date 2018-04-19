@@ -103,8 +103,7 @@ export class SuperComponent implements OnInit {
       .subscribe(res => {
         alert(res.message);
         if (res.code) {
-          this.getOrgInfo();
-          this.view = 0;
+          this.getStaff(this.selected.data);
         }
       });
     }else {

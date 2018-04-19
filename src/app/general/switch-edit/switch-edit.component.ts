@@ -89,7 +89,8 @@ export class SwitchEditComponent implements OnInit {
     ];
     this.initForm = {
       backUserId: '-1',
-      backTeams: '-1'
+      backTeams: '-1',
+      remark: ''
     };
   }
 
@@ -299,6 +300,7 @@ export class SwitchEditComponent implements OnInit {
       if (res.code) {
         alert(res.message);
         this.toFirstPage();
+        this.userName = '';
       }else {
         alert(res.message);
       }

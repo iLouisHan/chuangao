@@ -60,7 +60,7 @@
   <div class="children-container">
     <div class="part-content child-item clearfix" *ngFor="let item of data.divisionCardBeanList">
       <div class="child-item-content1">
-        <img src="/assets/images/zigongguanlichu.png" alt="">
+        <img [attr.src]="item.picUrl || '/assets/images/zigongguanlichu.png'" alt="">
         <a [routerLink]="['/admin/division']" [queryParams]="{orgCode: item.orgCode}">{{item.divisionName}}</a>
         <span>{{item.orgCode}}</span>
         <span>{{item.contactName}}：{{item.contactPhone}}</span>

@@ -31,6 +31,7 @@ export class BasicInfoComponent implements OnInit {
     stationClass: '收费站类别',
     stationUsedName: '曾用名'
   };
+  uploading = false;
 
   constructor(
     private http: Http,
@@ -57,6 +58,7 @@ export class BasicInfoComponent implements OnInit {
   }
 
   getInfo(orgCode) {
+    this.uploading = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -67,6 +69,10 @@ export class BasicInfoComponent implements OnInit {
               }else {
                 alert(res.message);
               }
+              this.uploading = false;
+            }, error => {
+              alert('获取信息失败！');
+              this.uploading = false;
             });
   }
 

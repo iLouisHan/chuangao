@@ -15,6 +15,7 @@ export class LineComponent implements OnInit {
   form: FormGroup;
   checkItem: string;
   keys: Array<string>;
+  uploading = false;
   data: any;
 
   constructor(
@@ -47,6 +48,7 @@ export class LineComponent implements OnInit {
   }
 
   getInfo(orgCode) {
+    this.uploading = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -57,6 +59,10 @@ export class LineComponent implements OnInit {
               }else {
                 alert(res.message);
               }
+              this.uploading = false;
+            }, error => {
+              alert('获取信息失败！');
+              this.uploading = false;
             });
   }
 

@@ -19,18 +19,6 @@ export class LoginComponent implements OnInit {
   orgType: number;
   isAdmin: number;
 
-  getCookie(): void {
-    const cookie = document.cookie.split(';');
-    const result = cookie.filter(el => el.trim().length > 0).map(el => el.trim().split('=')).filter(el => el[0] === 'login');
-    if (result.length > 0) {
-      const res = result[0];
-      if (/\"\w+\"/.test(res[1])) {
-        this.store.dispatch(new Actions.SaveLogin(JSON.parse(res[1])));
-        this.router.navigate(['/main']);
-      }
-    }
-  }
-
   constructor(
     private http: Http,
     private store: Store<any>,
@@ -61,7 +49,7 @@ export class LoginComponent implements OnInit {
           }else if (this.isAdmin === 2) {
             this.router.navigate(['/super']);
           }
-          document.cookie = `login=${JSON.stringify(res.data)}`;
+          window.sessionStorage.setItem('login', JSON.stringify(res.data));
         }else {
           alert(res.message);
         }
@@ -69,7 +57,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getCookie();
+
   }
 
 }

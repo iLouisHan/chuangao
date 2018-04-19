@@ -309,6 +309,8 @@ export class DocUploadComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.file = null;
+          this.filename = '';
         } else {
           alert(res.message);
         }

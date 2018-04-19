@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { list_group } from '../../store/translate';
 
 @Component({
   selector: 'app-hold-edit',
@@ -21,6 +22,7 @@ export class HoldEditComponent implements OnInit {
   size = 15;
   param: any;
   listGroup: number;
+  list_group = list_group;
   holdList: Array<any>;
   cols: any;
   count: number;
@@ -52,8 +54,8 @@ export class HoldEditComponent implements OnInit {
     this.cols = [
       { field: 'orgName', header: '组织名称' },
       { field: 'applyUserName', header: '顶班申请人' },
-      { field: 'applyTeams', header: '顶板班组' },
-      { field: 'applyDate', header: '顶板日期' },
+      { field: 'applyTeamsCN', header: '顶班班组' },
+      { field: 'applyDate', header: '顶班日期' },
       { field: 'checkResultCN', header: '顶班审核状态' }
     ];
   }
@@ -108,6 +110,7 @@ export class HoldEditComponent implements OnInit {
                   this.hasData = true;
                   res.data.shiftChangeDataList.forEach(el => {
                     el.checkResultCN = this.checkResult[el.checkResult];
+                    el.applyTeamsCN = this.list_group[el.applyTeams];
                   });
                   this.holdList = res.data.shiftChangeDataList;
                 }

@@ -5,6 +5,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post, politics, educational } from '../../store/translate';
+import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { DialogService } from "ng2-bootstrap-modal";
 
 @Component({
   selector: 'app-staff-edit',
@@ -49,7 +51,8 @@ export class StaffEditComponent implements OnInit {
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private dialogService: DialogService
   ) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
@@ -120,6 +123,26 @@ export class StaffEditComponent implements OnInit {
       birthday: '',
       changeTime: ''
     };
+  }
+
+  showConfirm() {
+    if (this.selectedUser) {
+      let disposable = this.dialogService.addDialog(ConfirmComponent, {
+        title:'确认删除人员？',
+        message:'Confirm message'})
+        .subscribe((isConfirmed)=>{
+          if(isConfirmed) {
+            this.staffLeave(this.selectedUser);
+          }
+        });
+        //We can close dialog calling disposable.unsubscribe();
+        //If dialog was not closed manually close it by timeout
+        setTimeout(()=>{
+          disposable.unsubscribe();
+        },10000);
+    }else {
+      alert('请选择一个人员');
+    }
   }
 
   getStaffInfo(staffId) {
@@ -204,14 +227,6 @@ export class StaffEditComponent implements OnInit {
       this.getStaffInfo(this.selectedUser);
       this.isChosen = true;
       this.isAdd = false;
-    }else {
-      alert('请选择一个人员');
-    }
-  }
-
-  delete() {
-    if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
     }else {
       alert('请选择一个人员');
     }
@@ -329,9 +344,9 @@ export class StaffEditComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
-          this.file = null;
-          this.filename = '';
+            alert(res.message);
+            this.file = null;
+            this.filename = '';
         }else {
           alert(res.message);
         }

@@ -21,6 +21,7 @@ export class TrainPlanSearchComponent implements OnInit {
   size = 15;
   orgType: string;
   planData: any;
+  orgName: string;
   hasData = false;
   isChosen: boolean;
   selectionMode = 'single';
@@ -43,7 +44,7 @@ export class TrainPlanSearchComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl(1, Validators.nullValidator),
+      hasDo: new FormControl(-1, Validators.nullValidator),
       trainWay: new FormControl('', Validators.nullValidator),
       trainType: new FormControl('', Validators.nullValidator),
       trainPlanName: new FormControl('', Validators.nullValidator)
@@ -153,6 +154,7 @@ export class TrainPlanSearchComponent implements OnInit {
       if (res) {
         this.orgType = res.orgType;
         this.orgList = [{data: res.orgCode, label: res.orgName}];
+        this.orgName = res.orgName;
         this.getInfo(this.page, this.size);
       }
     });

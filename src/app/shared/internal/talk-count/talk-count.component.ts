@@ -45,7 +45,7 @@ export class TalkCountComponent implements OnInit {
 
   selectedOrg($event) {
     this.orgList = $event;
-    // this.getStaff();
+    this.getStaff();
   }
 
   search() {
@@ -71,15 +71,15 @@ export class TalkCountComponent implements OnInit {
       });
   }
 
-  // getStaff() {
-  //   this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
-  //           .map(res => res.json())
-  //           .subscribe(res => {
-  //             if (res.code) {
-  //               this.staffList = res.data;
-  //             }
-  //           });
-  // }
+  getStaff() {
+    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                this.staffList = res.data;
+              }
+            });
+  }
   updateChart(arr) {
     this.data1 = [];
     this.data2 = [];
@@ -186,13 +186,6 @@ export class TalkCountComponent implements OnInit {
         type: 'category',
         name: '谈心对象',
       },
-      dataZoom: [
-        {   // 这个dataZoom组件，默认控制x轴。
-            type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
-            start: 0,      // 左边在 10% 的位置。
-            end: 60         // 右边在 60% 的位置。
-        }
-      ],
       yAxis: {
         type: 'value',
         name: '谈心次数'
@@ -221,8 +214,7 @@ export class TalkCountComponent implements OnInit {
         }
       }]
     };
-    // this.getStaff();
+    this.getStaff();
     this.getInfo();
   }
 }
-

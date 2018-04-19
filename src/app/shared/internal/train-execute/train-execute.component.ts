@@ -44,6 +44,7 @@ export class TrainExecuteComponent implements OnInit {
   selectionMode = 'single';
   searchOrg: Array<any>;
   initForm: any;
+  trainTimeLong = 0.5;
   param: any = {
     page: this.page,
     size: this.size
@@ -140,6 +141,11 @@ export class TrainExecuteComponent implements OnInit {
   trainTimerChanged($event){
     $event.target.value = this.trainForm.value.trainDoTimeNumber * 0.5;
     this.trainForm.value.trainDoTimeLong = $event.target.value;
+  }
+
+  timeFormat(num) {
+    num = Math.round(num * 2) / 2;
+    this.trainTimeLong = num < 0.5 ? 0.5 : num;
   }
 
   selectedOrg($event) {
@@ -283,6 +289,7 @@ export class TrainExecuteComponent implements OnInit {
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.trainForm.value.id = this.selectedUser;
+    this.trainForm.value.trainTimeLong = this.trainTimeLong;
     this.trainForm.value.trainDoTimeLong = this.trainForm.value.trainDoTimeNumber * 0.5;
     this.trainForm.value.trainDoStartDate = this.dateFormat(this.doStartDate);
     this.trainForm.value.trainDoEndDate = this.dateFormat(this.doEndDate);
@@ -303,6 +310,7 @@ export class TrainExecuteComponent implements OnInit {
                 if (this.file) {
                   this.upload(this.selectedUser);
                 } else {
+                  alert(res.message);
                   this.toFirstPage();
                   this.uploading = false;
                 }
@@ -350,19 +358,15 @@ export class TrainExecuteComponent implements OnInit {
   }
 
   chooseAll() {
-    if (this.teams) {
-      this.joinStaffList.forEach(el => {
-        el.choose = true;
-      });
-    }
+    this.joinStaffList.forEach(el => {
+      el.choose = true;
+    });
   }
 
   unChooseAll() {
-    if (this.teams) {
-      this.joinStaffList.forEach(el => {
-        el.choose = false;
-      });
-    }
+    this.joinStaffList.forEach(el => {
+      el.choose = false;
+    });
   }
 
   getStaffs() {
@@ -424,6 +428,8 @@ export class TrainExecuteComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.file = null;
+          this.filename = '';
         } else {
           alert(res.message);
         }

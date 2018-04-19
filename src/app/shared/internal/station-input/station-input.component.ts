@@ -100,11 +100,9 @@ export class StationInputComponent implements OnInit {
   }
 
   selectedOrg($event) {
-    console.log($event);
     this.orgCode = ($event);
   }
   selectedSearchOrg($event) {
-    console.log($event);
     this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
@@ -114,7 +112,6 @@ export class StationInputComponent implements OnInit {
         this.startDate = item.meetingDate;
         this.stationName = item.stationName;
         this.activedStaffList = item.meetingJoinPeople;
-        console.log(item);
       }
     });
   }
@@ -134,7 +131,9 @@ export class StationInputComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                   res.data.stationMeetingDataList.forEach(el => {
-                    el.meetingJoinPeopleStr = el.meetingJoinPeople.map(item => item.userName).join(',');
+                    if (el.meetingJoinPeople && el.meetingJoinPeople.length > 0) {
+                      el.meetingJoinPeopleStr = el.meetingJoinPeople.map(item => item.userName).join(',');
+                    }
                   });
                   this.staffList = res.data.stationMeetingDataList;
                 }

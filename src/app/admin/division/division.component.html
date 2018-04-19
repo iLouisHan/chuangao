@@ -59,7 +59,7 @@
   <div class="children-container">
     <div class="part-content child-item clearfix" *ngFor="let item of data.stationCardBeanList">
       <div class="child-item-content1">
-        <img src="/assets/images/zigongguanlichu.png" alt="">
+        <img [attr.src]="item.picUrl || '/assets/images/zigongguanlichu.png'" alt="">
         <a [routerLink]="['/admin/tollStation']" [queryParams]="{orgCode: item.stationCode}">{{item.orgName}}</a>
         <span>{{item.stationPileNumber}}</span>
         <span>{{item.masterName}}：{{item.masterPhone}}</span>

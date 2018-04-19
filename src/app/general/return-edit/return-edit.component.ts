@@ -120,6 +120,11 @@ export class ReturnEditComponent implements OnInit {
     }
   }
 
+  paginate($event) {
+    this.param.page = $event.page;
+    this.getInfo();
+  }
+
   returnSubmit() {
     this._select.returnDate = this.dateFormat(this._returnDate);
     this._select.returnShift = +this._returnShift;
@@ -170,6 +175,7 @@ export class ReturnEditComponent implements OnInit {
         this.param.orgList = [res.orgCode];
         this.param.applyUserId = res.userId;
         this.param.applyChangeType = 1;
+        this.param.back = 1;
         this.getInfo();
       }
     });

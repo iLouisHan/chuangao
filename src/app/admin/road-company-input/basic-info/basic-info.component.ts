@@ -31,6 +31,7 @@ export class BasicInfoComponent implements OnInit {
     longitude: '经度',
     latitude: '纬度'
   };
+  uploading = false;
 
   constructor(
     private http: Http,
@@ -57,6 +58,7 @@ export class BasicInfoComponent implements OnInit {
   }
 
   getInfo(orgCode) {
+    this.uploading = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getCompanyInfo?companyCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -66,6 +68,10 @@ export class BasicInfoComponent implements OnInit {
               }else {
                 alert(res.message);
               }
+              this.uploading = false;
+            }, error => {
+              alert('获取信息失败！');
+              this.uploading = false;
             });
   }
 

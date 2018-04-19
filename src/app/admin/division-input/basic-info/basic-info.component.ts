@@ -27,6 +27,7 @@ export class BasicInfoComponent implements OnInit {
     briefIntro: '公司简介',
     historyHonour: '管理处历史荣誉'
   };
+  uploading = false;
 
   constructor(
     private http: Http,
@@ -52,6 +53,7 @@ export class BasicInfoComponent implements OnInit {
   }
 
   getInfo(orgCode) {
+    this.uploading = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getDefaultDivision?divisionCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -61,6 +63,10 @@ export class BasicInfoComponent implements OnInit {
               }else {
                 alert(res.message);
               }
+              this.uploading = false;
+            }, error => {
+              alert('获取信息失败！');
+              this.uploading = true;
             });
   }
 

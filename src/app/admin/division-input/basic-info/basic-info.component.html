@@ -1,54 +1,55 @@
 <form [formGroup]="form">
-    <div class="form-item">
-      <p>管理处编码</p>
-      <input disabled="disabled" type="text" formControlName="divisionCode">
-    </div>
-    <div class="form-item">
-      <p>管理处名称</p>
-      <input disabled="disabled" type="text" formControlName="divisionName">
-    </div>
-    <div class="form-item">
-      <p>管辖范围描述（起止桩号集合）</p>
-      <input type="text" formControlName="pileInfo">
-    </div>
-    <div class="form-item">
-      <p>所辖路段里程（单位：公里）</p>
-      <input type="text" formControlName="totalMileage">
-    </div>
-    <div class="form-item">
-      <p>地址</p>
-      <input type="text" formControlName="address">
-    </div>
-    <div class="form-item">
-      <p>联系人</p>
-      <input type="text" formControlName="contacts">
-    </div>
-    <div class="form-item">
-      <p>联系电话</p>
-      <input type="text" formControlName="phoneNo">
-    </div>
-    <div class="form-item">
-      <p>经度</p>
-      <input type="text" formControlName="longitude">
-    </div>
-    <div class="form-item">
-      <p>纬度</p>
-      <input type="text" formControlName="latitude">
-    </div>
-    <div class="form-item form-textarea">
-      <p>公司简介</p>
-      <textarea type="text" formControlName="briefIntro"></textarea>
-    </div>
-    <div class="form-item form-textarea">
-      <p>管理处历史荣誉</p>
-      <textarea type="text" formControlName="historyHonour"></textarea>
-    </div>
-    <div class="form-checkbox">
-      <p>启用状态：</p>
-      <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>启用</span></label>
-      <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>不启用</span></label>
-    </div>
-    <div class="form-item">
-      <button (click)="submit()" class="form-btn">保存</button>
-    </div>
-  </form>
+  <div class="form-item">
+    <p>管理处编码</p>
+    <input disabled="disabled" type="text" formControlName="divisionCode">
+  </div>
+  <div class="form-item">
+    <p>管理处名称</p>
+    <input disabled="disabled" type="text" formControlName="divisionName">
+  </div>
+  <div class="form-item">
+    <p>管辖范围描述（起止桩号集合）</p>
+    <input type="text" formControlName="pileInfo">
+  </div>
+  <div class="form-item">
+    <p>所辖路段里程（单位：公里）</p>
+    <input type="text" formControlName="totalMileage">
+  </div>
+  <div class="form-item">
+    <p>地址</p>
+    <input type="text" formControlName="address">
+  </div>
+  <div class="form-item">
+    <p>联系人</p>
+    <input type="text" formControlName="contacts">
+  </div>
+  <div class="form-item">
+    <p>联系电话</p>
+    <input type="text" formControlName="phoneNo">
+  </div>
+  <div class="form-item">
+    <p>经度</p>
+    <input type="text" formControlName="longitude">
+  </div>
+  <div class="form-item">
+    <p>纬度</p>
+    <input type="text" formControlName="latitude">
+  </div>
+  <div class="form-item form-textarea">
+    <p>公司简介</p>
+    <textarea type="text" formControlName="briefIntro"></textarea>
+  </div>
+  <div class="form-item form-textarea">
+    <p>管理处历史荣誉</p>
+    <textarea type="text" formControlName="historyHonour"></textarea>
+  </div>
+  <div class="form-checkbox">
+    <p>启用状态：</p>
+    <label><div [class.checked]="test(0)"></div><input (click)="check($event)" [checked]="test(0)" value="0" type="checkbox"><span>启用</span></label>
+    <label><div [class.checked]="test(1)"></div><input (click)="check($event)" [checked]="test(1)" value="1" type="checkbox"><span>不启用</span></label>
+  </div>
+  <div class="form-item">
+    <button (click)="submit()" class="form-btn">保存</button>
+  </div>
+</form>
+<div [class.active]="uploading" class="liubi-loading"></div>

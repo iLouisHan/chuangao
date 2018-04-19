@@ -23,21 +23,23 @@ export class HasLoginGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    const cookie = document.cookie.split(';');
-    const result = cookie.filter(el => el.trim().length > 0).map(el => el.trim().split('=')).filter(el => el[0] === 'login');
-    if (result.length > 0) {
-      const res = result[0];
-      if (/\"\w+\"/.test(res[1])) {
-        this.store.dispatch(new Actions.SaveLogin(JSON.parse(res[1])));
-      }
+    let loginInfo: any;
+    const res = window.sessionStorage.getItem('login');
+    if (res) {
+      loginInfo = JSON.parse(res);
     }
     this.login.subscribe(res => {
-      if (res) {
+      if (res && loginInfo) {
         this.orgType = res.orgType;
         this.isAdmin = res.isAdmin;
         this.hasLogin = true;
       }else {
-        this.hasLogin = false;
+        if (loginInfo) {
+          this.store.dispatch(new Actions.SaveLogin(loginInfo));
+          this.hasLogin = true;
+        }else {
+          this.hasLogin = false;
+        }
       }
     });
     if (state.url !== '/login') {

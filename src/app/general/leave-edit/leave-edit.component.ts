@@ -36,6 +36,8 @@ export class LeaveEditComponent implements OnInit {
   };
   cols: any;
   checkResult = ['未审核', '通过', '未通过'];
+  uploading = false;
+  initForm: any;
 
   constructor(
     private http: Http,
@@ -64,6 +66,8 @@ export class LeaveEditComponent implements OnInit {
       { field: 'leaveTipDownload', header: '请假条下载' },
       { field: 'checkResultCN', header: '请假审核状态' }
     ];
+    this.initForm = this.form.value;
+    console.log(this.initForm);
   }
 
   fileChange($event) {
@@ -87,21 +91,28 @@ export class LeaveEditComponent implements OnInit {
   }
 
   addStaffLeave() {
+    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.dateFormat(this.applyDate);
     this.form.value.applyDateEnd = this.dateFormat(this.applyDateEnd);
     this.form.value.stationCode = this.orgCode;
     this.form.value.applyUserId = this.applyUserId;
+    this.form.value.applyType = +this.form.value.applyType;
     this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/staffLeave`, JSON.stringify(this.form.value), {
               headers: myHeaders
             })
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.upload(res.data.id);
+                if (this.file) {
+                  this.upload(res.data.id);
+                }else {
+                  this.uploading = false;
+                }
               }else {
                 alert(res.message);
+                this.uploading = false;
               }
             });
   }
@@ -115,9 +126,12 @@ export class LeaveEditComponent implements OnInit {
       .subscribe(res => {
         if (res.code) {
           alert(res.message);
+          this.file = null;
+          this.filename = '';
         }else {
           alert(res.message);
         }
+        this.uploading = false;
       });
   }
 

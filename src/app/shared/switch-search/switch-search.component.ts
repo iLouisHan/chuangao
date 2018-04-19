@@ -125,16 +125,16 @@ export class SwitchSearchComponent implements OnInit {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList;
-                  this.shiftChangeDataList.forEach(el => {
-                    el.applyTeamsCN = this.list_group[el.applyTeams];
-                    el.backTeamsCN = this.list_group[el.backTeams];
-                    el.applyShiftCN = this.shiftId[el.applyShift];
-                    el.backShiftCN = this.shiftId[el.backShift];
-                    el.returnShiftCN = this.shiftId[el.returnShift];
-                    el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
-                  });
                 }
+                this.shiftChangeDataList = res.data.shiftChangeDataList;
+                this.shiftChangeDataList.forEach(el => {
+                  el.applyTeamsCN = this.list_group[el.applyTeams];
+                  el.backTeamsCN = this.list_group[el.backTeams];
+                  el.applyShiftCN = this.shiftId[el.applyShift];
+                  el.backShiftCN = this.shiftId[el.backShift];
+                  el.returnShiftCN = this.shiftId[el.returnShift];
+                  el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
+                });
               }else {
                 alert(res.message);
               }

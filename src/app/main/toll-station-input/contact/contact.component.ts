@@ -16,6 +16,7 @@ export class ContactComponent implements OnInit {
   checkItem: string;
   keys: Array<string>;
   data: any;
+  uploading = false;
   // trans = {
   //   companyCode: '公司编码',
   //   companyName: '公司名称',
@@ -63,6 +64,7 @@ export class ContactComponent implements OnInit {
   }
 
   getInfo(orgCode) {
+    this.uploading = true;
     this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -73,6 +75,10 @@ export class ContactComponent implements OnInit {
               }else {
                 alert(res.message);
               }
+              this.uploading = false;
+            }, error => {
+              alert('获取信息失败！');
+              this.uploading = false;
             });
   }
 

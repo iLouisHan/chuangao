@@ -181,7 +181,8 @@ export class TeamScheduleSearchComponent implements OnInit {
   getInfo() {
     this.form.value.startTime = this.dateFormat(this.startTime);
     this.form.value.endTime = this.dateFormat(this.endTime);
-    this.form.value.orgList = this.orgList.map(el => el.data);
+    this.form.value.stationCode = this.orgList[0].data;
+    this.form.value.teamsGroup = +this.form.value.teamsGroup;
     const param = {};
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {

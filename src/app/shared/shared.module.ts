@@ -24,6 +24,8 @@ import { ClothSearchComponent } from './cloth-search/cloth-search.component';
 import { ClothHistoryComponent } from './cloth-history/cloth-history.component';
 import { TollStationComponent } from './toll-station/toll-station.component';
 import { EditPasswordComponent } from './edit-password/edit-password.component';
+// import { ConfirmComponent } from './confirm/confirm.component';
+// import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 // import {ImageCropperComponent} from 'ng2-img-cropper';
 
 @NgModule({
@@ -35,7 +37,8 @@ import { EditPasswordComponent } from './edit-password/edit-password.component';
     CalendarModule,
     PaginatorModule,
     RouterModule,
-    NgxEchartsModule
+    NgxEchartsModule,
+    // BootstrapModalModule.forRoot({container:document.body})
   ],
   declarations: [
     DropOrgTreeComponent,
@@ -57,6 +60,7 @@ import { EditPasswordComponent } from './edit-password/edit-password.component';
     ClothHistoryComponent,
     TollStationComponent,
     EditPasswordComponent,
+    // ConfirmComponent,
     // ImageCropperComponent
   ],
   exports: [
@@ -78,7 +82,8 @@ import { EditPasswordComponent } from './edit-password/edit-password.component';
     ClothSearchComponent,
     ClothHistoryComponent,
     TollStationComponent,
-    EditPasswordComponent
+    EditPasswordComponent,
+    // ConfirmComponent
   ]
 })
 export class SharedModule { }
