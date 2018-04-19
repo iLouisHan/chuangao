@@ -33,6 +33,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.login.subscribe(res => {
       if (res) {
+        console.log(res);
         this.orgType = res.orgType;
       }
     });

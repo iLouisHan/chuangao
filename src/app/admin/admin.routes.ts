@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
 import { RoadCompanyComponent } from './road-company/road-company.component';
-import { HasLoginGuard } from '../guard/has-login.guard';
 import { HomeComponent } from '../shared/home/home.component';
 import { DivisionComponent } from './division/division.component';
 import { StaffDetailComponent } from '../shared/staff-detail/staff-detail.component';
@@ -23,7 +22,6 @@ export const AdminRoutes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    canActivate: [HasLoginGuard],
     children: [
       {
         path: '',

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { SelfDetailComponent } from './person/self-detail/self-detail.component';
 import { SelfEditComponent } from './person/self-edit/self-edit.component';
-import { HasLoginGuard } from '../guard/has-login.guard';
 import { GeneralComponent } from './general.component';
 import { HoldEditComponent } from './hold-edit/hold-edit.component';
 import { SwitchEditComponent } from './switch-edit/switch-edit.component';
@@ -13,7 +12,6 @@ export const GeneralRoute: Routes = [
   {
     path: '',
     component: GeneralComponent,
-    canActivate: [HasLoginGuard],
     children: [
       {
         path: '',

@@ -11,6 +11,8 @@ import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { ConfirmComponent } from './shared/confirm/confirm.component';
 
 import { AppRoutes } from './app.routes';
+import { HasLoginGuard } from './guard/has-login.guard';
+import { AdminGuard, GeneralGuard, TollGuard, SuperGuard } from './guard/guards.guard';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,12 @@ import { AppRoutes } from './app.routes';
       provide: LocationStrategy,
       useClass: HashLocationStrategy
     },
-    PublicStaticService
+    PublicStaticService,
+    HasLoginGuard,
+    AdminGuard,
+    GeneralGuard,
+    TollGuard,
+    SuperGuard
   ],
   bootstrap: [AppComponent]
 })
