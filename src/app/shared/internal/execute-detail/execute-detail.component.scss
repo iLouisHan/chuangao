@@ -1,0 +1,71 @@
+.scroll-table-container{
+
+  >div {
+    overflow: scroll;
+    padding-bottom: 10px;
+
+    .myTable{
+      min-width: 100%;
+
+      th{
+        background: #e2ebff;
+        padding: 0 30px;
+        text-align: center;
+        border: 1px solid #fff;
+        font-size: 14px;
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+        white-space: nowrap;
+      }
+      .station {
+        background: #61b3f2;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .content {
+        background: #f3ab5d ;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      td{
+        padding: 0 30px;
+        white-space: nowrap;
+        text-align: center;
+        border: 1px solid #fff;
+        background: #ededed;
+        font-size: 14px;
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+
+        img{
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.no-countdata{
+  text-indent: 20px;
+}
+
+.return-btn{
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+  background: #6c9cff;
+  margin: auto;
+  margin-bottom: 20px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  outline: none !important;
+  display: block;
+}

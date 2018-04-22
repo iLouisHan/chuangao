@@ -14,68 +14,78 @@ import { DeviceInputComponent } from './device-input/device-input.component';
 import { DocUploadComponent } from './doc-upload/doc-upload.component';
 import { TalkInputComponent } from './talk-input/talk-input.component';
 import { TalkStaticComponent } from './talk-static/talk-static.component';
+import { ExecuteDetailComponent } from './execute-detail/execute-detail.component';
+import { ExecuteSingleDetailComponent } from './execute-single-detail/execute-single-detail.component';
 
 export const InternalRoutes: Routes = [
   {
     path: '',
     component: InternalComponent,
     children: [
-        {
-            path: 'trainPlanSearch',
-            component: TrainPlanSearchComponent
-        },
-        {
-            path: 'trainExecuteSearch',
-            component: TrainExecuteSearchComponent
-        },
-        {
-            path: 'trainExecute',
-            component: TrainExecuteComponent
-        },
-        {
-            path: 'trainPlan',
-            component: TrainPlanComponent
-        },
-        {
-            path: 'talkSearch',
-            component: TalkSearchComponent
-        },
-        {
-            path: 'talkCount',
-            component: TalkCountComponent
-        },
-        {
-            path: 'docSearch',
-            component: DocSearchComponent
-        },
-        {
-            path: 'docInput',
-            component: DocUploadComponent
-        },
-        {
-            path: 'stationSearch',
-            component: StationSearchComponent
-        },
-        {
-            path: 'stationInput',
-            component: StationInputComponent
-        },
-        {
-            path: 'deviceSearch',
-            component: DeviceSearchComponent
-        },
-        {
-            path: 'deviceInput',
-            component: DeviceInputComponent
-        },
-        {
-            path: 'talkInput',
-            component: TalkInputComponent
-        },
-        {
-            path: 'trainStatic',
-            component: TalkStaticComponent
-        }
+      {
+          path: 'trainPlanSearch',
+          component: TrainPlanSearchComponent
+      },
+      {
+          path: 'trainExecuteSearch',
+          component: TrainExecuteSearchComponent
+      },
+      {
+          path: 'trainExecute',
+          component: TrainExecuteComponent
+      },
+      {
+          path: 'trainPlan',
+          component: TrainPlanComponent
+      },
+      {
+          path: 'talkSearch',
+          component: TalkSearchComponent
+      },
+      {
+          path: 'talkCount',
+          component: TalkCountComponent
+      },
+      {
+          path: 'docSearch',
+          component: DocSearchComponent
+      },
+      {
+          path: 'docInput',
+          component: DocUploadComponent
+      },
+      {
+          path: 'stationSearch',
+          component: StationSearchComponent
+      },
+      {
+          path: 'stationInput',
+          component: StationInputComponent
+      },
+      {
+          path: 'deviceSearch',
+          component: DeviceSearchComponent
+      },
+      {
+          path: 'deviceInput',
+          component: DeviceInputComponent
+      },
+      {
+          path: 'talkInput',
+          component: TalkInputComponent
+      },
+      {
+          path: 'trainStatic',
+          component: TalkStaticComponent
+      },
+      {
+        path: 'executeDetail',
+        component: ExecuteDetailComponent
+      },
+      {
+        path: 'executeSingleDetail',
+        component: ExecuteSingleDetailComponent
+      }
     ]
   }
 ];

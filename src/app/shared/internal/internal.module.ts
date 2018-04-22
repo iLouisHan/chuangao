@@ -22,6 +22,7 @@ import { TalkInputComponent } from './talk-input/talk-input.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { TalkStaticComponent } from './talk-static/talk-static.component';
 import { ExecuteDetailComponent } from './execute-detail/execute-detail.component';
+import { ExecuteSingleDetailComponent } from './execute-single-detail/execute-single-detail.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,6 @@ import { ExecuteDetailComponent } from './execute-detail/execute-detail.componen
   ],
   declarations: [InternalComponent, TrainExecuteComponent, TrainExecuteSearchComponent,
     TrainPlanSearchComponent, TrainPlanComponent, TalkSearchComponent, TalkCountComponent, DocSearchComponent, DocUploadComponent,
-    StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent, TalkInputComponent, TalkStaticComponent, ExecuteDetailComponent]
+    StationSearchComponent, StationInputComponent, DeviceSearchComponent, DeviceInputComponent, TalkInputComponent, TalkStaticComponent, ExecuteDetailComponent, ExecuteSingleDetailComponent]
 })
 export class InternalModule { }

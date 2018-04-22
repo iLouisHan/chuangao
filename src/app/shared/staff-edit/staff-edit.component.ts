@@ -5,8 +5,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post, politics, educational } from '../../store/translate';
-import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { DialogService } from "ng2-bootstrap-modal";
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmComponent } from '../confirm/confirm.component';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'app-staff-edit',
@@ -48,11 +49,12 @@ export class StaffEditComponent implements OnInit {
     page: this.page,
     size: this.size
   };
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private store: Store<any>,
-    private dialogService: DialogService
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
@@ -127,21 +129,27 @@ export class StaffEditComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedUser) {
-      let disposable = this.dialogService.addDialog(ConfirmComponent, {
-        title:'确认删除人员？',
-        message:'Confirm message'})
-        .subscribe((isConfirmed)=>{
-          if(isConfirmed) {
-            this.staffLeave(this.selectedUser);
-          }
-        });
-        //We can close dialog calling disposable.unsubscribe();
-        //If dialog was not closed manually close it by timeout
-        setTimeout(()=>{
-          disposable.unsubscribe();
-        },10000);
+      const initialState = {
+        title: '警告',
+        message: '确认删除该人员？'
+      };
+      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
+      this.bsModalRef.content.confirmEmit.subscribe(res => {
+        this.staffLeave(this.selectedUser);
+        this.bsModalRef.hide();
+      })
+      this.bsModalRef.content.cancelEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }else {
-      alert('请选择一个人员');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个人员！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -207,6 +215,8 @@ export class StaffEditComponent implements OnInit {
   add() {
     this.form.reset();
     this.form.patchValue(this.initForm);
+    this.birthday = '';
+    this.hireDate = '';
     this.form.patchValue({orgName: this.orgName});
     this.filename = '';
     this.isChosen = true;
@@ -224,6 +234,9 @@ export class StaffEditComponent implements OnInit {
 
   update() {
     if (this.selectedUser) {
+      this.birthday = '';
+      this.hireDate = '';
+      this.form.patchValue(this.initForm);
       this.getStaffInfo(this.selectedUser);
       this.isChosen = true;
       this.isAdd = false;
@@ -301,6 +314,9 @@ export class StaffEditComponent implements OnInit {
     this.data.changeTime = this.dateFormat(this.changeTime);
     this.data.politics = this.data.politics ? this.data.politics : 0;
     this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
+    if (this.form.value.listGroup) {
+      this.data.listGroup = +this.form.value.listGroup;
+    };
     this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
               headers: myHeaders
             })

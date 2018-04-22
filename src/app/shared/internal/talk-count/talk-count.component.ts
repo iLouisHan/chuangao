@@ -49,7 +49,7 @@ export class TalkCountComponent implements OnInit {
   }
 
   search() {
-    if (!this.orgList || this.orgList.length <= 0) {
+    if (!this.orgList || this.orgList.length <= 0 || this.orgList.filter(el => el.orgType !== 3).length) {
       alert('请选择收费站！');
     } else if (!this.year) {
       alert('请选择年份！');
@@ -167,6 +167,10 @@ export class TalkCountComponent implements OnInit {
           data: res.orgCode,
           label: res.orgName
         }];
+        if (this.orgType === 3) {
+          this.getStaff();
+          this.getInfo();
+        }
       }
     });
 
@@ -214,7 +218,5 @@ export class TalkCountComponent implements OnInit {
         }
       }]
     };
-    this.getStaff();
-    this.getInfo();
   }
 }

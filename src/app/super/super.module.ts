@@ -7,8 +7,7 @@ import { SuperRoutes } from './super.routes';
 
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CalendarModule, PaginatorModule, TreeModule } from 'primeng/primeng';
-import { HasLoginGuard } from '../guard/has-login.guard';
+import { TreeModule } from 'primeng/primeng';
 
 @NgModule({
   imports: [
@@ -16,14 +15,9 @@ import { HasLoginGuard } from '../guard/has-login.guard';
     RouterModule.forChild(SuperRoutes),
     FormsModule,
     ReactiveFormsModule,
-    CalendarModule,
-    PaginatorModule,
     TreeModule,
     SharedModule
   ],
-  declarations: [SuperComponent],
-  providers: [
-    HasLoginGuard
-  ]
+  declarations: [SuperComponent]
 })
 export class SuperModule { }

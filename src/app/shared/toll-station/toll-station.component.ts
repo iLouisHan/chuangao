@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post } from '../../store/translate';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-toll-station',
   templateUrl: './toll-station.component.html',
   styleUrls: ['./toll-station.component.scss']
 })
-export class TollStationComponent implements OnInit {
+export class TollStationComponent implements OnInit, OnDestroy {
   data: any = {};
-  login: Observable<any>;
+  login: Observable<any> = new Observable<any>();
+  fullfilledSubscription: Subscription;
   workTrans = work_post;
   activedImg = 0;
   imgArrLength1: number;
@@ -55,7 +57,7 @@ export class TollStationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.login.subscribe(res => {
+    this.fullfilledSubscription = this.login.subscribe(res => {
       if (res && res.orgType === 3) {
         this.getInfo(res.orgCode);
       }else if (res && res.orgType !== 3 && /tollStation/.test(this.router.url)) {
@@ -65,6 +67,10 @@ export class TollStationComponent implements OnInit {
     setInterval(() => {
       this.activedImg++;
     }, 3000);
+  }
+
+  ngOnDestroy() {
+    this.fullfilledSubscription.unsubscribe();
   }
 
 }

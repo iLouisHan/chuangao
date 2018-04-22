@@ -146,7 +146,6 @@ export class GreenSearchComponent implements OnInit {
 
   paginate($event) {
     this.param.page = $event.page;
-    console.log(1);
     this.getInfo();
   }
 

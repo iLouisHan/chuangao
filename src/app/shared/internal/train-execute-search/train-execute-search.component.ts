@@ -50,9 +50,9 @@ export class TrainExecuteSearchComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       hasDo: new FormControl('-1', Validators.nullValidator),
-      trainWay: new FormControl('', Validators.nullValidator),
-      trainType: new FormControl('', Validators.nullValidator),
-      trainPlanName: new FormControl('', Validators.nullValidator)
+      // trainWay: new FormControl('', Validators.nullValidator),
+      // trainType: new FormControl('', Validators.nullValidator),
+      // trainPlanName: new FormControl('', Validators.nullValidator)
     });
     this.login = store.select('login');
     this.doFilePath = '';
@@ -69,12 +69,7 @@ export class TrainExecuteSearchComponent implements OnInit {
       { field: 'trainType', header: '培训类别' },
       { field: 'trainPlanTeacher', header: '培训讲师' },
       { field: 'trainPlanTimeLong', header: '培训课时' },
-      { field: 'trainPlanLoc', header: '培训地点' },
-      { field: 'executeTrainTeacher', header: '落实培训讲师' },
-      { field: 'executeTrainTime', header: '落实培训课时' },
-      { field: 'executeTrainLocation', header: '落实培训地点' },
-      { field: 'trainDoStartDate', header: '落实开始时间' },
-      { field: 'trainDoEndDate', header: '落实结束时间' }
+      { field: 'trainPlanLoc', header: '培训地点' }
     ];
   }
 
@@ -94,7 +89,7 @@ export class TrainExecuteSearchComponent implements OnInit {
   }
 
   selectedExOrg($event) {
-    this.trainDoOrgList = $event;
+    this.orgList = $event;
   }
 
   submit() {
@@ -118,11 +113,11 @@ export class TrainExecuteSearchComponent implements OnInit {
     }
   }
   getInfo(page: number, size: number) {
-    this.form.value.trainStartDate = this.dateFormat(this.startTime);
-    this.form.value.trainEndDate = this.dateFormat(this.endTime);
+    // this.form.value.trainStartDate = this.dateFormat(this.startTime);
+    // this.form.value.trainEndDate = this.dateFormat(this.endTime);
     this.form.value.hasDo = +this.form.value.hasDo;
-    this.form.value.orgList = [];
-    this.form.value.trainDoOrgList = this.trainDoOrgList.map(el => el.data);
+    this.form.value.orgList = this.orgList.map(el => el.data);
+    // this.form.value.trainDoOrgList = this.trainDoOrgList.map(el => el.data);
     const param = {
       page: page,
       size: size,

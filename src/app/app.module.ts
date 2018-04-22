@@ -7,20 +7,19 @@ import { StoreModule } from '@ngrx/store';
 import { LoginReducer, GreenReducer } from './store/cacheStore.reducer';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { PublicStaticService } from './shared/services/public-static.service';
-import { BootstrapModalModule } from 'ng2-bootstrap-modal';
-import { ConfirmComponent } from './shared/confirm/confirm.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppRoutes } from './app.routes';
 import { HasLoginGuard } from './guard/has-login.guard';
 import { AdminGuard, GeneralGuard, TollGuard, SuperGuard } from './guard/guards.guard';
+import { ConfirmComponent } from './shared/confirm/confirm.component';
+import { AlertComponent } from './shared/alert/alert.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ConfirmComponent
-  ],
-  entryComponents: [
-    ConfirmComponent
+    ConfirmComponent,
+    AlertComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -30,7 +29,11 @@ import { AdminGuard, GeneralGuard, TollGuard, SuperGuard } from './guard/guards.
       login: LoginReducer,
       green: GreenReducer
     }),
-    BootstrapModalModule.forRoot({container:document.body})
+    ModalModule.forRoot()
+  ],
+  entryComponents: [
+    ConfirmComponent,
+    AlertComponent
   ],
   providers: [
     {

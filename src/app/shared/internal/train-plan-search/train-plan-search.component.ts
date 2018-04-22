@@ -44,7 +44,6 @@ export class TrainPlanSearchComponent implements OnInit {
     private store: Store<any>
   ) {
     this.form = new FormGroup({
-      hasDo: new FormControl(-1, Validators.nullValidator),
       trainWay: new FormControl('', Validators.nullValidator),
       trainType: new FormControl('', Validators.nullValidator),
       trainPlanName: new FormControl('', Validators.nullValidator)
@@ -54,7 +53,6 @@ export class TrainPlanSearchComponent implements OnInit {
     this.cols = [
       { field: 'trainName', header: '培训计划名称' },
       { field: 'trainOrgName', header: '发起单位' },
-      { field: 'trainHasDo', header: '落实情况' },
       { field: 'trainStartDate', header: '计划开始时间' },
       { field: 'trainEndDate', header: '计划结束时间' },
       { field: 'trainWay', header: '培训方式' },
@@ -99,7 +97,6 @@ export class TrainPlanSearchComponent implements OnInit {
     const param = {
       page: page,
       size: size,
-      hasDo: 0,
       trainWay: '',
       trainType: '',
       trainPlanName: '',
@@ -124,9 +121,6 @@ export class TrainPlanSearchComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                 }
-                res.data.trainPlanDataList.forEach(item => {
-                  item.trainHasDo = item.trainHasDo === 0 ? '未落实' : '已落实';
-                });
                 this.planList = res.data.trainPlanDataList;
               } else {
                 alert(res.message);
@@ -138,13 +132,7 @@ export class TrainPlanSearchComponent implements OnInit {
     this.planData = obj;
     this.isChosen = true;
   }
-  linkTo(url, param) {
-    this.router.navigate([`${url}`], {
-      queryParams: {
-        planName: param
-      }
-    });
-  }
+
   test(val) {
     return val === +this.checkItem;
   }

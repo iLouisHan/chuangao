@@ -35,14 +35,6 @@
             <div class="orgName-container" *ngIf="orgType === 3">{{orgName}}</div>
           </div>
           <div class="form-item">
-            <p>落实状态</p>
-            <select formControlName="hasDo">
-              <option value=-1>全部类别</option>
-              <option value=0>未落实</option>
-              <option value=1>落实</option>
-            </select>
-          </div>
-          <div class="form-item">
             <p>培训方式</p>
             <select formControlName="trainWay">
               <option value="">全部类别</option>
@@ -100,7 +92,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let item of planList">
-                  <td><span class="station" (click)="linkTo('/main/internal/trainExecuteSearch', item['trainName'])">落实情况</span></td>
+                  <td><span class="station" [routerLink]="['../executeDetail']" [queryParams]="{id: item.id}">落实情况</span></td>
                   <td><span class="content" (click)="select(item)">培训内容</span></td>
                   <td *ngFor="let field of cols">{{item[field.field]}}</td>
                 </tr>

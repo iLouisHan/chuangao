@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -42,7 +42,6 @@ export class TrainPlanComponent implements OnInit {
   param: any = {
     page: this.page,
     size: this.size,
-    hasDo: -1,
     trainWay: '',
     trainType: '',
     trainPlanName: '',
@@ -64,7 +63,6 @@ export class TrainPlanComponent implements OnInit {
       trainEndDate: new FormControl('', Validators.nullValidator),
       trainUnit: new FormControl('', Validators.nullValidator),
       trainTimeLong: new FormControl('', Validators.nullValidator),
-      trainTimeNumber: new FormControl('', Validators.nullValidator),
       trainType: new FormControl('', Validators.nullValidator),
       trainWay: new FormControl('', Validators.nullValidator),
       trainContent: new FormControl('', Validators.nullValidator),
@@ -102,7 +100,6 @@ export class TrainPlanComponent implements OnInit {
       trainEndDate: '',
       trainUnit: '',
       trainTimeLong: '',
-      trainTimeNumber: '',
       trainType: '',
       trainWay: '',
       trainContent: '',
@@ -110,10 +107,6 @@ export class TrainPlanComponent implements OnInit {
     };
   }
 
-  trainTimerChanged($event){
-    $event.target.value = this.form.value.trainTimeNumber * 0.5;
-    this.form.value.trainTimeLong = $event.target.value;
-  }
   // selectedOrg($event) {
   //   console.log($event);
   //   this.planOrg = ($event)[0].data;
@@ -129,13 +122,13 @@ export class TrainPlanComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.form.patchValue({trainPlanName: res.data.trainName});
-                this.DoOrg = res.data.trainDoOrgName;
-                this.startDate = res.data.trainStartDate;
-                this.endDate = res.data.trainEndDate;
-                console.log(res.data);
+                this.data = res.data.trainPlanData;
+                this.form.patchValue(this.data);
+                this.DoOrg = this.data.trainDoOrgList.join(',');
+                this.startDate = this.data.trainStartDate;
+                this.endDate = this.data.trainEndDate;
+                this.trainTimeLong = this.data.trainTimeLong;
+                this.filename = this.data.trainPlanFile;
               } else {
                 alert(res.message);
               }
@@ -165,6 +158,9 @@ export class TrainPlanComponent implements OnInit {
                 }
                 this.staffList = [];
                 this.staffList = res.data.trainPlanDataList;
+                this.staffList.forEach(el => {
+                  el.trainDoOrgName = el.trainDoOrgList.join(',');
+                })
               } else {
                 alert(res.message);
               }
@@ -248,7 +244,6 @@ export class TrainPlanComponent implements OnInit {
     this.form.value.trainTimeLong = this.trainTimeLong;
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
     this.form.value.trainEndDate = this.dateFormat(this.endDate);
-    this.form.value.trainTimeLong = this.form.value.trainTimeNumber * 0.5;
     // this.form.value.orgType = +this.orgType;
     if (this.exOrg.length !== 0) {
       this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
@@ -269,10 +264,7 @@ export class TrainPlanComponent implements OnInit {
             .subscribe(res => {
               if (res.code) {
                 if (this.file) {
-                  const tmpArr = res.data;
-                  tmpArr.forEach(item => {
-                    this.upload(item);
-                  });
+                  this.upload(res.data.id);
                 } else {
                   this.toFirstPage();
                   this.uploading = false;
@@ -288,37 +280,40 @@ export class TrainPlanComponent implements OnInit {
     // this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.trainPlanOrg = '' + this.planOrg;
-    this.form.value.trainTimeLong = this.trainTimeLong;
-    this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
-    this.form.value.trainTimeLong = this.form.value.trainTimeNumber * 0.5;
-    const keys = Object.keys(this.form.value);
-    keys.forEach(el => {
-      this.data[el] = this.form.value[el];
-    });
-    this.data.id = this.selectedUser;
-    this.data.trainDoOrg = this.DoOrg;
-    console.log(this.data);
-    // this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planUpdate`, JSON.stringify(this.data), {
-    //           headers: myHeaders
-    //         })
-    //         .map(res => res.json())
-    //         .subscribe(res => {
-    //           if (res.code) {
-    //             if (this.file) {
-    //               this.upload(this.selectedUser);
-    //             } else {
-    //               this.toFirstPage();
-    //               this.uploading = false;
-    //             }
-    //           } else {
-    //             alert(res.message);
-    //             this.uploading = false;
-    //           }
-    //         }, error => {
-    //           alert('上传失败，请重试！');
-    //           this.uploading = false;
-    //         });
+    const data: any = {
+      id: this.selectedUser,
+      trainPlanOrg: this.orgList[0].data,
+      trainPlanName: this.form.value.trainPlanName,
+      trainStartDate: this.dateFormat(this.startDate),
+      trainEndDate: this.dateFormat(this.endDate),
+      trainContent: this.form.value.trainContent,
+      trainType: this.form.value.trainType,
+      trainWay: this.form.value.trainWay,
+      trainUnit: this.form.value.trainUnit,
+      trainTeacher: this.form.value.trainTeacher,
+      trainLoc: this.form.value.trainLoc,
+      trainTimeLong: this.form.value.trainTimeLong
+    };
+    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planUpdate`, JSON.stringify(data), {
+              headers: myHeaders
+            })
+            .map(res => res.json())
+            .subscribe(res => {
+              if (res.code) {
+                if (this.file) {
+                  this.upload(this.selectedUser);
+                } else {
+                  this.toFirstPage();
+                  this.uploading = false;
+                }
+              } else {
+                alert(res.message);
+                this.uploading = false;
+              }
+            }, error => {
+              alert('上传失败，请重试！');
+              this.uploading = false;
+            });
   }
 
   paginate($event) {

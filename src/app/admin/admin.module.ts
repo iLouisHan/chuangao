@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { AdminSidebarComponent } from './admin-sidebar/admin-sidebar.component';
 import { SharedModule } from '../shared/shared.module';
 import { AdminRoutes } from './admin.routes';
-import { HasLoginGuard } from '../guard/has-login.guard';
 
 import { RoadCompanyComponent } from './road-company/road-company.component';
 import { DivisionComponent } from './division/division.component';
@@ -29,9 +28,6 @@ import { PaginatorModule, CalendarModule } from 'primeng/primeng';
     RoadCompanyComponent,
     DivisionComponent,
     StaffTransferComponent
-  ],
-  providers: [
-    HasLoginGuard
   ]
 })
 export class AdminModule { }

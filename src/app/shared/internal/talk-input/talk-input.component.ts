@@ -24,7 +24,7 @@ export class TalkInputComponent implements OnInit {
   orgList: Array<any>;
   org: string;
   uploading = false;
-  orgType: string;
+  orgType: number;
   count: number;
   deviceList: Array<any>;
   hasData: boolean;
@@ -165,8 +165,8 @@ export class TalkInputComponent implements OnInit {
   }
 
   search() {
-      this.getInfo();
-      this.toFirstPage();
+    this.getInfo();
+    this.toFirstPage();
   }
 
   update() {

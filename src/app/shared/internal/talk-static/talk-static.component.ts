@@ -10,7 +10,6 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./talk-static.component.scss']
 })
 export class TalkStaticComponent implements OnInit {
-
   cols: Array<any>;
   rows: Array<any>;
   options: any;
@@ -152,12 +151,11 @@ export class TalkStaticComponent implements OnInit {
           data: res.orgCode,
           orgType: this.orgType
         }];
-        if (this.orgType === 3) {
-          this.getStaff();
-          this.search();
-        }
+        this.getStaff();
+        this.search();
       }
-    });
+    }).unsubscribe();
+
     const xAxisData: any = [
       '文明礼仪培训',
       '稽查业务培训',

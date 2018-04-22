@@ -1,0 +1,39 @@
+<div class="main-container">
+  <div class="infoContainer">
+    <div class="basic-info part-container">
+      <h1 class="part-title">计划信息</h1>
+      <div class="flexBox">
+        <button (click)="download('do')" *ngIf="doFilePath && doFilePath !== ''">下载落实附件</button>
+        <button (click)="download('plan')" *ngIf="planFilePath &&planFilePath !== ''">下载计划附件</button>
+        <button (click)="isChosen = !isChosen">返回</button>
+      </div>
+      <div class="basic-items part-content">
+        <ul class="clearfix">
+          <li class="basic-info-item shortName"><span>计划名称</span>{{planData.trainType}}</li>
+          <li class="basic-info-item stationType"><span>培训类别</span>{{planData.trainType}}</li>
+          <li class="basic-info-item address"><span>计划地点</span>{{planData.trainLoc}}</li>
+          <li class="basic-info-item staff"><span>计划讲师</span>{{planData.trainTeacher}}</li>
+          <li class="basic-info-item floorArea"><span>发起单位</span>{{planData.trainOrgName}}</li>
+          <li class="basic-info-item staff"><span>发起人</span>{{planData.trainOrgName}}</li>
+          <li class="basic-info-item date"><span>计划日期</span>{{planData.trainStartDate}}</li>
+          <li class="basic-info-item unit"><span>培训单位</span>{{planData.trainUnit}}</li>
+          <li class="basic-info-item way"><span>培训方式</span>{{planData.trainWay}}</li>
+          <li class="basic-last-item abstract"><p>计划摘要</p><div class="text">{{planData.trainContent}}</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="basic-info part-container">
+      <h1 class="part-title">落实信息</h1>
+      <div class="basic-items part-content">
+        <ul class="clearfix">
+          <li class="basic-info-item unit"><span>落实单位</span>{{doData.trainDoOrgName}}</li>
+          <li class="basic-info-item date"><span>落实日期</span>{{doData.trainDoStartDate}}</li>
+          <li class="basic-info-item address"><span>落实地点</span>{{doData.trainDoAddress}}</li>
+          <li class="basic-info-item staff"><span>落实讲师</span>{{doData.trainDoTeacher}}</li>
+          <li class="basic-info-item long"><span>落实课时</span>{{doData.trainTimeLong}}</li>
+          <li class="basic-info-item abstract"><p>落实摘要</p>{{doData.trainDoContent}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
