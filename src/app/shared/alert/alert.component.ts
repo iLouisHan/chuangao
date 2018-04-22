@@ -19,6 +19,10 @@ export class AlertComponent implements OnInit {
     this.submitEmit.emit();
   }
 
+  close() {
+
+  }
+
   ngOnInit() {
 
   }
