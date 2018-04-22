@@ -8,13 +8,14 @@ import { work_post, politics, educational } from '../../store/translate';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { AlertComponent } from '../alert/alert.component';
+import { MyConstructorComponent } from '../../my-constructor/my-constructor.component';
 
 @Component({
   selector: 'app-staff-edit',
   templateUrl: './staff-edit.component.html',
   styleUrls: ['./staff-edit.component.scss']
 })
-export class StaffEditComponent implements OnInit {
+export class StaffEditComponent extends MyConstructorComponent implements OnInit {
   data: any = {};
   form: FormGroup;
   staffId: string;
@@ -54,8 +55,9 @@ export class StaffEditComponent implements OnInit {
   constructor(
     private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    public modalService: BsModalService
   ) {
+    super(modalService);
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
       userName: new FormControl('', Validators.nullValidator),
@@ -129,27 +131,11 @@ export class StaffEditComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedUser) {
-      const initialState = {
-        title: '警告',
-        message: '确认删除该人员？'
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
+      this.addConfirm('警告', '确认删除该人员？').subscribe(res => {
         this.staffLeave(this.selectedUser);
-        this.bsModalRef.hide();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      });
     }else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个人员！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.addAlert('警告', '请选择一个人员！');
     }
   }
 
@@ -198,18 +184,6 @@ export class StaffEditComponent implements OnInit {
   fileChange($event) {
     this.filename = $event.target.files[0].name;
     this.file = $event.target.files[0];
-  }
-
-
-  dateFormat(date) {
-    if (date) {
-      const _date = new Date(date);
-      const _month = (_date.getMonth() + 1) <= 9 ? `0${(_date.getMonth() + 1)}` : _date.getMonth();
-      const _day = _date.getDate() <= 9 ? `0${_date.getDate()}` : _date.getDate();
-      return `${_date.getFullYear()}-${_month}-${_day}`;
-    }else {
-      return '';
-    }
   }
 
   add() {
