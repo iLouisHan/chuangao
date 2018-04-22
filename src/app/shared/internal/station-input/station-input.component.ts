@@ -4,6 +4,9 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmComponent } from '../../confirm/confirm.component';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-station-input',
@@ -56,10 +59,12 @@ export class StationInputComponent implements OnInit {
   teams = 0;
   activedStaffList: Array<any> = [];
   joinStaffList: Array<any> = [];
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       meetingName: new FormControl('', Validators.nullValidator),
@@ -97,6 +102,32 @@ export class StationInputComponent implements OnInit {
       meetingJoinPeople: '',
       meetingContent: ''
     };
+  }
+
+  showConfirm() {
+    if (this.selectedUser) {
+      const initialState = {
+        title: '警告',
+        message: '确认删除该记录？'
+      };
+      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
+      this.bsModalRef.content.confirmEmit.subscribe(res => {
+        this.staffLeave(this.selectedUser);
+        this.bsModalRef.hide();
+      })
+      this.bsModalRef.content.cancelEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }else {
+      const initialState = {
+        title: '警告',
+        message: '请选择一条记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }
   }
 
   selectedOrg($event) {
@@ -138,7 +169,14 @@ export class StationInputComponent implements OnInit {
                   this.staffList = res.data.stationMeetingDataList;
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -173,7 +211,14 @@ export class StationInputComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的组织机构！');
+      const initialState = {
+        title: '警告',
+        message: '请输入要查询的组织机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -183,16 +228,19 @@ export class StationInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个文件');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个文件'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
   delete() {
-    if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
-    } else {
-      alert('请选择一个文件');
-    }
+    this.showConfirm();
   }
 
   select(val) {
@@ -207,7 +255,14 @@ export class StationInputComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/StationMeeting/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
-              alert(res.message);
+              const initialState = {
+                title: '通知',
+                message: res.message
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               if (res.code) {
                 this.toFirstPage();
               }
@@ -217,13 +272,41 @@ export class StationInputComponent implements OnInit {
   addStaff() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (this.orgCode.length === 0) {
-      alert('请选择所属机构！');
+      const initialState = {
+        title: '警告',
+        message: '请选择所属机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.startDate) {
-      alert('请选择会议时间');
+      const initialState = {
+        title: '警告',
+        message: '请选择会议时间！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.activedStaffList.length) {
-      alert('请选择参与人员！');
+      const initialState = {
+        title: '警告',
+        message: '请选择参与人员！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }else {
       this.uploading = true;
       const myHeaders: Headers = new Headers();
@@ -244,12 +327,26 @@ export class StationInputComponent implements OnInit {
                   if (this.file) {
                     this.upload(res.data.id);
                   } else {
-                    alert('添加成功！');
+                    const initialState = {
+                      title: '通知',
+                      message: '添加成功！'
+                    };
+                    this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                    this.bsModalRef.content.submitEmit.subscribe(res => {
+                      this.bsModalRef.hide();
+                    })
                     this.toFirstPage();
                     this.uploading = false;
                   }
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.uploading = false;
                 }
               });
@@ -259,11 +356,32 @@ export class StationInputComponent implements OnInit {
   updateStaff() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (this.orgCode.length === 0) {
-      alert('请选择所属机构！');
+      const initialState = {
+        title: '警告',
+        message: '请选择所属机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.startDate) {
-      alert('请选择会议时间');
+      const initialState = {
+        title: '警告',
+        message: '请选择会议时间！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.uploading = true;
       const myHeaders: Headers = new Headers();
@@ -290,7 +408,14 @@ export class StationInputComponent implements OnInit {
                     this.uploading = false;
                   }
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.uploading = false;
                 }
               });
@@ -303,14 +428,10 @@ export class StationInputComponent implements OnInit {
   }
 
   submit() {
-    if (this.uploading) {
-      alert('正在上传中，请等待完成！');
-    }else {
-      if (this.isAdd) {
-        this.addStaff();
-      } else {
-        this.updateStaff();
-      }
+    if (this.isAdd) {
+      this.addStaff();
+    } else {
+      this.updateStaff();
     }
   }
 
@@ -398,14 +519,35 @@ export class StationInputComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '通知',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
         this.toFirstPage();
         this.uploading = false;
       }, error => {
-        alert('上传失败，请重试！');
+        const initialState = {
+          title: '警告',
+          message: '上传失败，请重试！'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         this.uploading = false;
       });
   }

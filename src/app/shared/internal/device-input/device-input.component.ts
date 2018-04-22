@@ -4,6 +4,9 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmComponent } from '../../confirm/confirm.component';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-device-input',
@@ -43,9 +46,12 @@ export class DeviceInputComponent implements OnInit {
     buyNum: '购置数量',
     assetLife: '理论年限'
   };
+  bsModalRef: BsModalRef;
+
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       assetName: new FormControl('', Validators.nullValidator),
@@ -98,13 +104,38 @@ export class DeviceInputComponent implements OnInit {
       scrapDate: ''
     };
   }
+
+  showConfirm() {
+    if (this.selectedDevice) {
+      const initialState = {
+        title: '警告',
+        message: '确认删除该记录？'
+      };
+      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
+      this.bsModalRef.content.confirmEmit.subscribe(res => {
+        this.staffLeave(this.selectedDevice);
+        this.bsModalRef.hide();
+      })
+      this.bsModalRef.content.cancelEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }else {
+      const initialState = {
+        title: '警告',
+        message: '请选择一条记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }
+  }
+
   selectedOrg($event) {
-    console.log($event[0].data);
     this.orgList = ($event);
   }
 
   selectedSearchOrg($event) {
-    console.log($event);
     this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
@@ -136,7 +167,14 @@ export class DeviceInputComponent implements OnInit {
                   this.deviceList = res.data.fixedAssetDataList;
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -165,7 +203,14 @@ export class DeviceInputComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的设备！');
+      const initialState = {
+        title: '警告',
+        message: '请输入要查询的设备！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -175,16 +220,19 @@ export class DeviceInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个设备');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个设备！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
   delete() {
-    if (this.selectedDevice) {
-      this.staffLeave(this.selectedDevice);
-    } else {
-      alert('请选择一个设备');
-    }
+    this.showConfirm();
   }
 
   select(val) {
@@ -199,7 +247,14 @@ export class DeviceInputComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
-              alert(res.message);
+              const initialState = {
+                title: '通知',
+                message: res.message
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               if (res.code) {
                 this.toFirstPage();
               }
@@ -215,9 +270,23 @@ export class DeviceInputComponent implements OnInit {
     });
     // const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.startDate) {
-      alert('请选择购置日期');
+      const initialState = {
+        title: '警告',
+        message: '请选择购置日期！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
@@ -230,10 +299,24 @@ export class DeviceInputComponent implements OnInit {
               .map(res => res.json())
               .subscribe(res => {
                 if (res.code) {
-                  // this.deviceList.push(this.form.value);
+                  const initialState = {
+                    title: '',
+                    message: '未选择机构！'
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.toFirstPage();
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                 }
               });
       }
@@ -242,9 +325,23 @@ export class DeviceInputComponent implements OnInit {
   updateDevice() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.startDate) {
-      alert('请选择购置日期');
+      const initialState = {
+        title: '警告',
+        message: '请选择购置日期！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
@@ -262,9 +359,24 @@ export class DeviceInputComponent implements OnInit {
               .map(res => res.json())
               .subscribe(res => {
                 if (res.code) {
+                  const initialState = {
+                    title: '通知',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.toFirstPage();
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                 }
               });
             }

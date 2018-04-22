@@ -236,26 +236,14 @@ form{
   width: 400px;
   height: 40px;
 
-  .container{
+  input{
     width: 299px;
     float: left;
+    border: 1px solid #d9d9d9;
     border-right: 0;
     height: 38px;
-    background: white;
-    color: black;
-    input{
-      width: 100%;
-      padding-right: 15px;
-      height: 40px;
-      text-indent: 15px;
-      border-radius: 5px;
-      box-shadow: none;
-      border: 1px solid #d9d9d9;
-
-      &:disabled{
-        background: #eee;
-      }
-    }
+    border-radius: 5px 0 0 5px;
+    text-indent: 15px;
   }
 
   div{

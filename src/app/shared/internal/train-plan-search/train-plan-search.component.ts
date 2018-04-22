@@ -5,6 +5,8 @@ import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-train-plan-search',
@@ -37,11 +39,13 @@ export class TrainPlanSearchComponent implements OnInit {
   checkItem: number;
   trainStartDate: string;
   trainEndDate: string;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private router: Router,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       trainWay: new FormControl('', Validators.nullValidator),
@@ -80,7 +84,14 @@ export class TrainPlanSearchComponent implements OnInit {
 
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
+      const initialState = {
+        title: '警告',
+        message: '未选择机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.getInfo(this.page, this.size);
     }
@@ -123,7 +134,14 @@ export class TrainPlanSearchComponent implements OnInit {
                 }
                 this.planList = res.data.trainPlanDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

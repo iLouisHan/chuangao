@@ -4,6 +4,8 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../shared/alert/alert.component';
 
 @Component({
   selector: 'app-leave-edit',
@@ -38,10 +40,12 @@ export class LeaveEditComponent implements OnInit {
   checkResult = ['未审核', '通过', '未通过'];
   uploading = false;
   initForm: any;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -67,7 +71,6 @@ export class LeaveEditComponent implements OnInit {
       { field: 'checkResultCN', header: '请假审核状态' }
     ];
     this.initForm = this.form.value;
-    console.log(this.initForm);
   }
 
   fileChange($event) {
@@ -109,9 +112,24 @@ export class LeaveEditComponent implements OnInit {
                   this.upload(res.data.id);
                 }else {
                   this.uploading = false;
+                  const initialState = {
+                    title: '通知',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                 }
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               }
             });
@@ -125,11 +143,25 @@ export class LeaveEditComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '通知',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           this.file = null;
           this.filename = '';
         }else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
         this.uploading = false;
       });
@@ -160,7 +192,14 @@ export class LeaveEditComponent implements OnInit {
                   this.hasData = true;
                 }
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

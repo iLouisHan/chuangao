@@ -3,6 +3,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-talk-static',
@@ -26,10 +28,12 @@ export class TalkStaticComponent implements OnInit {
   orgCode: string;
   orgName: string;
   login: Observable<any> = new Observable<any>();
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
   }
@@ -41,11 +45,32 @@ export class TalkStaticComponent implements OnInit {
 
   search() {
     if (!this.orgList || this.orgList.length <= 0) {
-      alert('请选择机构！');
+      const initialState = {
+        title: '警告',
+        message: '未选择机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (this.orgList[0].orgType !== 3) {
-      alert('请选择收费站！');
+      const initialState = {
+        title: '警告',
+        message: '请选择收费站！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.year) {
-      alert('请选择年份！');
+      const initialState = {
+        title: '警告',
+        message: '请选择年份！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.getInfo();
     }

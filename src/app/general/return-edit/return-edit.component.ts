@@ -5,6 +5,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType, shiftId, list_group } from '../../store/translate';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../shared/alert/alert.component';
+
 @Component({
   selector: 'app-return-edit',
   templateUrl: './return-edit.component.html',
@@ -33,10 +36,12 @@ export class ReturnEditComponent implements OnInit {
   _select: any;
   returnStatus = ['未还班', '已还班', '已过期'];
   checkResult = ['未审核', '已通过', '未通过'];
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
     this.cols = [
@@ -92,7 +97,14 @@ export class ReturnEditComponent implements OnInit {
                   });
                 }
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '通知',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -109,14 +121,35 @@ export class ReturnEditComponent implements OnInit {
     if (this.selectedSwitch) {
       this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitch)[0];
       if (this._select.returnStatus === 1) {
-        alert('此记录已还班！');
+        const initialState = {
+          title: '通知',
+          message: '此记录已还班'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
       }else if (this._select.returnStatus === 2) {
-        alert('此记录已超过可修改期限！');
+        const initialState = {
+          title: '通知',
+          message: '此记录已超过可修改期限！'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
       }else {
         this.view = 1;
       }
     }else {
-      alert('请选择换班记录！');
+      const initialState = {
+        title: '通知',
+        message: '请选择换班记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -136,12 +169,26 @@ export class ReturnEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                alert('还班信息申请提交成功！');
+                const initialState = {
+                  title: '通知',
+                  message: '还班信息申请提交成功！'
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.toFirstPage();
                 this._select = '';
                 this.view = 0;
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

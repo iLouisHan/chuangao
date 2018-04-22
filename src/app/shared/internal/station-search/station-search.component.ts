@@ -4,6 +4,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-station-search',
@@ -37,10 +39,12 @@ export class StationSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -76,7 +80,14 @@ export class StationSearchComponent implements OnInit {
 
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择机构');
+      const initialState = {
+        title: '警告',
+        message: '未选择机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.getInfo(this.page, this.size);
     }
@@ -112,7 +123,14 @@ export class StationSearchComponent implements OnInit {
                 }
                 this.planList = res.data.stationMeetingDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

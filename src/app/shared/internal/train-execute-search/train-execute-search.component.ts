@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-train-execute-search',
@@ -41,12 +43,14 @@ export class TrainExecuteSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       hasDo: new FormControl('-1', Validators.nullValidator),
@@ -94,9 +98,23 @@ export class TrainExecuteSearchComponent implements OnInit {
 
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
-      alert('未选择发起单位');
+      const initialState = {
+        title: '警告',
+        message: '未选择发起单位！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.trainDoOrgList || this.trainDoOrgList.length === 0) {
-      alert('未选择落实单位');
+      const initialState = {
+        title: '警告',
+        message: '未选择落实单位！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.getInfo(this.page, this.size);
     }
@@ -143,7 +161,14 @@ export class TrainExecuteSearchComponent implements OnInit {
                 });
                 this.staffList = res.data.trainDoDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -157,7 +182,14 @@ export class TrainExecuteSearchComponent implements OnInit {
                 this.doData = res.data;
                 this.doFilePath = res.data.trainDoFile;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
     this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${id}`)
@@ -167,7 +199,14 @@ export class TrainExecuteSearchComponent implements OnInit {
                 this.planData = res.data;
                 this.planFilePath = res.data.trainPlanFile;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

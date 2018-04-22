@@ -6,6 +6,8 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
 import {ElementRef} from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../../shared/alert/alert.component';
 
 @Component({
   selector: 'app-self-edit',
@@ -29,15 +31,18 @@ export class SelfEditComponent implements OnInit {
   orgName: string;
   orgType: number;
   uploading = false;
-
+  bsModalRef: BsModalRef;
   data2: any;
   cropperSettings2: CropperSettings;
   bounds: any;
   srcImg: any;
   @ViewChild('cropper', undefined) cropper: ImageCropperComponent;
 
-  constructor(private http: Http, private elementRef: ElementRef,
-              private store: Store<any>) {
+  constructor(
+    private http: Http, private elementRef: ElementRef,
+    private store: Store<any>,
+    private modalService: BsModalService
+  ) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
       userName: new FormControl('', Validators.nullValidator),
@@ -127,7 +132,14 @@ export class SelfEditComponent implements OnInit {
           this.changeTime = res.data.changeTime;
           this.filename = res.data.fileName;
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
       });
   }
@@ -173,10 +185,24 @@ export class SelfEditComponent implements OnInit {
           if (this.file) {
             this.upload(this.data.userId);
           } else {
-            alert('修改成功！');
+            const initialState = {
+              title: '通知',
+              message: '保存成功！'
+            };
+            this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+            this.bsModalRef.content.submitEmit.subscribe(res => {
+              this.bsModalRef.hide();
+            })
           }
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
       });
   }
@@ -196,14 +222,35 @@ export class SelfEditComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '通知',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           this.uploading = false;
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           this.uploading = false;
         }
       }, error => {
-        alert('上传失败，请重试！');
+        const initialState = {
+          title: '警告',
+          message: '上传失败，请重试！'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         this.uploading = false;
       });
   }

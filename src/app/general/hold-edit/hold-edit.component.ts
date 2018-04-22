@@ -5,6 +5,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { list_group } from '../../store/translate';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../shared/alert/alert.component';
 
 @Component({
   selector: 'app-hold-edit',
@@ -28,10 +30,12 @@ export class HoldEditComponent implements OnInit {
   count: number;
   hasData: boolean;
   checkResult = ['未审核', '通过', '未通过'];
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = this.store.select('login');
     this.param = {
@@ -89,9 +93,23 @@ export class HoldEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                alert(res.message);
+                const initialState = {
+                  title: '通知',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -115,7 +133,14 @@ export class HoldEditComponent implements OnInit {
                   this.holdList = res.data.shiftChangeDataList;
                 }
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

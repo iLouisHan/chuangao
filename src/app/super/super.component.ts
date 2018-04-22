@@ -3,7 +3,9 @@ import { Http, Headers } from '@angular/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
+import { AlertComponent } from '../shared/alert/alert.component';
 
 @Component({
   selector: 'app-super',
@@ -35,10 +37,12 @@ export class SuperComponent implements OnInit {
     orgCode: '机构代码',
     adminName: '机构管理员姓名'
   };
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -77,7 +81,14 @@ export class SuperComponent implements OnInit {
 
   add() {
     if (this.selected.orgType === 3) {
-      alert('不能为收费站添加子机构！');
+      const initialState = {
+        title: '警告',
+        message: '不能为收费站添加子机构！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }else {
       const orgType = this.selected.orgType || 0;
       this.view = 1;
@@ -101,13 +112,27 @@ export class SuperComponent implements OnInit {
         headers: new Headers({'Content-Type': 'application/json'})
       }).map(res => res.json())
       .subscribe(res => {
-        alert(res.message);
+        const initialState = {
+          title: '通知',
+          message: '请选择一条记录！'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         if (res.code) {
           this.getStaff(this.selected.data);
         }
       });
     }else {
-      alert('至少选择一个管理员！');
+      const initialState = {
+        title: '警告',
+        message: '至少选择一个管理员！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -116,7 +141,14 @@ export class SuperComponent implements OnInit {
       this.http.get(`http://119.29.144.125:8080/cgfeesys/Super/deleteOrg?orgCode=${this.selected.data}&orgType=${this.selected.orgType}`)
         .map(res => res.json())
         .subscribe(res => {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           if (res.code) {
             this.view = 0;
             this.getOrgInfo();
@@ -175,7 +207,14 @@ export class SuperComponent implements OnInit {
                 if (res.code) {
                   this.toTreeNode(res.data);
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                 }
               });
   }
@@ -183,7 +222,14 @@ export class SuperComponent implements OnInit {
   submit() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }else {
       this.form.value.orgType = +this.form.value.orgType;
       this.http.post(`http://119.29.144.125:8080/cgfeesys/Super/addOrg`, JSON.stringify(this.form.value), {
@@ -191,7 +237,14 @@ export class SuperComponent implements OnInit {
       })
       .map(res => res.json())
       .subscribe(res => {
-        alert(res.message);
+        const initialState = {
+          title: '通知',
+          message: res.message
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         if (res.code) {
           this.view = 0;
           this.getOrgInfo();
@@ -205,9 +258,23 @@ export class SuperComponent implements OnInit {
         .map(res => res.json())
         .subscribe(res => {
           if (res.code) {
-            alert('重置成功');
+            const initialState = {
+              title: '通知',
+              message: '重置成功！'
+            };
+            this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+            this.bsModalRef.content.submitEmit.subscribe(res => {
+              this.bsModalRef.hide();
+            })
           }else {
-            alert(res.message);
+            const initialState = {
+              title: '警告',
+              message: res.message
+            };
+            this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+            this.bsModalRef.content.submitEmit.subscribe(res => {
+              this.bsModalRef.hide();
+            })
           }
         });
   }

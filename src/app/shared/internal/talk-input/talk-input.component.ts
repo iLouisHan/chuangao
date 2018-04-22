@@ -4,6 +4,9 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmComponent } from '../../confirm/confirm.component';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-talk-input',
@@ -45,9 +48,12 @@ export class TalkInputComponent implements OnInit {
     page: this.page,
     size: this.size
   };
+  bsModalRef: BsModalRef;
+
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       chatLeader: new FormControl('', Validators.nullValidator),
@@ -86,6 +92,33 @@ export class TalkInputComponent implements OnInit {
       chatPersonList: ''
     };
   }
+
+  showConfirm() {
+    if (this.selectedDevice) {
+      const initialState = {
+        title: '警告',
+        message: '确认删除该记录？'
+      };
+      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
+      this.bsModalRef.content.confirmEmit.subscribe(res => {
+        this.staffLeave(this.selectedDevice);
+        this.bsModalRef.hide();
+      })
+      this.bsModalRef.content.cancelEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }else {
+      const initialState = {
+        title: '警告',
+        message: '请选择一条记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }
+  }
+
   selectedOrg($event) {
     this.orgList = ($event);
   }
@@ -140,7 +173,14 @@ export class TalkInputComponent implements OnInit {
                 });
                 this.deviceList = res.data.chatDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -175,16 +215,19 @@ export class TalkInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个谈心记录');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个谈心记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
   delete() {
-    if (this.selectedDevice) {
-      this.staffLeave(this.selectedDevice);
-    } else {
-      alert('请选择一个谈心记录');
-    }
+    this.showConfirm();
   }
 
   select(val) {
@@ -199,7 +242,14 @@ export class TalkInputComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/Chat/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
-              alert(res.message);
+              const initialState = {
+                title: '通知',
+                message: res.message
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               if (res.code) {
                 this.toFirstPage();
               }
@@ -226,7 +276,14 @@ export class TalkInputComponent implements OnInit {
                   this.uploading = false;
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               }
             });
@@ -255,9 +312,24 @@ export class TalkInputComponent implements OnInit {
                 } else {
                   this.toFirstPage();
                   this.uploading = false;
+                  const initialState = {
+                    title: '通知',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               }
             });
@@ -269,14 +341,10 @@ export class TalkInputComponent implements OnInit {
   }
 
   submit() {
-    if (this.uploading) {
-      alert('正在上传中，请等待完成！');
-    }else {
-      if (this.isAdd) {
-        this.addDevice();
-      } else {
-        this.updateDevice();
-      }
+    if (this.isAdd) {
+      this.addDevice();
+    } else {
+      this.updateDevice();
     }
   }
 
@@ -298,14 +366,35 @@ export class TalkInputComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '通知',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
         this.toFirstPage();
         this.uploading = false;
       }, error => {
-        alert('上传失败，请重试！');
+        const initialState = {
+          title: '警告',
+          message: '上传失败，请重试！'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         this.uploading = false;
       });
   }

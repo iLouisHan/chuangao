@@ -6,6 +6,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { FormArray } from '@angular/forms/src/model';
 import { identifierName } from '@angular/compiler';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
+
 @Component({
   selector: 'app-train-execute',
   templateUrl: './train-execute.component.html',
@@ -56,10 +59,12 @@ export class TrainExecuteComponent implements OnInit {
   activedStaffList: Array<any> = [];
   joinStaffList: Array<any> = [];
   doId: string;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       trainName: new FormControl('', Validators.nullValidator),
@@ -174,7 +179,14 @@ export class TrainExecuteComponent implements OnInit {
                 this.trainForm.patchValue({trainPlanName: res.data.trainPlanData.trainName});
                 this.doId = res.data.trainDoListDataList.filter(el => el.trainDoOrgCode === this.orgCode)[0].doId;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -203,7 +215,14 @@ export class TrainExecuteComponent implements OnInit {
                 });
                 this.staffList = res.data.trainDoDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -300,12 +319,26 @@ export class TrainExecuteComponent implements OnInit {
                 if (this.file) {
                   this.upload(res.data.id);
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '通知',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.toFirstPage();
                   this.uploading = false;
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               }
             });
@@ -317,11 +350,7 @@ export class TrainExecuteComponent implements OnInit {
   }
 
   submit() {
-    if (this.uploading) {
-      alert('正在上传中，请等待完成！');
-    }else {
-      this.addStaff();
-    }
+    this.addStaff();
   }
 
   addStaffs() {
@@ -417,16 +446,37 @@ export class TrainExecuteComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           this.file = null;
           this.filename = '';
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
         this.toFirstPage();
         this.uploading = false;
       }, error => {
-        alert('上传失败，请重试！');
+        const initialState = {
+          title: '警告',
+          message: '上传失败，请重试！'
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         this.uploading = false;
       });
   }

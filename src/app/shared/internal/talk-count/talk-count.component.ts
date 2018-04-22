@@ -3,6 +3,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-talk-count',
@@ -30,9 +32,12 @@ export class TalkCountComponent implements OnInit {
   data1: Array<any>;
   data2: Array<any>;
   reasonList: Array<any>;
+  bsModalRef: BsModalRef;
+
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.quarter = '1';
     this.data1 = [];
@@ -50,11 +55,32 @@ export class TalkCountComponent implements OnInit {
 
   search() {
     if (!this.orgList || this.orgList.length <= 0 || this.orgList.filter(el => el.orgType !== 3).length) {
-      alert('请选择收费站！');
+      const initialState = {
+        title: '警告',
+        message: '请选择收费站！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.year) {
-      alert('请选择年份！');
+      const initialState = {
+        title: '警告',
+        message: '请选择年份！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.quarter) {
-      alert('请选择季度！');
+      const initialState = {
+        title: '警告',
+        message: '请选择季度！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.getInfo();
     }
@@ -150,10 +176,24 @@ export class TalkCountComponent implements OnInit {
     }).map(res => res.json())
     .subscribe(res => {
       if (res.code) {
-        alert(res.message);
+        const initialState = {
+          title: '通知',
+          message: res.message
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         this.isChoose = false;
       } else {
-        alert(res.message);
+        const initialState = {
+          title: '警告',
+          message: res.message
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
       }
     });
   }

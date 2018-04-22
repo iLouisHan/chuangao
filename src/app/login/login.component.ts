@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import * as Actions from '../store/cacheStore.actions';
 import { Store } from '@ngrx/store';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../shared/alert/alert.component';
 
 @Component({
   selector: 'app-login',
@@ -18,11 +20,13 @@ export class LoginComponent implements OnInit {
   });
   orgType: number;
   isAdmin: number;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private store: Store<any>,
-    private router: Router
+    private router: Router,
+    private modalService: BsModalService
   ) {}
 
   onSubmit() {
@@ -51,7 +55,14 @@ export class LoginComponent implements OnInit {
           }
           window.sessionStorage.setItem('login', JSON.stringify(res.data));
         }else {
-          alert(res.message);
+          const initialState = {
+            title: '通知',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
       });
   }

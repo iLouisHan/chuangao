@@ -4,6 +4,8 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-doc-search',
@@ -36,10 +38,12 @@ export class DocSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -91,7 +95,14 @@ export class DocSearchComponent implements OnInit {
     if (this.selectedDoc) {
       window.open(this.selectedDoc);
     } else {
-      alert('请勾选文档');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个文档！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
   getInfo(page: number, size: number) {
@@ -120,7 +131,14 @@ export class DocSearchComponent implements OnInit {
                 }
                 this.planList = res.data.fileManagerDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '通知',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

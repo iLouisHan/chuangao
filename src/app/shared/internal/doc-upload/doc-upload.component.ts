@@ -4,6 +4,9 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmComponent } from '../../confirm/confirm.component';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-doc-upload',
@@ -55,9 +58,12 @@ export class DocUploadComponent implements OnInit {
     size: this.size,
     fileName: ''
   };
+  bsModalRef: BsModalRef;
+
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       fileName: new FormControl('', Validators.nullValidator),
@@ -98,6 +104,32 @@ export class DocUploadComponent implements OnInit {
     };
   }
 
+  showConfirm() {
+    if (this.selectedUser) {
+      const initialState = {
+        title: '警告',
+        message: '确认删除该记录？'
+      };
+      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
+      this.bsModalRef.content.confirmEmit.subscribe(res => {
+        this.staffLeave(this.selectedUser);
+        this.bsModalRef.hide();
+      })
+      this.bsModalRef.content.cancelEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }else {
+      const initialState = {
+        title: '警告',
+        message: '请选择一条记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }
+  }
+
   selectedOrg($event) {
     this.searchOrg = ($event);
   }
@@ -129,7 +161,14 @@ export class DocUploadComponent implements OnInit {
                 }
                 this.deviceList = res.data.fileManagerDataList;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -161,7 +200,14 @@ export class DocUploadComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的人员姓名！');
+      const initialState = {
+        title: '警告',
+        message: '请输入要查询的人员姓名！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -171,16 +217,19 @@ export class DocUploadComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个文档');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个文档！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
   delete() {
-    if (this.selectedUser) {
-      this.staffLeave(this.selectedUser);
-    } else {
-      alert('请选择一个文档');
-    }
+    this.showConfirm();
   }
 
   select(val) {
@@ -196,7 +245,14 @@ export class DocUploadComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/FileManager/delete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
-              alert(res.message);
+              const initialState = {
+                title: '通知',
+                message: res.message
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               if (res.code) {
                 this.toFirstPage();
               }
@@ -206,13 +262,41 @@ export class DocUploadComponent implements OnInit {
   addDevice() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.file) {
-      alert('请上传文档！');
+      const initialState = {
+        title: '警告',
+        message: '请上传文档！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.endDate) {
-      alert('请选择发文时间');
+      const initialState = {
+        title: '警告',
+        message: '请选择发文时间！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (this.searchOrg.length === 0) {
-      alert('请选择浏览权限！');
+      const initialState = {
+        title: '警告',
+        message: '请选择浏览权限！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.uploading = true;
       const myHeaders: Headers = new Headers();
@@ -228,7 +312,14 @@ export class DocUploadComponent implements OnInit {
                 if (res.code) {
                   this.upload(res.data.id);
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.uploading = false;
                 }
               });
@@ -238,11 +329,32 @@ export class DocUploadComponent implements OnInit {
   updateDevice() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      const initialState = {
+        title: '警告',
+        message: `${spaceArr.join(',')}为空`
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (!this.endDate) {
-      alert('请选择发文时间');
+      const initialState = {
+        title: '警告',
+        message: '请选择发文时间！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else if (this.searchOrg.length === 0) {
-      alert('请选择浏览权限！');
+      const initialState = {
+        title: '警告',
+        message: '请选择浏览权限！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     } else {
       this.uploading = true;
       const myHeaders: Headers = new Headers();
@@ -268,11 +380,25 @@ export class DocUploadComponent implements OnInit {
                     this.uploading = false;
                   }
                 } else {
-                  alert(res.message);
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.uploading = false;
                 }
               }, error => {
-                alert('上传失败，请重试！');
+                const initialState = {
+                  title: '警告',
+                  message: '上传失败，请重试！'
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               });
       }
@@ -284,14 +410,10 @@ export class DocUploadComponent implements OnInit {
   }
 
   submit() {
-    if (this.uploading) {
-      alert('正在上传中！');
-    }else {
-      if (this.isAdd) {
-        this.addDevice();
-      } else {
-        this.updateDevice();
-      }
+    if (this.isAdd) {
+      this.addDevice();
+    } else {
+      this.updateDevice();
     }
   }
 
@@ -308,11 +430,25 @@ export class DocUploadComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '通知',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           this.file = null;
           this.filename = '';
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
         this.toFirstPage();
         this.uploading = false;

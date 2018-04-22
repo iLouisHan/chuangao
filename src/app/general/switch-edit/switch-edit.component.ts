@@ -5,6 +5,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType, shiftId, list_group } from '../../store/translate';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../shared/alert/alert.component';
 
 @Component({
   selector: 'app-switch-edit',
@@ -57,10 +59,12 @@ export class SwitchEditComponent implements OnInit {
   shiftChangeDataList: Array<any>;
   requiredItems: any = {};
   loadingStaffs = false;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       remark: new FormControl('', Validators.nullValidator),
@@ -143,7 +147,14 @@ export class SwitchEditComponent implements OnInit {
                   });
                 }
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '通知',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -190,7 +201,14 @@ export class SwitchEditComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     }else {
-      alert('请选择一个请假信息！');
+      const initialState = {
+        title: '通知',
+        message: '请选择一个请假信息！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -198,7 +216,14 @@ export class SwitchEditComponent implements OnInit {
     if (this.selectedSwitch) {
       this.deleteLeave(this.selectedSwitch);
     }else {
-      alert('请选择一个人员');
+      const initialState = {
+        title: '通知',
+        message: '请选择一个人员！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -214,7 +239,14 @@ export class SwitchEditComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/delete?id=${selectedSwitch}`)
             .map(res => res.json())
             .subscribe(res => {
-              alert(res.message);
+              const initialState = {
+                title: '通知',
+                message: res.message
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               if (res.code) {
                 this.hasData = false;
                 this.toFirstPage();
@@ -250,7 +282,14 @@ export class SwitchEditComponent implements OnInit {
       const param: any = {};
       const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
       if (spaceArr.length > 0) {
-        alert(`${spaceArr.join(',')}为空`);
+        const initialState = {
+          title: '警告',
+          message: `${spaceArr.join(',')}为空`
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
       }else {
         param.backTeams = this.form.value.backTeams;
         param.backUserId = this.form.value.backUserId;
@@ -275,7 +314,14 @@ export class SwitchEditComponent implements OnInit {
       const param: any = {};
       const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
       if (spaceArr.length > 0) {
-        alert(`${spaceArr.join(',')}为空`);
+        const initialState = {
+          title: '警告',
+          message: `${spaceArr.join(',')}为空`
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
       }else {
         param.applyTeams = this.listGroup;
         param.applyUserId = this.userId;
@@ -298,11 +344,25 @@ export class SwitchEditComponent implements OnInit {
     .map(res => res.json())
     .subscribe(res => {
       if (res.code) {
-        alert(res.message);
+        const initialState = {
+          title: '通知',
+          message: res.message
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
         this.toFirstPage();
         this.userName = '';
       }else {
-        alert(res.message);
+        const initialState = {
+          title: '警告',
+          message: res.message
+        };
+        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+        this.bsModalRef.content.submitEmit.subscribe(res => {
+          this.bsModalRef.hide();
+        })
       }
       this.applyInfo = undefined;
       this.backInfo = undefined;
@@ -334,10 +394,24 @@ export class SwitchEditComponent implements OnInit {
             .map(res => res.json())
             .subscribe(res => {
               if (res.code) {
-                alert(res.message);
+                const initialState = {
+                  title: '通知',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.toFirstPage();
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -372,7 +446,14 @@ export class SwitchEditComponent implements OnInit {
                   this.backStaffList = res.data;
                 }
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

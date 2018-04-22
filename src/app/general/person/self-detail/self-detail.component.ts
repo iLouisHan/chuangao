@@ -5,6 +5,8 @@ import 'rxjs/add/operator/map';
 import { work_post, politicalStatus, positionalTitle } from '../../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertComponent } from '../../../shared/alert/alert.component';
 
 @Component({
   selector: 'app-self-detail',
@@ -19,10 +21,12 @@ export class SelfDetailComponent implements OnInit {
   politicalStatus = politicalStatus;
   positionalTitle = positionalTitle;
   login: Observable<any> = new Observable<any>();
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.login = store.select('login');
   }
@@ -38,7 +42,14 @@ export class SelfDetailComponent implements OnInit {
               if (res.code) {
                 this.data = res.data;
               }else {
-                alert(res.message);
+                const initialState = {
+                  title: '通知',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }

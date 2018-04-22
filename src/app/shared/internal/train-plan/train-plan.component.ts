@@ -4,6 +4,9 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmComponent } from '../../confirm/confirm.component';
+import { AlertComponent } from '../../alert/alert.component';
 
 @Component({
   selector: 'app-train-plan',
@@ -49,10 +52,12 @@ export class TrainPlanComponent implements OnInit {
     trainEndDate: ''
   };
   trainTimeLong = 0.5;
+  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private modalService: BsModalService
   ) {
     this.form = new FormGroup({
       trainPlanName: new FormControl('', Validators.nullValidator),
@@ -111,6 +116,33 @@ export class TrainPlanComponent implements OnInit {
   //   console.log($event);
   //   this.planOrg = ($event)[0].data;
   // }
+
+  showConfirm() {
+    if (this.selectedUser) {
+      const initialState = {
+        title: '警告',
+        message: '确认删除该记录？'
+      };
+      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
+      this.bsModalRef.content.confirmEmit.subscribe(res => {
+        this.deletePlan(this.selectedUser);
+        this.bsModalRef.hide();
+      })
+      this.bsModalRef.content.cancelEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }else {
+      const initialState = {
+        title: '警告',
+        message: '请选择一条记录！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
+    }
+  }
+
   selectedEXOrg($event) {
     this.exOrg = ($event);
   }
@@ -130,7 +162,14 @@ export class TrainPlanComponent implements OnInit {
                 this.trainTimeLong = this.data.trainTimeLong;
                 this.filename = this.data.trainPlanFile;
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -162,7 +201,14 @@ export class TrainPlanComponent implements OnInit {
                   el.trainDoOrgName = el.trainDoOrgList.join(',');
                 })
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
               }
             });
   }
@@ -197,7 +243,14 @@ export class TrainPlanComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      alert('请输入要查询的组织！');
+      const initialState = {
+        title: '警告',
+        message: '请输入要查询的组织！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
@@ -207,16 +260,19 @@ export class TrainPlanComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      alert('请选择一个计划');
+      const initialState = {
+        title: '警告',
+        message: '请选择一个计划！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
     }
   }
 
   delete() {
-    if (this.selectedUser) {
-      this.deletePlan(this.selectedUser);
-    } else {
-      alert('请选择一个计划');
-    }
+    this.showConfirm();
   }
 
   select(val) {
@@ -231,7 +287,14 @@ export class TrainPlanComponent implements OnInit {
     this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planDelete?id=${selectedUser}`)
             .map(res => res.json())
             .subscribe(res => {
-              alert(res.message);
+              const initialState = {
+                title: '通知',
+                message: res.message
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               if (res.code) {
                 this.toFirstPage();
               }
@@ -248,7 +311,14 @@ export class TrainPlanComponent implements OnInit {
     if (this.exOrg.length !== 0) {
       this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
     } else {
-      alert('请选择落实单位！');
+      const initialState = {
+        title: '警告',
+        message: '请选择落实单位！'
+      };
+      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      this.bsModalRef.content.submitEmit.subscribe(res => {
+        this.bsModalRef.hide();
+      })
       return false;
     }
     this.form.value.trainPlanOrg = this.orgList[0].data;
@@ -268,9 +338,24 @@ export class TrainPlanComponent implements OnInit {
                 } else {
                   this.toFirstPage();
                   this.uploading = false;
+                  const initialState = {
+                    title: '通知',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               }
             });
@@ -304,14 +389,36 @@ export class TrainPlanComponent implements OnInit {
                   this.upload(this.selectedUser);
                 } else {
                   this.toFirstPage();
+                  const initialState = {
+                    title: '警告',
+                    message: res.message
+                  };
+                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                  this.bsModalRef.content.submitEmit.subscribe(res => {
+                    this.bsModalRef.hide();
+                  })
                   this.uploading = false;
                 }
               } else {
-                alert(res.message);
+                const initialState = {
+                  title: '警告',
+                  message: res.message
+                };
+                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+                this.bsModalRef.content.submitEmit.subscribe(res => {
+                  this.bsModalRef.hide();
+                })
                 this.uploading = false;
               }
             }, error => {
-              alert('上传失败，请重试！');
+              const initialState = {
+                title: '警告',
+                message: '上传失败，请重试！'
+              };
+              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+              this.bsModalRef.content.submitEmit.subscribe(res => {
+                this.bsModalRef.hide();
+              })
               this.uploading = false;
             });
   }
@@ -322,14 +429,10 @@ export class TrainPlanComponent implements OnInit {
   }
 
   submit() {
-    if (this.uploading) {
-      alert('正在上传中，请等待完成！');
-    }else {
-      if (this.isAdd) {
-        this.addStaff();
-      } else {
-        this.updateStaff();
-      }
+    if (this.isAdd) {
+      this.addStaff();
+    } else {
+      this.updateStaff();
     }
   }
 
@@ -341,11 +444,25 @@ export class TrainPlanComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         if (res.code) {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
           this.file = null;
           this.filename = '';
         } else {
-          alert(res.message);
+          const initialState = {
+            title: '警告',
+            message: res.message
+          };
+          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+          this.bsModalRef.content.submitEmit.subscribe(res => {
+            this.bsModalRef.hide();
+          })
         }
         this.toFirstPage();
         this.uploading = false;
