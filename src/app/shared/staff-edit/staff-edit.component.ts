@@ -152,7 +152,8 @@ export class StaffEditComponent implements OnInit {
   getInfo() {
     this.sharedService
       .post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param), {
-        animation: true
+        animation: true,
+        httpOptions: true
       })
       .subscribe(res => {
         this.count = res.data.count;

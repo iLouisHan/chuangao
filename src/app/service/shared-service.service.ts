@@ -68,22 +68,22 @@ export class SharedService {
     }
   }
 
-  post(path: string, param: any, _options?: {
-    httpOptions?: any,
+  post(path: string, param: any, options: {
+    httpOptions: boolean,
     successAlert?: boolean,
     animation?: boolean
   }) {
     return Observable.create(obser => {
-      let options: any = _options || {};
+      let httpOptions: any = {};
       if (options && options.animation) {
         this.openLoadingAnimation();
       }
-      if (!options.httpOptions) {
-        options.httpOptions = {
+      if (options.httpOptions) {
+        httpOptions = {
           headers: new Headers({'Content-Type': 'application/json'})
         }
       }
-      this.http.post(path, param, options.httpOptions)
+      this.http.post(path, param, httpOptions)
               .map(res => res.json())
               .subscribe(res => {
                 if (res.code) {

@@ -140,7 +140,8 @@ export class DeviceInputComponent implements OnInit {
     }
     this.sharedService
       .post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(this.param), {
-        animation: true
+        animation: true,
+        httpOptions: true
       })
       .subscribe(res => {
         this.count = res.data.count;
@@ -218,7 +219,6 @@ export class DeviceInputComponent implements OnInit {
         spaceArr.push(this.requiredItems[item]);
       }
     });
-    // const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
       this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
     } else if (!this.startDate) {
@@ -232,37 +232,12 @@ export class DeviceInputComponent implements OnInit {
       this.sharedService
         .post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
           successAlert: true,
-          animation: true
+          animation: true,
+          httpOptions: true
         })
         .subscribe(res => {
           this.toFirstPage();
         })
-      // this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
-      //           headers: myHeaders
-      //         })
-      //         .map(res => res.json())
-      //         .subscribe(res => {
-      //           if (res.code) {
-      //             const initialState = {
-      //               title: '',
-      //               message: '未选择机构！'
-      //             };
-      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      //             this.bsModalRef.content.submitEmit.subscribe(res => {
-      //               this.bsModalRef.hide();
-      //             })
-      //             this.toFirstPage();
-      //           } else {
-      //             const initialState = {
-      //               title: '警告',
-      //               message: res.message
-      //             };
-      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      //             this.bsModalRef.content.submitEmit.subscribe(res => {
-      //               this.bsModalRef.hide();
-      //             })
-      //           }
-      //         });
       }
   }
 
@@ -283,32 +258,15 @@ export class DeviceInputComponent implements OnInit {
       this.data.buyDate = this.dateFormat(this.startDate);
       this.data.scrapDate = this.dateFormat(this.endDate);
       this.data.useOrg = this.orgList[0].data;
-      // this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
-      //           headers: myHeaders
-      //         })
-      //         .map(res => res.json())
-      //         .subscribe(res => {
-      //           if (res.code) {
-      //             const initialState = {
-      //               title: '通知',
-      //               message: res.message
-      //             };
-      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      //             this.bsModalRef.content.submitEmit.subscribe(res => {
-      //               this.bsModalRef.hide();
-      //             })
-      //             this.toFirstPage();
-      //           } else {
-      //             const initialState = {
-      //               title: '警告',
-      //               message: res.message
-      //             };
-      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      //             this.bsModalRef.content.submitEmit.subscribe(res => {
-      //               this.bsModalRef.hide();
-      //             })
-      //           }
-      //         });
+      this.sharedService
+        .post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
+          successAlert: true,
+          animation: true,
+          httpOptions: true
+        })
+        .subscribe(res => {
+          this.toFirstPage();
+        })
             }
   }
 
