@@ -5,9 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post, politics, educational } from '../../store/translate';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ConfirmComponent } from '../confirm/confirm.component';
-import { AlertComponent } from '../alert/alert.component';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-staff-edit',
@@ -49,12 +47,11 @@ export class StaffEditComponent implements OnInit {
     page: this.page,
     size: this.size
   };
-  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
@@ -129,70 +126,46 @@ export class StaffEditComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedUser) {
-      const initialState = {
-        title: '警告',
-        message: '确认删除该人员？'
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
+      this.sharedService.addConfirm('警告', '确定离职该人员？').subscribe(res => {
         this.staffLeave(this.selectedUser);
-        this.bsModalRef.hide();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
       })
     }else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个人员！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一个人员！');
     }
   }
 
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.hireDate = res.data.hireDate;
-                this.birthday = res.data.birthday;
-                this.changeTime = res.data.changeTime;
-                this.filename = res.data.fileName;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`, {
+        animation: true
+      })
+      .subscribe(res => {
+        this.data = res.data;
+        this.form.patchValue(res.data);
+        this.hireDate = res.data.hireDate;
+        this.birthday = res.data.birthday;
+        this.changeTime = res.data.changeTime;
+        this.filename = res.data.fileName;
+      })
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.staffList = res.data.staffDataList.map(el => {
-                    el.politicalStatus = this.politics[el.politicalStatus];
-                    el.workPost = this.work_post[el.workPost];
-                    el.educational = this.educational[el.educational];
-                    return el;
-                  });
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param), {
+        animation: true
+      })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.staffList = res.data.staffDataList.map(el => {
+            el.politicalStatus = this.politics[el.politicalStatus];
+            el.workPost = this.work_post[el.workPost];
+            el.educational = this.educational[el.educational];
+            return el;
+          });
+        }
+      })
   }
 
   fileChange($event) {

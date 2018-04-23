@@ -1,0 +1,11 @@
+.custom-loading-style{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.3) url('/assets/images/liubi-loading.gif') no-repeat center center;
+  display: block;
+  margin: 0;
+}
