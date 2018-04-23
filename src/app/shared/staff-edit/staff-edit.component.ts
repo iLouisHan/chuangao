@@ -5,17 +5,14 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post, politics, educational } from '../../store/translate';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ConfirmComponent } from '../confirm/confirm.component';
-import { AlertComponent } from '../alert/alert.component';
-import { MyConstructorComponent } from '../../my-constructor/my-constructor.component';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-staff-edit',
   templateUrl: './staff-edit.component.html',
   styleUrls: ['./staff-edit.component.scss']
 })
-export class StaffEditComponent extends MyConstructorComponent implements OnInit {
+export class StaffEditComponent implements OnInit {
   data: any = {};
   form: FormGroup;
   staffId: string;
@@ -50,14 +47,12 @@ export class StaffEditComponent extends MyConstructorComponent implements OnInit
     page: this.page,
     size: this.size
   };
-  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private store: Store<any>,
-    public modalService: BsModalService
+    private sharedService: SharedService
   ) {
-    super(modalService);
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
       userName: new FormControl('', Validators.nullValidator),
@@ -131,54 +126,46 @@ export class StaffEditComponent extends MyConstructorComponent implements OnInit
 
   showConfirm() {
     if (this.selectedUser) {
-      this.addConfirm('警告', '确认删除该人员？').subscribe(res => {
+      this.sharedService.addConfirm('警告', '确定离职该人员？').subscribe(res => {
         this.staffLeave(this.selectedUser);
-      });
+      })
     }else {
-      this.addAlert('警告', '请选择一个人员！');
+      this.sharedService.addAlert('警告', '请选择一个人员！');
     }
   }
 
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.hireDate = res.data.hireDate;
-                this.birthday = res.data.birthday;
-                this.changeTime = res.data.changeTime;
-                this.filename = res.data.fileName;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`, {
+        animation: true
+      })
+      .subscribe(res => {
+        this.data = res.data;
+        this.form.patchValue(res.data);
+        this.hireDate = res.data.hireDate;
+        this.birthday = res.data.birthday;
+        this.changeTime = res.data.changeTime;
+        this.filename = res.data.fileName;
+      })
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.staffList = res.data.staffDataList.map(el => {
-                    el.politicalStatus = this.politics[el.politicalStatus];
-                    el.workPost = this.work_post[el.workPost];
-                    el.educational = this.educational[el.educational];
-                    return el;
-                  });
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param), {
+        animation: true
+      })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.staffList = res.data.staffDataList.map(el => {
+            el.politicalStatus = this.politics[el.politicalStatus];
+            el.workPost = this.work_post[el.workPost];
+            el.educational = this.educational[el.educational];
+            return el;
+          });
+        }
+      })
   }
 
   fileChange($event) {
@@ -228,7 +215,7 @@ export class StaffEditComponent extends MyConstructorComponent implements OnInit
   }
 
   staffLeave(selectedUser) {
-    const leaveDate = this.dateFormat(new Date());
+    const leaveDate = this.sharedService.dateFormat(new Date());
     this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
             .map(res => res.json())
             .subscribe(res => {
@@ -243,9 +230,9 @@ export class StaffEditComponent extends MyConstructorComponent implements OnInit
     this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    this.form.value.hireDate = this.dateFormat(this.hireDate);
-    this.form.value.birthday = this.dateFormat(this.birthday);
-    this.form.value.changeTime = this.dateFormat(this.changeTime);
+    this.form.value.hireDate = this.sharedService.dateFormat(this.hireDate);
+    this.form.value.birthday = this.sharedService.dateFormat(this.birthday);
+    this.form.value.changeTime = this.sharedService.dateFormat(this.changeTime);
     this.form.value.workPost = +this.form.value.workPost;
     this.form.value.educational = +this.form.value.educational;
     this.form.value.listGroup = +this.form.value.listGroup;
@@ -283,9 +270,9 @@ export class StaffEditComponent extends MyConstructorComponent implements OnInit
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.data.hireDate = this.dateFormat(this.hireDate);
-    this.data.birthday = this.dateFormat(this.birthday);
-    this.data.changeTime = this.dateFormat(this.changeTime);
+    this.data.hireDate = this.sharedService.dateFormat(this.hireDate);
+    this.data.birthday = this.sharedService.dateFormat(this.birthday);
+    this.data.changeTime = this.sharedService.dateFormat(this.changeTime);
     this.data.politics = this.data.politics ? this.data.politics : 0;
     this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
     if (this.form.value.listGroup) {

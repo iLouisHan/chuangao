@@ -14,12 +14,16 @@ import { HasLoginGuard } from './guard/has-login.guard';
 import { AdminGuard, GeneralGuard, TollGuard, SuperGuard } from './guard/guards.guard';
 import { ConfirmComponent } from './shared/confirm/confirm.component';
 import { AlertComponent } from './shared/alert/alert.component';
+import { SharedService } from './service/shared-service.service';
+import { LoadingComponent } from './service/loading/loading.component';
+import { LoadingService } from './service/loading/loading.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfirmComponent,
-    AlertComponent
+    AlertComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -33,7 +37,8 @@ import { AlertComponent } from './shared/alert/alert.component';
   ],
   entryComponents: [
     ConfirmComponent,
-    AlertComponent
+    AlertComponent,
+    LoadingComponent
   ],
   providers: [
     {
@@ -45,7 +50,9 @@ import { AlertComponent } from './shared/alert/alert.component';
     AdminGuard,
     GeneralGuard,
     TollGuard,
-    SuperGuard
+    SuperGuard,
+    SharedService,
+    LoadingService
   ],
   bootstrap: [AppComponent]
 })

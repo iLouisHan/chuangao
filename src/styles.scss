@@ -152,10 +152,5 @@ div{
   height: 100%;
   z-index: 9999;
   background: rgba(0, 0, 0, 0.3) url('/assets/images/liubi-loading.gif') no-repeat center center;
-  display: none;
-
-  &.active{
-    display: block;
-  }
 }
 
