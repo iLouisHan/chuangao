@@ -17,7 +17,9 @@ export class LoadingService {
   createLoading() {
     let factory = this.resolver.resolveComponentFactory(LoadingComponent);
     let componentRef = factory.create(this.injector);
-    this.componentRootNode = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+    if (!this.componentRootNode) {
+      this.componentRootNode = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+    }
 
     if(!this.container) {
       let componentRootViewContainer = this.applicationRef['components'][0];
@@ -36,6 +38,7 @@ export class LoadingService {
   clearLoading() {
     if (this.container && this.componentRootNode) {
       this.container.removeChild(this.componentRootNode);
+      delete this.componentRootNode;
     }
   }
 

@@ -4,9 +4,7 @@ import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ConfirmComponent } from '../../confirm/confirm.component';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-device-input',
@@ -46,12 +44,11 @@ export class DeviceInputComponent implements OnInit {
     buyNum: '购置数量',
     assetLife: '理论年限'
   };
-  bsModalRef: BsModalRef;
 
   constructor(
     private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       assetName: new FormControl('', Validators.nullValidator),
@@ -107,27 +104,13 @@ export class DeviceInputComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedDevice) {
-      const initialState = {
-        title: '警告',
-        message: '确认删除该记录？'
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
-        this.staffLeave(this.selectedDevice);
-        this.bsModalRef.hide();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService
+        .addConfirm('警告', '确认删除该记录？')
+        .subscribe(res => {
+          this.staffLeave(this.selectedDevice);
+        })
     }else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一条记录！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一条记录！');
     }
   }
 
@@ -138,6 +121,7 @@ export class DeviceInputComponent implements OnInit {
   selectedSearchOrg($event) {
     this.searchOrg = ($event);
   }
+
   getStaffInfo(staffId) {
     this.deviceList.forEach(item => {
       if (item.id === staffId) {
@@ -147,36 +131,24 @@ export class DeviceInputComponent implements OnInit {
       }
     });
   }
+
   getInfo() {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     } else {
       this.param.orgList = [this.orgList[0].data];
     }
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.deviceList = res.data.fixedAssetDataList;
-                }
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService
+      .post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(this.param), {
+        animation: true
+      })
+      .subscribe(res => {
+        this.count = res.data.count;
+        this.deviceList = res.data.fixedAssetDataList;
+        if (res.data.count > 0) {
+          this.hasData = true;
+        }
+      })
   }
 
   dateFormat(date) {
@@ -193,7 +165,6 @@ export class DeviceInputComponent implements OnInit {
   add() {
     this.form.reset();
     this.form.patchValue(this.initForm);
-    // this.form.patchValue({orgName: this.orgName});
     this.isChosen = true;
     this.isAdd = true;
   }
@@ -203,14 +174,7 @@ export class DeviceInputComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请输入要查询的设备！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请输入要查询的设备！');
     }
   }
 
@@ -220,14 +184,7 @@ export class DeviceInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个设备！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一个设备！');
     }
   }
 
@@ -244,21 +201,14 @@ export class DeviceInputComponent implements OnInit {
   }
 
   staffLeave(selectedUser) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/delete?id=${selectedUser}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              const initialState = {
-                title: '通知',
-                message: res.message
-              };
-              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-              this.bsModalRef.content.submitEmit.subscribe(res => {
-                this.bsModalRef.hide();
-              })
-              if (res.code) {
-                this.toFirstPage();
-              }
-            });
+    this.sharedService
+      .get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/delete?id=${selectedUser}`, {
+        successAlert: true,
+        animation: true
+      })
+      .subscribe(res => {
+        this.toFirstPage();
+      })
   }
 
   addDevice() {
@@ -270,78 +220,58 @@ export class DeviceInputComponent implements OnInit {
     });
     // const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      const initialState = {
-        title: '警告',
-        message: `${spaceArr.join(',')}为空`
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
     } else if (!this.startDate) {
-      const initialState = {
-        title: '警告',
-        message: '请选择购置日期！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择购置日期！');
     } else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       this.form.value.buyDate = this.dateFormat(this.startDate);
       this.form.value.scrapDate = this.dateFormat(this.endDate);
       this.form.value.useOrg = this.orgList[0].data;
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
-                headers: myHeaders
-              })
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  const initialState = {
-                    title: '',
-                    message: '未选择机构！'
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                  this.toFirstPage();
-                } else {
-                  const initialState = {
-                    title: '警告',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                }
-              });
+      this.sharedService
+        .post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
+          successAlert: true,
+          animation: true
+        })
+        .subscribe(res => {
+          this.toFirstPage();
+        })
+      // this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
+      //           headers: myHeaders
+      //         })
+      //         .map(res => res.json())
+      //         .subscribe(res => {
+      //           if (res.code) {
+      //             const initialState = {
+      //               title: '',
+      //               message: '未选择机构！'
+      //             };
+      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      //             this.bsModalRef.content.submitEmit.subscribe(res => {
+      //               this.bsModalRef.hide();
+      //             })
+      //             this.toFirstPage();
+      //           } else {
+      //             const initialState = {
+      //               title: '警告',
+      //               message: res.message
+      //             };
+      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      //             this.bsModalRef.content.submitEmit.subscribe(res => {
+      //               this.bsModalRef.hide();
+      //             })
+      //           }
+      //         });
       }
   }
 
   updateDevice() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      const initialState = {
-        title: '警告',
-        message: `${spaceArr.join(',')}为空`
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
     } else if (!this.startDate) {
-      const initialState = {
-        title: '警告',
-        message: '请选择购置日期！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择购置日期！');
     } else {
       const myHeaders: Headers = new Headers();
       myHeaders.append('Content-Type', 'application/json');
@@ -353,32 +283,32 @@ export class DeviceInputComponent implements OnInit {
       this.data.buyDate = this.dateFormat(this.startDate);
       this.data.scrapDate = this.dateFormat(this.endDate);
       this.data.useOrg = this.orgList[0].data;
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
-                headers: myHeaders
-              })
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  const initialState = {
-                    title: '通知',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                  this.toFirstPage();
-                } else {
-                  const initialState = {
-                    title: '警告',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                }
-              });
+      // this.http.post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
+      //           headers: myHeaders
+      //         })
+      //         .map(res => res.json())
+      //         .subscribe(res => {
+      //           if (res.code) {
+      //             const initialState = {
+      //               title: '通知',
+      //               message: res.message
+      //             };
+      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      //             this.bsModalRef.content.submitEmit.subscribe(res => {
+      //               this.bsModalRef.hide();
+      //             })
+      //             this.toFirstPage();
+      //           } else {
+      //             const initialState = {
+      //               title: '警告',
+      //               message: res.message
+      //             };
+      //             this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
+      //             this.bsModalRef.content.submitEmit.subscribe(res => {
+      //               this.bsModalRef.hide();
+      //             })
+      //           }
+      //         });
             }
   }
 
