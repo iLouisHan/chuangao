@@ -136,7 +136,7 @@ export class StaffEditComponent implements OnInit {
 
   getStaffInfo(staffId) {
     this.sharedService
-      .get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`, {
+      .get(`/User/getUserDetail?userId=${staffId}`, {
         animation: true
       })
       .subscribe(res => {
@@ -151,7 +151,7 @@ export class StaffEditComponent implements OnInit {
 
   getInfo() {
     this.sharedService
-      .post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param), {
+      .post('/StaffMag/getStaff', JSON.stringify(this.param), {
         animation: true,
         httpOptions: true
       })
