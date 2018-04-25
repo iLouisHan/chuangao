@@ -1,13 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
 import {ElementRef} from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../../shared/alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-self-edit',
@@ -26,12 +24,9 @@ export class SelfEditComponent implements OnInit {
   filename: string;
   login: Observable<any> = new Observable<any>();
   orgCode: string;
-  updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   keys: Array<any>;
   orgName: string;
   orgType: number;
-  uploading = false;
-  bsModalRef: BsModalRef;
   data2: any;
   cropperSettings2: CropperSettings;
   bounds: any;
@@ -39,9 +34,9 @@ export class SelfEditComponent implements OnInit {
   @ViewChild('cropper', undefined) cropper: ImageCropperComponent;
 
   constructor(
-    private http: Http, private elementRef: ElementRef,
+    private elementRef: ElementRef,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
@@ -121,27 +116,22 @@ export class SelfEditComponent implements OnInit {
   }
 
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.data = res.data;
-          this.form.patchValue(res.data);
-          this.hireDate = res.data.hireDate;
-          this.birthday = res.data.birthday;
-          this.changeTime = res.data.changeTime;
-          this.filename = res.data.fileName;
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-        }
-      });
+    this.sharedService.get(
+      `/User/getUserDetail?userId=${staffId}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.data = res.data;
+        this.form.patchValue(res.data);
+        this.hireDate = res.data.hireDate;
+        this.birthday = res.data.birthday;
+        this.changeTime = res.data.changeTime;
+        this.filename = res.data.fileName;
+      }
+    )
   }
 
   submit() {
@@ -165,8 +155,6 @@ export class SelfEditComponent implements OnInit {
   }
 
   updateStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
@@ -176,39 +164,24 @@ export class SelfEditComponent implements OnInit {
     this.data.changeTime = this.dateFormat(this.changeTime);
     this.data.politics = this.data.politics ? this.data.politics : 0;
     this.data.positionalTitle = this.data.positionalTitle ? this.data.positionalTitle : 0;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
-      headers: myHeaders
-    })
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          if (this.file) {
-            this.upload(this.data.userId);
-          } else {
-            const initialState = {
-              title: '通知',
-              message: '保存成功！'
-            };
-            this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-            this.bsModalRef.content.submitEmit.subscribe(res => {
-              this.bsModalRef.hide();
-            })
-          }
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
+    this.sharedService.post(
+      '/User/setUserDetail',
+      JSON.stringify(this.data),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        if (this.file) {
+          this.upload(this.data.userId);
         }
-      });
+      }
+    )
   }
 
   upload(userId) {
-    this.uploading = true;
     const formdata = new FormData();
     formdata.append('file', this.file);
     if (this.bounds) {
@@ -218,41 +191,15 @@ export class SelfEditComponent implements OnInit {
       formdata.append('imageH', this.bounds.h);
     }
     formdata.append('userId', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          const initialState = {
-            title: '通知',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-          this.uploading = false;
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-          this.uploading = false;
-        }
-      }, error => {
-        const initialState = {
-          title: '警告',
-          message: '上传失败，请重试！'
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
-        this.uploading = false;
-      });
+    this.sharedService.post(
+      '/upload/userInfo',
+      formdata,
+      {
+        httpOptions: false,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe()
   }
 
   ngOnInit() {

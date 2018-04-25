@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-contact',
@@ -16,7 +16,6 @@ export class ContactComponent implements OnInit {
   checkItem: string;
   keys: Array<string>;
   data: any;
-  uploading = false;
   // trans = {
   //   companyCode: '公司编码',
   //   companyName: '公司名称',
@@ -34,8 +33,8 @@ export class ContactComponent implements OnInit {
   // };
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -64,22 +63,19 @@ export class ContactComponent implements OnInit {
   }
 
   getInfo(orgCode) {
-    this.uploading = true;
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.checkItem = res.data.status;
-              }else {
-                alert(res.message);
-              }
-              this.uploading = false;
-            }, error => {
-              alert('获取信息失败！');
-              this.uploading = false;
-            });
+    this.sharedService.get(
+      `/BaseInfo/getStationInfo?stationCode=${orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.data = res.data;
+        this.form.patchValue(res.data);
+        this.checkItem = res.data.status;
+      }
+    )
   }
 
   submit() {
@@ -90,18 +86,19 @@ export class ContactComponent implements OnInit {
     // }else {
     this.form.value.longitude = +this.form.value.longitude;
     this.form.value.latitude = +this.form.value.latitude;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultStation', JSON.stringify(this.data), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        alert(res.message);
-      });
+    this.sharedService.post(
+      '/BaseInfo/setDefaultStation',
+      JSON.stringify(this.data),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe();
     // }
   }
 

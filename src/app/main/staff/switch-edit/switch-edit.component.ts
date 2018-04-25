@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType, shiftId, list_group } from '../../../store/translate';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-switch-edit',
@@ -67,8 +67,8 @@ export class SwitchEditComponent implements OnInit {
   requiredItems: any;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       remark: new FormControl('', Validators.nullValidator),
@@ -136,30 +136,30 @@ export class SwitchEditComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList;
-                  this.shiftChangeDataList.forEach(el => {
-                    el.applyTeamsCN = this.list_group[el.applyTeams];
-                    el.backTeamsCN = this.list_group[el.backTeams];
-                    el.applyShiftCN = this.shiftId[el.applyShift];
-                    el.backShiftCN = this.shiftId[el.backShift];
-                    el.backCN = el.backTeams ? '替班' : '还班';
-                  });
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/get',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.shiftChangeDataList = res.data.shiftChangeDataList;
+          this.shiftChangeDataList.forEach(el => {
+            el.applyTeamsCN = this.list_group[el.applyTeams];
+            el.backTeamsCN = this.list_group[el.backTeams];
+            el.applyShiftCN = this.shiftId[el.applyShift];
+            el.backShiftCN = this.shiftId[el.backShift];
+            el.backCN = el.backTeams ? '替班' : '还班';
+          });
+        }
+      }
+    )
   }
 
   dateFormat(date) {
@@ -209,9 +209,9 @@ export class SwitchEditComponent implements OnInit {
       this.view = 1;
       this.isAdd = false;
     }else if (!this.selectedSwitchId) {
-      alert('请选择一个换班信息！');
+      this.sharedService.addAlert('警告', '请选择一个换班信息！');
     }else if (this.selectedSwitch.overDeadline) {
-      alert('该信息已超过15天可修改期限！');
+      this.sharedService.addAlert('警告', '该信息已超过15天可修改期限！');
     }
   }
 
@@ -219,7 +219,7 @@ export class SwitchEditComponent implements OnInit {
     if (this.selectedSwitchId) {
       this.deleteLeave(this.selectedSwitchId);
     }else {
-      alert('请选择一个人员');
+      this.sharedService.addAlert('警告', '请选择一个人员');
     }
   }
 
@@ -242,15 +242,18 @@ export class SwitchEditComponent implements OnInit {
   }
 
   deleteLeave(selectedSwitchId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/delete?id=${selectedSwitchId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              alert(res.message);
-              if (res.code) {
-                this.hasData = false;
-                this.toFirstPage();
-              }
-            });
+    this.sharedService.get(
+      `/ShiftChange/delete?id=${selectedSwitchId}`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.hasData = false;
+        this.toFirstPage();
+      }
+    );
   }
 
   addSwitch() {
@@ -289,7 +292,7 @@ export class SwitchEditComponent implements OnInit {
       const param: any = {};
       const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
       if (spaceArr.length > 0) {
-        alert(`${spaceArr.join(',')}为空`);
+        this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
       }else {
         param.backTeams = this.form.value.backTeams;
         param.backUserId = this.form.value.backUserId;
@@ -317,7 +320,7 @@ export class SwitchEditComponent implements OnInit {
       const param: any = {};
       const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
       if (spaceArr.length > 0) {
-        alert(`${spaceArr.join(',')}为空`);
+        this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
       }else {
         param.applyTeams = this.form.value.applyTeams;
         param.applyUserId = this.form.value.applyUserId;
@@ -333,28 +336,25 @@ export class SwitchEditComponent implements OnInit {
   }
 
   postHttp(param) {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(param), {
-      headers: myHeaders
-    })
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        alert(res.message);
+    this.sharedService.post(
+      '/ShiftChange/set',
+      JSON.stringify(param),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
         this.view = 0;
         this.toFirstPage();
-      }else {
-        alert(res.message);
+        this.applyInfo = undefined;
+        this.backInfo = undefined;
       }
-      this.applyInfo = undefined;
-      this.backInfo = undefined;
-    });
+    );
   }
 
   updateLeave() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.applyInfo.scheduleDate;
     this.form.value.applyShift = this.applyInfo.shiftId;
     this.form.value.applyTeams = +this.form.value.applyTeams;
@@ -365,18 +365,17 @@ export class SwitchEditComponent implements OnInit {
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/update`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                alert(res.message);
-                this.toFirstPage();
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/update',
+      JSON.stringify(this.data),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => this.toFirstPage()
+    );
   }
 
   paginate($event) {
@@ -411,21 +410,23 @@ export class SwitchEditComponent implements OnInit {
     }else if (2 === val) {
       this.loadingBackStaff = true;
     }
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?stationCode=${this.orgCode}&teams=${teams}`)
-    .map(res => res.json())
-    .subscribe(res => {
-      this.loadingBackStaff = false;
-      this.loadingStaffs = false;
-      if (res.code) {
+    this.sharedService.get(
+      `/ShiftChange/getUserByTeams?stationCode=${this.orgCode}&teams=${teams}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.loadingBackStaff = false;
+        this.loadingStaffs = false;
         if (val === 1) {
           this.applyStaffList = res.data;
         }else if (val === 2) {
           this.backStaffList = res.data;
         }
-      }else {
-        alert(res.message);
       }
-    });
+    )
   }
 
   chooseApplySchedule($event) {
@@ -437,28 +438,27 @@ export class SwitchEditComponent implements OnInit {
   }
 
   changeCheckStatus(id, type) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/check?id=${id}&checkResult=${type}&userId=${this.userId}`).map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        alert(res.message);
-        this.toFirstPage();
-      }else {
-        alert(res.message);
+    this.sharedService.get(
+      `/ShiftChange/check?id=${id}&checkResult=${type}&userId=${this.userId}`,
+      {
+        successAlert: true,
+        animation: true
       }
-    });
+    ).subscribe(
+      () => this.toFirstPage()
+    );
   }
 
   changeReturnStatus(id, type) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/returnCheck?id=${id}&checkResult=${type}&userId=${this.userId}`)
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        alert(res.message);
-        this.toFirstPage();
-      }else {
-        alert(res.message);
+    this.sharedService.get(
+      `/ShiftChange/returnCheck?id=${id}&checkResult=${type}&userId=${this.userId}`,
+      {
+        successAlert: true,
+        animation: true
       }
-    });
+    ).subscribe(
+      () => this.toFirstPage()
+    );
   }
 
   applyTeamsChange($event) {

@@ -13,6 +13,8 @@ export class SharedService {
   bsModalRef: BsModalRef;
   loadingModalRef: BsModalRef;
 
+  private ip = `http://119.29.144.125:8080/cgfeesys`;
+
   constructor(
     private modalService: BsModalService,
     private loadingService: LoadingService,
@@ -83,7 +85,7 @@ export class SharedService {
           headers: new Headers({'Content-Type': 'application/json'})
         }
       }
-      this.http.post(path, param, httpOptions)
+      this.http.post(this.ip + path, param, httpOptions)
               .map(res => res.json())
               .subscribe(res => {
                 if (res.code) {
@@ -111,7 +113,7 @@ export class SharedService {
       if (options && options.animation) {
         this.openLoadingAnimation();
       }
-      this.http.get(path)
+      this.http.get(this.ip + path)
               .map(res => res.json())
               .subscribe(res => {
                 if (res.code) {

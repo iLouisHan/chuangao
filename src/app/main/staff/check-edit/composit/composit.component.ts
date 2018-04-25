@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { work_post } from '../../../../store/translate';
+import { SharedService } from '../../../../service/shared-service.service';
 
 @Component({
   selector: 'app-composit',
@@ -32,8 +32,8 @@ export class CompositComponent implements OnInit {
   workPost = work_post;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.cols = [
@@ -52,20 +52,21 @@ export class CompositComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Check/getCheckComposit`, JSON.stringify({
-      orgList: [this.orgCode],
-      page: this.page,
-      size: this.size
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.compositList = res.data.checkSingleDataList;
-        }
-      });
+    this.sharedService.post(
+      '/Check/getCheckComposit',
+      JSON.stringify({
+        orgList: [this.orgCode],
+        page: this.page,
+        size: this.size
+      }),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.compositList = res.data.checkSingleDataList
+    );
   }
 
   add() {
@@ -74,14 +75,15 @@ export class CompositComponent implements OnInit {
   }
 
   delete() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Check/deleteCheck?id=${this.selectedId}&type=0`)
-      .map(res => res.json())
-      .subscribe(res => {
-        alert(res.message);
-        if (res.code) {
-          this.toFirstPage();
-        }
-      });
+    this.sharedService.get(
+      `/Check/deleteCheck?id=${this.selectedId}&type=0`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => this.toFirstPage()
+    )
   }
 
   toFirstPage() {
@@ -96,23 +98,23 @@ export class CompositComponent implements OnInit {
   updateComposit() {
     this.form.value.id = this._select.id;
     this.form.value.stationCode = this.orgCode;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/setCheckComposit', JSON.stringify(
-      [this.form.value]
-    ), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          alert(res.message);
-          this.view = 0;
-          this.toFirstPage();
-          this.selectedId = '';
-        }else {
-          alert(res.message);
-        }
-      });
+    this.sharedService.post(
+      '/Check/setCheckComposit',
+      JSON.stringify(
+        [this.form.value]
+      ),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: false
+      }
+    ).subscribe(
+      () => {
+        this.view = 0;
+        this.toFirstPage();
+        this.selectedId = '';
+      }
+    )
   }
 
   inputFocus($event) {
@@ -127,53 +129,60 @@ export class CompositComponent implements OnInit {
       this._select = this.compositList.filter(el => el.id === this.selectedId)[0];
       this.form.patchValue(this._select);
     }else {
-      alert('请选择一个记录');
+      this.sharedService.addAlert('警告', '请选择一个记录');
     }
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-                this.resultList = this.staffList.map(el => {
-                  return {
-                    userName: el.userName,
-                    userId: el.userId,
-                    score: '0.0',
-                    editable: false
-                  };
-                });
-                this.getData();
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/BaseInfo/getStationUserId?stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.staffList = res.data;
+        this.resultList = this.staffList.map(
+          el => {
+            return {
+              userName: el.userName,
+              userId: el.userId,
+              score: '0.0',
+              editable: false
+            }
+          }
+        )
+        this.getData();
+      }
+    )
   }
 
   getData() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Check/getCheckComposit`, JSON.stringify({
-      orgList: [this.orgCode],
-      page: 0,
-      size: this.staffList.length,
-      year: this.year,
-      month: this.month
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.resultList.forEach(el => {
-            const item = res.data.checkSingleDataList.filter(staff => staff.userId === el.userId);
-            if (item.length > 0) {
-              el.score = item[0].score;
-            }
-          });
-        }
-      });
+    this.sharedService.post(
+      '/Check/getCheckComposit',
+      JSON.stringify({
+        orgList: [this.orgCode],
+        page: 0,
+        size: this.staffList.length,
+        year: this.year,
+        month: this.month
+      }),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.resultList.forEach(el => {
+          const item = res.data.checkSingleDataList.filter(staff => staff.userId === el.userId);
+          if (item.length > 0) {
+            el.score = item[0].score;
+          }
+        });
+      }
+    );
   }
 
   check(val) {
@@ -185,29 +194,27 @@ export class CompositComponent implements OnInit {
   }
 
   addComposit() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Check/setCheckComposit', JSON.stringify(
-      this.resultList.map(el => {
-        return {
-          userId: el.userId,
-          stationCode: this.orgCode,
-          year: this.year,
-          month: this.month,
-          score: el.score
-        };
-      })
-    ), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          alert(res.message);
-          this.view = 0;
-        }else {
-          alert(res.message);
-        }
-      });
+    this.sharedService.post(
+      '/Check/setCheckComposit',
+      JSON.stringify(
+        this.resultList.map(el => {
+          return {
+            userId: el.userId,
+            stationCode: this.orgCode,
+            year: this.year,
+            month: this.month,
+            score: el.score
+          };
+        })
+      ),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => this.view = 0
+    )
   }
 
   ngOnInit() {

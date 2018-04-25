@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType, shiftId, list_group } from '../../../store/translate';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-return-edit',
@@ -36,8 +36,8 @@ export class ReturnEditComponent implements OnInit {
   checkResult = ['未审核', '已通过', '未通过'];
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.cols = [
@@ -70,30 +70,30 @@ export class ReturnEditComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList;
-                  this.shiftChangeDataList.forEach(el => {
-                    el.applyTeamsCN = this.list_group[el.applyTeams];
-                    el.applyShiftCN = this.shiftId[el.applyShift];
-                    el.returnStatusCN = this.returnStatus[el.returnStatus];
-                    el.returnCheckCN = this.checkResult[el.returnCheck];
-                    el.returnShiftCN = this.shiftId[el.returnShift];
-                  });
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/get',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.shiftChangeDataList = res.data.shiftChangeDataList;
+          this.shiftChangeDataList.forEach(el => {
+            el.applyTeamsCN = this.list_group[el.applyTeams];
+            el.applyShiftCN = this.shiftId[el.applyShift];
+            el.returnStatusCN = this.returnStatus[el.returnStatus];
+            el.returnCheckCN = this.checkResult[el.returnCheck];
+            el.returnShiftCN = this.shiftId[el.returnShift];
+          });
+        }
+      }
+    )
   }
 
   select(val) {
@@ -108,35 +108,34 @@ export class ReturnEditComponent implements OnInit {
     if (this.selectedSwitch) {
       this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitch)[0];
       if (this._select.returnStatus === 1) {
-        alert('此记录已还班！');
+        this.sharedService.addAlert('警告', '此记录已还班！');
       }else if (this._select.returnStatus === 2) {
-        alert('此记录已超过可修改期限！');
+        this.sharedService.addAlert('警告', '此记录已超过可修改期限！');
       }else {
         this.view = 1;
       }
     }else {
-      alert('请选择换班记录！');
+      this.sharedService.addAlert('警告', '请选择换班记录！');
     }
   }
 
   returnSubmit() {
     this._select.returnDate = this.dateFormat(this._returnDate);
     this._select.returnShift = +this._returnShift;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/update`, JSON.stringify(this._select), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                alert(res.message);
-                this.toFirstPage();
-                this._select = '';
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/update',
+      JSON.stringify(this._select),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.toFirstPage();
+        this._select = '';
+      }
+    )
   }
 
   toFirstPage() {

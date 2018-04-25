@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-basic-info',
@@ -27,12 +27,11 @@ export class BasicInfoComponent implements OnInit {
     briefIntro: '公司简介',
     historyHonour: '管理处历史荣誉'
   };
-  uploading = false;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -53,21 +52,11 @@ export class BasicInfoComponent implements OnInit {
   }
 
   getInfo(orgCode) {
-    this.uploading = true;
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getDefaultDivision?divisionCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.form.patchValue(res.data);
-                this.checkItem = res.data.status;
-              }else {
-                alert(res.message);
-              }
-              this.uploading = false;
-            }, error => {
-              alert('获取信息失败！');
-              this.uploading = true;
-            });
+    this.sharedService.get(`/BaseInfo/getDefaultDivision?divisionCode=${orgCode}`,{successAlert:true, animation: true})
+      .subscribe(res => {
+        this.form.patchValue(res.data);
+        this.checkItem = res.data.status;
+      });
   }
 
   submit() {
@@ -76,14 +65,17 @@ export class BasicInfoComponent implements OnInit {
     // if (spaceArr.length > 0) {
     //   alert(`${spaceArr.join(',')}为空`);
     // }else {
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
-      this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultDivision', JSON.stringify(this.form.value), {
-        headers: myHeaders
-      }).map(res => res.json())
-        .subscribe(res => {
-          alert(res.message);
-        });
+    this.sharedService
+      .post(
+        '/BaseInfo/setDefaultDivision',
+        JSON.stringify(this.form.value),
+        {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
+        }
+      )
+      .subscribe();
     // }
   }
 
