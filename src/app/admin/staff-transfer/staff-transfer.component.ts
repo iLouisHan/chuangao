@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType } from '../../store/translate';
+import { SharedService } from "../../service/shared-service.service";
 
 @Component({
   selector: 'app-staff-transfer',
@@ -50,8 +50,8 @@ export class StaffTransferComponent implements OnInit {
   staffSelected = [];
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       applyUserId: new FormControl('', Validators.nullValidator),
@@ -111,7 +111,7 @@ export class StaffTransferComponent implements OnInit {
     if (this.staffSelected.length > 0) {
       this.isChosen = true;
     }else {
-      alert('请选择员工！');
+      this.sharedService.addAlert('警告','请选择员工！');
     }
   }
 
@@ -177,52 +177,50 @@ export class StaffTransferComponent implements OnInit {
       }
       arr.push(obj);
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/staffTransfer', JSON.stringify({
-      staffTransferBeanList: arr
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          alert(res.message);
-          this.toFirstPage();
-        }else {
-          alert(res.message);
-        }
-      });
+    this.sharedService.post(
+      '/StaffMag/staffTransfer',
+      JSON.stringify({staffTransferBeanList: arr}),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      res => this.toFirstPage()
+    );
   }
 
   getStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff`, JSON.stringify(this.param) , {
-      headers: myHeaders
-    })
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
+    this.sharedService.post(
+      '/StaffMag/getStaff',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
         this.count = res.data.count;
         this.staffList = res.data.staffDataList;
         this.hasData = true;
-      }else {
-        alert(res.message);
       }
-    });
+    );
   }
 
   getOrgInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getOrgRelation?orgCode=${orgCode}`)
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  this.param.orgList = res.data.map(el => el.orgCode);
-                  this.getStaff();
-                }else {
-                  alert(res.message);
-                }
-              });
+    this.sharedService.get(
+      `/BaseInfo/getOrgRelation?orgCode=${orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.param.orgList = res.data.map(el => el.orgCode);
+        this.getStaff();
+      }
+    )
   }
 
   ngOnInit() {

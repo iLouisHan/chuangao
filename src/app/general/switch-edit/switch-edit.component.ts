@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType, shiftId, list_group } from '../../store/translate';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../shared/alert/alert.component';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-switch-edit',
@@ -59,12 +57,10 @@ export class SwitchEditComponent implements OnInit {
   shiftChangeDataList: Array<any>;
   requiredItems: any = {};
   loadingStaffs = false;
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       remark: new FormControl('', Validators.nullValidator),
@@ -128,35 +124,28 @@ export class SwitchEditComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList;
-                  this.shiftChangeDataList.forEach(el => {
-                    el.backTeams = this.list_group[el.backTeams];
-                    el.applyShift = this.shiftId[el.applyShift];
-                    el.backShift = this.shiftId[el.backShift];
-                  });
-                }
-              }else {
-                const initialState = {
-                  title: '通知',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/get',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation:true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.shiftChangeDataList = res.data.shiftChangeDataList;
+          this.shiftChangeDataList.forEach(el => {
+            el.backTeams = this.list_group[el.backTeams];
+            el.applyShift = this.shiftId[el.applyShift];
+            el.backShift = this.shiftId[el.backShift];
+          });
+        }
+      }
+    )
   }
 
   dateFormat(date) {
@@ -201,14 +190,7 @@ export class SwitchEditComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     }else {
-      const initialState = {
-        title: '通知',
-        message: '请选择一个请假信息！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('通知','请选择一个请假信息！');
     }
   }
 
@@ -216,14 +198,7 @@ export class SwitchEditComponent implements OnInit {
     if (this.selectedSwitch) {
       this.deleteLeave(this.selectedSwitch);
     }else {
-      const initialState = {
-        title: '通知',
-        message: '请选择一个人员！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('通知','请选择一个人员！');
     }
   }
 
@@ -236,22 +211,18 @@ export class SwitchEditComponent implements OnInit {
   }
 
   deleteLeave(selectedSwitch) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/delete?id=${selectedSwitch}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              const initialState = {
-                title: '通知',
-                message: res.message
-              };
-              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-              this.bsModalRef.content.submitEmit.subscribe(res => {
-                this.bsModalRef.hide();
-              })
-              if (res.code) {
-                this.hasData = false;
-                this.toFirstPage();
-              }
-            });
+    this.sharedService.get(
+      `/ShiftChange/delete?id=${selectedSwitch}`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.hasData = false;
+        this.toFirstPage();
+      }
+    )
   }
 
   addSwitch() {
@@ -282,14 +253,7 @@ export class SwitchEditComponent implements OnInit {
       const param: any = {};
       const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
       if (spaceArr.length > 0) {
-        const initialState = {
-          title: '警告',
-          message: `${spaceArr.join(',')}为空`
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+        this.sharedService.addAlert('警告',`${spaceArr.join(',')}为空`);
       }else {
         param.backTeams = this.form.value.backTeams;
         param.backUserId = this.form.value.backUserId;
@@ -314,14 +278,7 @@ export class SwitchEditComponent implements OnInit {
       const param: any = {};
       const spaceArr = keys.filter(el => !this.form.value[el]).map(el => this.requiredItems[el]);
       if (spaceArr.length > 0) {
-        const initialState = {
-          title: '警告',
-          message: `${spaceArr.join(',')}为空`
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+        this.sharedService.addAlert('警告',`${spaceArr.join(',')}为空`);
       }else {
         param.applyTeams = this.listGroup;
         param.applyUserId = this.userId;
@@ -336,47 +293,30 @@ export class SwitchEditComponent implements OnInit {
   }
 
   postHttp(param) {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(param), {
-      headers: myHeaders
-    })
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        const initialState = {
-          title: '通知',
-          message: res.message
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+    this.sharedService.post(
+      '/ShiftChange/set',
+      JSON.stringify(param),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
         this.toFirstPage();
         this.userName = '';
-      }else {
-        const initialState = {
-          title: '警告',
-          message: res.message
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+        this.applyInfo = undefined;
+        this.backInfo = undefined;
+        this.form.patchValue(this.initForm);
+        this.backUserName = '';
+        this.applyUserName = '';
+        this.backUserId = '';
+        this.applyUserId = '';
       }
-      this.applyInfo = undefined;
-      this.backInfo = undefined;
-      this.form.patchValue(this.initForm);
-      this.backUserName = '';
-      this.applyUserName = '';
-      this.backUserId = '';
-      this.applyUserId = '';
-    });
+    )
   }
 
   updateLeave() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.applyInfo.scheduleDate;
     this.form.value.applyShift = this.applyInfo.shiftId;
     this.form.value.applyTeams = +this.listGroup;
@@ -388,32 +328,19 @@ export class SwitchEditComponent implements OnInit {
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/update`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                const initialState = {
-                  title: '通知',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.toFirstPage();
-              }else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/update',
+      JSON.stringify(this.data),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.toFirstPage();
+      }
+    )
   }
 
   paginate($event) {
@@ -436,26 +363,13 @@ export class SwitchEditComponent implements OnInit {
   }
 
   getStaff(teams, val) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?stationCode=${this.orgCode}&teams=${teams}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (val === 1) {
-                  this.applyStaffList = res.data;
-                }else if (val === 2) {
-                  this.backStaffList = res.data;
-                }
-              }else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.get(
+      `/ShiftChange/getUserByTeams?stationCode=${this.orgCode}&teams=${teams}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    )
   }
 
   chooseApplySchedule($event) {

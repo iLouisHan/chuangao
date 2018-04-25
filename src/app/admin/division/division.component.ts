@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { work_post } from '../../store/translate';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-division',
@@ -17,24 +17,20 @@ export class DivisionComponent implements OnInit {
   workTrans = work_post;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
   }
 
   getInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getDivisionInfo?divisionCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .get(`/BaseInfo/getDivisionInfo?divisionCode=${orgCode}`,{successAlert:false,animation:true})
+      .subscribe(
+        res => this.data = res.data
+      )
   }
 
   ngOnInit() {

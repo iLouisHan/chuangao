@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType } from '../../../store/translate';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-leave-edit',
@@ -32,7 +32,6 @@ export class LeaveEditComponent implements OnInit {
   leaveList: Array<any>;
   staffList: Array<any>;
   hasData: boolean;
-  updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
   selectedLeave = '';
   isAdd: boolean;
@@ -46,8 +45,8 @@ export class LeaveEditComponent implements OnInit {
   };
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       applyUserId: new FormControl('', Validators.nullValidator),
@@ -90,26 +89,26 @@ export class LeaveEditComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.leaveList = res.data.leaveDataList.map(el => {
-                    el.applyTypeCN = this.applyType[el.applyType];
-                    return el;
-                  });
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Leave/getLeave',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.leaveList = res.data.leaveDataList.map(el => {
+            el.applyTypeCN = this.applyType[el.applyType];
+            return el;
+          });
+        }
+      }
+    )
   }
 
   fileChange($event) {
@@ -142,7 +141,7 @@ export class LeaveEditComponent implements OnInit {
       this.param.userName = this.searchName;
       this.toFirstPage();
     }else {
-      alert('请输入要查询的人员姓名！');
+      this.sharedService.addAlert('警告', '请输入要查询的人员姓名！');
     }
   }
 
@@ -152,7 +151,7 @@ export class LeaveEditComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     }else {
-      alert('请选择一个请假信息！');
+      this.sharedService.addAlert('警告', '请选择一个请假信息！');
     }
   }
 
@@ -160,7 +159,7 @@ export class LeaveEditComponent implements OnInit {
     if (this.selectedLeave) {
       this.deleteLeave(this.selectedLeave);
     }else {
-      alert('请选择一个人员');
+      this.sharedService.addAlert('警告', '请选择一个人员');
     }
   }
 
@@ -174,61 +173,63 @@ export class LeaveEditComponent implements OnInit {
 
   deleteLeave(selectedLeave) {
     const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Leave/deleteLeave?id=${selectedLeave}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              alert(res.message);
-              if (res.code) {
-                this.hasData = false;
-                this.toFirstPage();
-              }
-            });
+    this.sharedService.get(
+      `/Leave/deleteLeave?id=${selectedLeave}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.hasData = false;
+        this.toFirstPage();
+      }
+    )
+    
   }
 
   addStaffLeave() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.dateFormat(this.applyDate);
     this.form.value.applyDateEnd = this.dateFormat(this.applyDateEnd);
     this.form.value.stationCode = this.orgCode;
     this.form.value.adminId = this.adminId;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/staffLeaveByAdmin`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.upload(res.data.id);
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Leave/staffLeaveByAdmin',
+      JSON.stringify(this.form.value),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.upload(res.data.id)
+    );
   }
 
   updateLeave() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
     this.data.applyDate = this.dateFormat(this.applyDate);
     this.data.applyDateEnd = this.dateFormat(this.applyDateEnd);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/updateLeave`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(this.data.id);
-                }else {
-                  this.toFirstPage();
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Leave/updateLeave',
+      JSON.stringify(this.data),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        if (this.file) {
+          this.upload(this.data.id);
+        }else {
+          this.toFirstPage();
+        }
+      }
+    )
   }
 
   paginate($event) {
@@ -248,17 +249,20 @@ export class LeaveEditComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('id', id);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/leaveInfo`, formdata)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          alert(res.message);
-        }else {
-          alert(res.message);
-        }
+    this.sharedService.post(
+      '/upload/leaveInfo',
+      formdata,
+      {
+        httpOptions: false,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
         this.isChosen = false;
         this.toFirstPage();
-      });
+      }
+    )
   }
 
   toFirstPage() {
@@ -272,35 +276,33 @@ export class LeaveEditComponent implements OnInit {
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/BaseInfo/getStationUserId?stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.staffList = res.data
+    );
   }
 
   changeCheckStatus(id, type) {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/checkLeave`, JSON.stringify({
-      id: id,
-      checkUserId: this.adminId,
-      checkType: type
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        alert(res.message);
-        this.toFirstPage();
-      }else {
-        alert(res.message);
+    this.sharedService.post(
+      '/Leave/checkLeave',
+      JSON.stringify({
+        id: id,
+        checkUserId: this.adminId,
+        checkType: type
+      }),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
       }
-    });
+    ).subscribe(
+      () => this.toFirstPage()
+    );
   }
 
   ngOnInit() {

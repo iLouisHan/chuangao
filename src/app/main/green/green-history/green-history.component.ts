@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-green-history',
@@ -17,7 +17,7 @@ export class GreenHistoryComponent implements OnInit {
   initOptions: any;
 
   constructor(
-    private http: Http
+    private sharedService: SharedService
   ) {
     this.en = {
       firstDayOfWeek: 0,
@@ -43,25 +43,30 @@ export class GreenHistoryComponent implements OnInit {
     if (this.endDate) {
       param.endDate = this.endDate;
     }
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Green/getCarCheckStatistics`, JSON.stringify(param), {
-      headers: new Headers({'Content-Type': 'application/json'})
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.data = res.data;
-          this.updateOptions = {
-            series: {
-              type: 'pie',
-              radius: [30, 50],
-              roseType: 'radius',
-              data: [
-                { value: res.data.normalCount, name: '违章'},
-                { value: res.data.peccancyCount, name: '正常运输'}
-              ]
-            }
-          };
-        }
-      });
+    this.sharedService.post(
+      '/Green/getCarCheckStatistics',
+      JSON.stringify(param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.data = res.data;
+        this.updateOptions = {
+          series: {
+            type: 'pie',
+            radius: [30, 50],
+            roseType: 'radius',
+            data: [
+              { value: res.data.normalCount, name: '违章'},
+              { value: res.data.peccancyCount, name: '正常运输'}
+            ]
+          }
+        };
+      }
+    )
   }
 
   getWidth(width) {

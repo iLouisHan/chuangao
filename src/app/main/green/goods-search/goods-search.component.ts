@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { SharedService } from '../../../service/shared-service.service';
+import { iterateListLike } from '@angular/core/src/change_detection/change_detection_util';
 
 @Component({
   selector: 'app-goods-search',
@@ -12,34 +13,42 @@ export class GoodsSearchComponent implements OnInit {
   cols: any;
 
   constructor(
-    private http: Http
+    private sharedService: SharedService
   ) {
     this.cols = ['name', 'itemDetail', 'freeItem', 'noFreeItem', 'remark'];
   }
 
   getBaseGoods() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/getBaseGoods`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            this.dataArr = res.data.sort((a, b) => a.code - b.code);
-            this.getDetailGoods();
-          }
-        });
+    this.sharedService.get(
+      '/Green/getBaseGoods',
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.dataArr = res.data.sort((a, b) => a.code - b.code);
+        this.getDetailGoods();
+      }
+    )
   }
 
   getDetailGoods() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/getDetailGoods`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            this.goodsDetail = res.data.sort((a, b) => a.pCode - b.pCode);
-            this.dataArr.forEach(el => {
-              el.children = res.data.filter(item => item.pCode === el.code);
-            });
-          }
-          console.log(this.dataArr);
+    this.sharedService.get(
+      '/Green/getDetailGoods',
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.goodsDetail = res.data.sort((a, b) => a.pCode - b.pCode);
+        this.dataArr.array.forEach(el => {
+          el.children = res.data.filter(item => item.pCode === el.code);
         });
+        console.log(this.dataArr);
+      }
+    )
   }
 
   ngOnInit() {

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType } from '../../../store/translate';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-cloth-add',
@@ -32,7 +32,6 @@ export class ClothAddComponent implements OnInit {
   clothesDataList: Array<any>;
   staffList: Array<any>;
   hasData: boolean;
-  updateUrl = `http://119.29.144.125:8080/cgfeesys/User/setUserDetail`;
   cols: Array<any>;
   selectedCloth = '';
   isAdd: boolean;
@@ -66,8 +65,8 @@ export class ClothAddComponent implements OnInit {
   clothesChangeDate: string;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       clothesNum: new FormControl('', Validators.nullValidator),
@@ -112,27 +111,27 @@ export class ClothAddComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Clothes/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.clothesDataList = res.data.clothesDataList;
-                  this.clothesDataList.forEach(el => {
-                    el.clothesType = this.clothesTypeList[el.clothesType];
-                    el.clothesClassification = this.clothesClassificationList[el.clothesClassification];
-                  });
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Clothes/get',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.clothesDataList = res.data.clothesDataList;
+          this.clothesDataList.forEach(el => {
+            el.clothesType = this.clothesTypeList[el.clothesType];
+            el.clothesClassification = this.clothesClassificationList[el.clothesClassification];
+          });
+        }
+      }
+    )
   }
 
   dateFormat(date) {
@@ -159,7 +158,7 @@ export class ClothAddComponent implements OnInit {
       this.param.userName = this.searchName;
       this.toFirstPage();
     }else {
-      alert('请输入要查询的人员姓名！');
+      this.sharedService.addAlert('警告', '请输入要查询的人员姓名！');
     }
   }
 
@@ -169,7 +168,7 @@ export class ClothAddComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     }else {
-      alert('请选择一个请假信息！');
+      this.sharedService.addAlert('警告', '请输入要查询的人员姓名！');
     }
   }
 
@@ -177,7 +176,7 @@ export class ClothAddComponent implements OnInit {
     if (this.selectedCloth) {
       this.deleteCloth(this.selectedCloth);
     }else {
-      alert('请选择一条记录！');
+      this.sharedService.addAlert('警告', '请选择一条记录！');
     }
   }
 
@@ -192,65 +191,63 @@ export class ClothAddComponent implements OnInit {
 
   deleteCloth(selectedCloth) {
     const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Clothes/delete?id=${selectedCloth}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              alert(res.message);
-              if (res.code) {
-                this.hasData = false;
-                this.toFirstPage();
-              }
-            });
+    this.sharedService.get(
+      `/Clothes/delete?id=${selectedCloth}`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.hasData = false;
+        this.toFirstPage();
+      }
+    );
   }
 
   addCloth() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Clothes/add`, JSON.stringify({
-      userId: this.form.value.userId,
-      clothesId: this.cloth.id,
-      outOrgCode: this.orgCode,
-      clothesDate: this.dateFormat(this.clothesDate),
-      clothesChangeDate: this.dateFormat(this.clothesChangeDate),
-      clothesType: this.cloth.clothesType,
-      clothesClassification: this.cloth.clothesClassification,
-      clothesSex: this.cloth.clothesSex,
-      clothesSize: this.form.value.clothesSize,
-      clothesNum: this.form.value.clothesNum
-    }), {
-      headers: myHeaders
-    })
-    .map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        alert(res.message);
-        this.toFirstPage();
-      }else {
-        alert(res.message);
+    this.sharedService.post(
+      '/Clothes/add',
+      JSON.stringify({
+        userId: this.form.value.userId,
+        clothesId: this.cloth.id,
+        outOrgCode: this.orgCode,
+        clothesDate: this.dateFormat(this.clothesDate),
+        clothesChangeDate: this.dateFormat(this.clothesChangeDate),
+        clothesType: this.cloth.clothesType,
+        clothesClassification: this.cloth.clothesClassification,
+        clothesSex: this.cloth.clothesSex,
+        clothesSize: this.form.value.clothesSize,
+        clothesNum: this.form.value.clothesNum
+      }),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
       }
-    });
+    ).subscribe(
+      () => this.toFirstPage()
+    );
   }
 
   updateLeave() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
     });
     this.data.applyDate = this.dateFormat(this.applyDate);
     this.data.applyDateEnd = this.dateFormat(this.applyDateEnd);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/updateLeave`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.toFirstPage();
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Leave/updateLeave`',
+      JSON.stringify(this.data),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      () => this.toFirstPage()
+    );
   }
 
   paginate($event) {
@@ -278,35 +275,33 @@ export class ClothAddComponent implements OnInit {
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/BaseInfo/getStationUserId?stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.staffList = res.data
+    );
   }
 
   changeCheckStatus(id, type) {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Leave/checkLeave`, JSON.stringify({
-      id: id,
-      checkUserId: this.checkUserId,
-      checkType: type
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-    .subscribe(res => {
-      if (res.code) {
-        alert(res.message);
-        this.toFirstPage();
-      }else {
-        alert(res.message);
+    this.sharedService.post(
+      '/Leave/checkLeave',
+      JSON.stringify({
+        id: id,
+        checkUserId: this.checkUserId,
+        checkType: type
+      }),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
       }
-    });
+    ).subscribe(
+      () => this.toFirstPage
+    );
   }
 
   chosenCloth($event) {

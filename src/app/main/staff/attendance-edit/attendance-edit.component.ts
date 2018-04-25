@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../../store/translate';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-attendance-edit',
@@ -20,7 +20,6 @@ export class AttendanceEditComponent implements OnInit {
   isShow: boolean;
   activedType: number;
   attenceSmallType: number;
-  myHeaders: Headers = new Headers();
   leaveUser: string;
   en = {
     firstDayOfWeek: 0,
@@ -36,11 +35,10 @@ export class AttendanceEditComponent implements OnInit {
   initType: Array<any>;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = this.store.select('login');
-    this.myHeaders.append('Content-Type', 'application/json');
     this.attenceTypeToAdd = 0;
     this.shiftId = 0;
     this.attendanceList = [
@@ -129,29 +127,31 @@ export class AttendanceEditComponent implements OnInit {
       attendanceStaffList: attendanceStaffList
     };
     if (!param.attenceDate) {
-      alert('请选择考勤日期！');
+      this.sharedService.addAlert('警告', '请选择考勤日期！');
     }else if (!param.shiftId) {
-      alert('请选择班次！');
+      this.sharedService.addAlert('警告', '请选择班次！');
     }else {
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/add`, JSON.stringify(param), {
-        headers: this.myHeaders
-      }).map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            alert(res.message);
-            this.freeItemsList = this.initType;
-            this.attendanceList = [
-              {
-                value: '1',
-                label: '实际上班'
-              }
-            ];
-            this.applyDate = '';
-            this.shiftId = 0;
-          }else {
-            alert(res.message);
-          }
-        });
+      this.sharedService.post(
+        '/Attendance/add',
+        JSON.stringify(param),
+        {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
+        }
+      ).subscribe(
+        () => {
+          this.freeItemsList = this.initType;
+          this.attendanceList = [
+            {
+              value: '1',
+              label: '实际上班'
+            }
+          ];
+          this.applyDate = '';
+          this.shiftId = 0;
+        }
+      )
     }
   }
 
@@ -162,34 +162,41 @@ export class AttendanceEditComponent implements OnInit {
   }
 
   getStaffs() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-                const selected = this.attendanceList.filter(el => el.value === this.activedType)[0].staff;
-                this.staffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
-                  el.choose = true;
-                });
-              }
-            });
+    this.sharedService.get(
+      `/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.staffList = res.data;
+        const selected = this.attendanceList.filter(el => el.value === this.activedType)[0].staff;
+        this.staffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
+          el.choose = true;
+        });
+      }
+    )
   }
 
   getWorkStaffs(day, shift) {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/getCompare`, JSON.stringify({
-      stationCode: this.orgCode,
-      date: this.dateFormat(day),
-      shiftId: shift
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.attendanceList[0].staff = res.data.planUserList;
-        }
-      });
+    this.sharedService.post(
+      '/Attendance/getCompare',
+      JSON.stringify({
+        stationCode: this.orgCode,
+        date: this.dateFormat(day),
+        shiftId: shift
+      }),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.attendanceList[0].staff = res.data.planUserList;
+      }
+    )
   }
 
   addAttendanceType() {
@@ -199,7 +206,7 @@ export class AttendanceEditComponent implements OnInit {
       this.freeItemsList = this.freeItemsList.filter(el => +el.value !== +this.attenceTypeToAdd);
       this.attenceTypeToAdd = 0;
     }else {
-      alert('请选择要添加的考勤类别！');
+      this.sharedService.addAlert('警告', '请选择要添加的考勤类别！');
     }
   }
 

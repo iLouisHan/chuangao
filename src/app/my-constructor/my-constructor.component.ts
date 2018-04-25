@@ -1,21 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../shared/alert/alert.component';
-import { Http } from '@angular/http';
 import { ConfirmComponent } from '../shared/confirm/confirm.component';
 import { Observable } from 'rxjs/Observable';
+import { SharedService } from '../service/shared-service.service';
 
 @Component({
   selector: 'app-my-constructor',
   templateUrl: './my-constructor.component.html',
   styleUrls: ['./my-constructor.component.scss'],
-  providers: [BsModalService]
 })
 export class MyConstructorComponent implements OnInit {
-  bsModalRef: BsModalRef;
 
   constructor(
-    public modalService: BsModalService,
+    private sharedService: SharedService
   ) {
 
   }
@@ -32,30 +28,12 @@ export class MyConstructorComponent implements OnInit {
   }
 
   addAlert(title: string, message: string): void {
-    const initialState = {
-      title: title,
-      message: message
-    };
-    this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-    this.bsModalRef.content.submitEmit.subscribe(res => {
-      this.bsModalRef.hide();
-    })
+    this.sharedService.addAlert(title, message);
   }
 
   addConfirm(title: string, message: string, ): Observable<string> {
     return Observable.create(obser => {
-      const initialState = {
-        title: title,
-        message: message
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
-        this.bsModalRef.hide();
-        obser.next();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addConfirm(title, message);
     });
   }
 
