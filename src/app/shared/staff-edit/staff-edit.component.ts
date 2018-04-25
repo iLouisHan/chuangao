@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -23,7 +22,6 @@ export class StaffEditComponent implements OnInit {
   file: any;
   filename: string;
   isChosen = false;
-  uploading = false;
   login: Observable<any> = new Observable<any>();
   orgCode: string;
   page = 0;
@@ -49,7 +47,6 @@ export class StaffEditComponent implements OnInit {
   };
 
   constructor(
-    private http: Http,
     private store: Store<any>,
     private sharedService: SharedService
   ) {
@@ -217,18 +214,17 @@ export class StaffEditComponent implements OnInit {
 
   staffLeave(selectedUser) {
     const leaveDate = this.sharedService.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              alert(res.message);
-              if (res.code) {
-                this.toFirstPage();
-              }
-            });
+    this.sharedService
+      .get(`/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`, {
+        animation: true,
+        successAlert: true
+      })
+      .subscribe(res => {
+        this.toFirstPage();
+      })
   }
 
   addStaff() {
-    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     this.form.value.hireDate = this.sharedService.dateFormat(this.hireDate);
@@ -244,27 +240,23 @@ export class StaffEditComponent implements OnInit {
     if (this.orgType !== 3) {
       delete this.form.value.listGroup;
     }
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/StaffMag/addStaff`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(res.data.userId);
-                }else {
-                  alert('人员录入成功！');
-                  this.toFirstPage();
-                  this.uploading = false;
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .post(
+        `http://119.29.144.125:8080/cgfeesys/StaffMag/addStaff`,
+        JSON.stringify(this.form.value),{
+          animation: true,
+          httpOptions: true,
+          successAlert: true
+        }
+      )
+      .subscribe(res => {
+        if (this.file) {
+          this.upload(res.data.userId);
+        }
+      })
   }
 
   updateStaff() {
-    this.uploading = true;
     const myHeaders: Headers = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
@@ -279,22 +271,22 @@ export class StaffEditComponent implements OnInit {
     if (this.form.value.listGroup) {
       this.data.listGroup = +this.form.value.listGroup;
     };
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/User/setUserDetail`, JSON.stringify(this.data), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                if (this.file) {
-                  this.upload(this.data.userId);
-                }else {
-                  this.toFirstPage();
-                  this.uploading = false;
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService
+      .post(
+        `/User/setUserDetail`,
+        JSON.stringify(this.data), {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
+        }
+      )
+      .subscribe(res => {
+        if (this.file) {
+          this.upload(this.data.userId);
+        }else {
+          this.toFirstPage();
+        }
+      })
   }
 
   paginate($event) {
@@ -303,14 +295,10 @@ export class StaffEditComponent implements OnInit {
   }
 
   submit() {
-    if (this.uploading) {
-      alert('正在发送请求中，请等待完成！');
+    if (this.isAdd) {
+      this.addStaff();
     }else {
-      if (this.isAdd) {
-        this.addStaff();
-      }else {
-        this.updateStaff();
-      }
+      this.updateStaff();
     }
   }
 
@@ -318,19 +306,20 @@ export class StaffEditComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('userId', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/userInfo`, formdata)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-            alert(res.message);
-            this.file = null;
-            this.filename = '';
-        }else {
-          alert(res.message);
+    this.sharedService
+      .post(
+        '/upload/userInfo',
+        formdata, {
+          animation: true,
+          httpOptions: false,
+          successAlert: true
         }
-        this.uploading = false;
+      )
+      .subscribe(res => {
+        this.file = null;
+        this.filename = '';
         this.toFirstPage();
-      });
+      })
   }
 
   toFirstPage() {

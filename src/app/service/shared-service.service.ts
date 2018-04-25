@@ -109,7 +109,7 @@ export class SharedService {
   }
 
   get(path: string, options: {
-    successAlert: boolean,
+    successAlert?: boolean,
     animation?: boolean
   }) {
     return Observable.create(obser => {
