@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmComponent } from '../../confirm/confirm.component';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-doc-upload',
@@ -24,7 +22,6 @@ export class DocUploadComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
   page = 0;
   size = 15;
-  uploading = false;
   requiredItems = {
     fileName	: '文件名称',
     fileType: '文件类别',
@@ -58,12 +55,10 @@ export class DocUploadComponent implements OnInit {
     size: this.size,
     fileName: ''
   };
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       fileName: new FormControl('', Validators.nullValidator),
@@ -106,27 +101,9 @@ export class DocUploadComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedUser) {
-      const initialState = {
-        title: '警告',
-        message: '确认删除该记录？'
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
-        this.staffLeave(this.selectedUser);
-        this.bsModalRef.hide();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addConfirm('警告', '确认删除该记录？');
     }else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一条记录！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请原则一条记录');
     }
   }
 
@@ -146,31 +123,19 @@ export class DocUploadComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.param.orgCode = this.orgList[0].data;
-    this.http.post('http://119.29.144.125:8080/cgfeesys/FileManager/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                }
-                this.deviceList = res.data.fileManagerDataList;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService
+      .post('/FileManager/get', JSON.stringify(this.param), {
+        httpOptions: true,
+        animation: true
+      })
+      .subscribe(res => {
+        this.count = res.data.count;
+          if (res.data.count > 0) {
+            this.hasData = true;
+          }
+          this.deviceList = res.data.fileManagerDataList;
+      });
   }
 
   dateFormat(date) {
@@ -200,14 +165,7 @@ export class DocUploadComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请输入要查询的人员姓名！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请输入要查询人员的姓名');
     }
   }
 
@@ -217,14 +175,7 @@ export class DocUploadComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个文档！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择个文档');
     }
   }
 
@@ -242,123 +193,48 @@ export class DocUploadComponent implements OnInit {
 
   staffLeave(selectedUser) {
     const leaveDate = this.dateFormat(new Date());
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/FileManager/delete?id=${selectedUser}`)
-            .map(res => res.json())
+    this.sharedService.get(`/FileManager/delete?id=${selectedUser}`, 
+    {successAlert: true, animation: true})
             .subscribe(res => {
-              const initialState = {
-                title: '通知',
-                message: res.message
-              };
-              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-              this.bsModalRef.content.submitEmit.subscribe(res => {
-                this.bsModalRef.hide();
-              })
-              if (res.code) {
-                this.toFirstPage();
-              }
+              this.sharedService.addAlert('通知', res.message);
+              this.toFirstPage();
             });
   }
 
   addDevice() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      const initialState = {
-        title: '警告',
-        message: `${spaceArr.join(',')}为空`
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
     } else if (!this.file) {
-      const initialState = {
-        title: '警告',
-        message: '请上传文档！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请上传文档');
     } else if (!this.endDate) {
-      const initialState = {
-        title: '警告',
-        message: '请选择发文时间！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择发文时间！');
     } else if (this.searchOrg.length === 0) {
-      const initialState = {
-        title: '警告',
-        message: '请选择浏览权限！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择浏览权限！');
     } else {
-      this.uploading = true;
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
       this.form.value.filePublishTime = this.dateFormat(this.endDate);
       this.form.value.fileOwner = this.orgList[0].data;
       this.form.value.orgList = this.searchOrg.map(el => el.data);
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/add`, JSON.stringify(this.form.value), {
-                headers: myHeaders
-              })
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  this.upload(res.data.id);
-                } else {
-                  const initialState = {
-                    title: '警告',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                  this.uploading = false;
-                }
-              });
+      this.sharedService
+        .post(`/FileManager/add`, JSON.stringify(this.form.value), {
+          httpOptions: true,
+          animation: true
+        })
+        .subscribe(res => {
+          this.upload(res.data.id);
+        });
     }
   }
 
   updateDevice() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      const initialState = {
-        title: '警告',
-        message: `${spaceArr.join(',')}为空`
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
     } else if (!this.endDate) {
-      const initialState = {
-        title: '警告',
-        message: '请选择发文时间！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择发文时间！');
     } else if (this.searchOrg.length === 0) {
-      const initialState = {
-        title: '警告',
-        message: '请选择浏览权限！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择浏览权限！');
     } else {
-      this.uploading = true;
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
       const keys = Object.keys(this.form.value);
       keys.forEach(el => {
         this.data[el] = this.form.value[el];
@@ -367,41 +243,21 @@ export class DocUploadComponent implements OnInit {
       this.data.filePublishTime = this.dateFormat(this.endDate);
       this.data.fileOwner = this.orgList[0].data;
       this.data.orgList = this.searchOrg.map(el => el.data);
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/FileManager/update`, JSON.stringify(this.data), {
-                headers: myHeaders
-              })
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  if (this.file) {
-                    this.upload(this.selectedUser);
-                  } else {
-                    this.toFirstPage();
-                    this.uploading = false;
-                  }
-                } else {
-                  const initialState = {
-                    title: '警告',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                  this.uploading = false;
-                }
-              }, error => {
-                const initialState = {
-                  title: '警告',
-                  message: '上传失败，请重试！'
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.uploading = false;
-              });
-      }
+      this.sharedService.post(`/FileManager/update`, JSON.stringify(this.data), {
+        httpOptions: true,
+        animation: true
+      })
+        .subscribe(res => {
+          if (this.file) {
+            this.upload(this.selectedUser);
+          } else {
+            this.toFirstPage();
+          }
+
+        }, error => {
+          this.sharedService.addAlert('警告', '上传失败，请重试！');
+        });
+    }
   }
 
   paginate($event) {
@@ -426,32 +282,16 @@ export class DocUploadComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('id', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/fileManager`, formdata)
-      .map(res => res.json())
+    this.sharedService.post(`/upload/fileManager`, formdata,
+     {httpOptions: false,
+    successAlert: true}
+    )
       .subscribe(res => {
-        if (res.code) {
-          const initialState = {
-            title: '通知',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-          this.file = null;
-          this.filename = '';
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-        }
+        this.sharedService.addAlert('通知', res.message);
+        this.file = null;
+        this.filename = '';
+
         this.toFirstPage();
-        this.uploading = false;
       });
   }
 
@@ -481,4 +321,3 @@ export class DocUploadComponent implements OnInit {
     });
   }
 }
-

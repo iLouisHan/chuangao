@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post } from '../../store/translate';
+import { SharedService } from "../../service/shared-service.service";
 
 @Component({
   selector: 'app-road-company',
@@ -16,22 +16,22 @@ export class RoadCompanyComponent implements OnInit {
   workTrans = work_post;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
   }
 
   getInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getCompanyInfo?companyCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/BaseInfo/getCompanyInfo?companyCode=${orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.data = res.data
+    )
   }
 
   ngOnInit() {

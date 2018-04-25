@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-leave-search',
@@ -46,7 +46,7 @@ export class LeaveSearchComponent implements OnInit {
   };
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -115,14 +115,10 @@ export class LeaveSearchComponent implements OnInit {
     if (param.leaveType) {
       param.leaveType = +param.leaveType;
     }
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Leave/getLeave', JSON.stringify(param) , {
-              headers: myHeaders
+    this.sharedService.post('/Leave/getLeave', JSON.stringify(param) , {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 this.count = res.data.count;
                 res.data.leaveDataList.forEach(el => {
                   el.applyTypeCN = this.leaveType[el.applyType];
@@ -131,9 +127,6 @@ export class LeaveSearchComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                 }
-              }else {
-                alert(res.message);
-              }
             });
   }
 

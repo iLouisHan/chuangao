@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { DoCheck } from '@angular/core/src/metadata/lifecycle_hooks';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-input-select',
@@ -33,7 +33,7 @@ export class InputSelectComponent implements OnInit, DoCheck {
   staffListShow: Array<any>;
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');

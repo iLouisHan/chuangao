@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-staff-search',
@@ -41,7 +41,7 @@ export class StaffSearchComponent implements OnInit {
   numberArr: Array<string> = ['workPost', 'political_status', 'educational', 'listGroup'];
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -114,42 +114,32 @@ export class StaffSearchComponent implements OnInit {
         this.param[el] = +this.param[el];
       }
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/StaffMag/getStaff', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.staffList = res.data.staffDataList.map(el => {
-                    el.politicalStatus = this.politics[el.politicalStatus];
-                    el.workPost = this.work_post[el.workPost];
-                    el.educational = this.educational[el.educational];
-                    el.listGroup = this.listGroup[el.listGroup];
-                    return el;
-                  });
-                }else {
-                  alert('没有匹配的人员信息，请重新设置查询条件！');
-                }
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post('/StaffMag/getStaff', JSON.stringify(this.param), {
+      httpOptions: true
+    })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.staffList = res.data.staffDataList.map(el => {
+            el.politicalStatus = this.politics[el.politicalStatus];
+            el.workPost = this.work_post[el.workPost];
+            el.educational = this.educational[el.educational];
+            el.listGroup = this.listGroup[el.listGroup];
+            return el;
+          });
+        } else {
+          this.sharedService.addAlert('警告', '没有匹配的人员信息，请重新设置查询条件！');
+        }
+      });
   }
 
   resetPwd(id) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/resetPassword?userId=${id}`)
-        .map(res => res.json())
+    this.sharedService.get(`/resetPassword?userId=${id}`, {
+      animation: true
+    })
         .subscribe(res => {
-          if (res.code) {
-            alert('重置成功');
-          }else {
-            alert(res.message);
-          }
+            this.sharedService.addAlert('警告', '重置成功');
         });
   }
 

@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, DoCheck } from '@angular/core';
-import { Http } from '@angular/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { list_group, shiftId } from '../../store/translate';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-switch-choose',
@@ -42,7 +42,7 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
   loadingSchedule = false;
 
   constructor(
-    private http: Http,
+    private sharedServie: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -61,8 +61,9 @@ export class SwitchChooseComponent implements OnInit, DoCheck {
 
   getSchedule() {
     this.loadingSchedule = true;
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getScheduleByTeams?stationCode=${this.orgCode}&teams=${this._teams}&userId=${this._userId}`)
-    .map(res => res.json())
+    this.sharedServie.get(`/ShiftChange/getScheduleByTeams?stationCode=${this.orgCode}&teams=${this._teams}&userId=${this._userId}`, {
+      animation: true
+    })
     .subscribe(res => {
               this.loadingSchedule = false;
               this.scheduleList = res.data;

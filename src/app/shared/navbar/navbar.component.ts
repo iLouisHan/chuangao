@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import * as Actions from '../../store/cacheStore.actions';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-navbar',
@@ -28,9 +28,9 @@ export class NavbarComponent implements OnInit {
   }
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
   }
@@ -38,19 +38,16 @@ export class NavbarComponent implements OnInit {
 
   // 获取通知信息
   getNotification(orgCode, orgType) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getNotification?orgCode=${orgCode}&orgType=${orgType}`)
-      .map(res => res.json())
+    this.sharedService.get(`/BaseInfo/getNotification?orgCode=${orgCode}&orgType=${orgType}`, {
+      animation: true
+    })
       .subscribe(res => {
-        if (res.code) {
-          this.noteData = res.data;
-          if (this.noteData) {
-            this.noteCount = (this.noteData.shiftChangeCount || 0) +
-              (this.noteData.returnCount || 0) +
-              (this.noteData.replaceCount || 0) +
-              (this.noteData.leaveCount || 0);
-          }
-        } else {
-          alert(res.message);
+        this.noteData = res.data;
+        if (this.noteData) {
+          this.noteCount = (this.noteData.shiftChangeCount || 0) +
+            (this.noteData.returnCount || 0) +
+            (this.noteData.replaceCount || 0) +
+            (this.noteData.leaveCount || 0);
         }
       });
   }

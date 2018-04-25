@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post, politics, educational } from '../../../store/translate';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-team-schedule-set',
@@ -21,8 +21,8 @@ export class TeamScheduleSetComponent implements OnInit {
   en: any;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       scheduleType: new FormControl('', Validators.nullValidator)
@@ -39,17 +39,15 @@ export class TeamScheduleSetComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/getScheduleMould?stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.modList = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/Schedule/getScheduleMould?stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.modList = res.data
+    );
   }
 
   dateFormat(date) {
@@ -65,27 +63,26 @@ export class TeamScheduleSetComponent implements OnInit {
 
   submit() {
     if (!this.form.value.scheduleType) {
-      alert('请选择模板！');
+      this.sharedService.addAlert('警告', '请选择模板！');
     }else if (!this.startTime) {
-      alert('请选择开始时间');
+      this.sharedService.addAlert('警告', '请选择开始时间');
     }else if (!this.endTime) {
-      alert('请选择结束时间');
+      this.sharedService.addAlert('警告', '请选择结束时间');
     }else {
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
-      this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/setTeamSchedule', JSON.stringify({
-        stationCode: this.orgCode,
-        scheduleType: +this.form.value.scheduleType,
-        startTime: this.dateFormat(this.startTime),
-        endTime: this.dateFormat(this.endTime)
-      }), {
-        headers: myHeaders
-      }).map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            alert(res.message);
-          }
-        });
+      this.sharedService.post(
+        '/Schedule/setTeamSchedule',
+        JSON.stringify({
+          stationCode: this.orgCode,
+          scheduleType: +this.form.value.scheduleType,
+          startTime: this.dateFormat(this.startTime),
+          endTime: this.dateFormat(this.endTime)
+        }),
+        {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
+        }
+      ).subscribe();
     }
   }
 

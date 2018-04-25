@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
-import { AlertComponent } from '../shared/alert/alert.component';
+import { SharedService } from '../service/shared-service.service';
 
 @Component({
   selector: 'app-super',
@@ -37,12 +35,10 @@ export class SuperComponent implements OnInit {
     orgCode: '机构代码',
     adminName: '机构管理员姓名'
   };
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -65,14 +61,18 @@ export class SuperComponent implements OnInit {
   }
 
   getStaff(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Super/getAllUserInfo?orgCode=${orgCode}`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            this.staffList = res.data;
-            this.view = 2;
-          }
-        });
+    this.sharedService.get(
+      `/Super/getAllUserInfo?orgCode=${orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.staffList = res.data;
+        this.view = 2;
+      }
+    )
   }
 
   changeIsAdmin(index) {
@@ -81,14 +81,7 @@ export class SuperComponent implements OnInit {
 
   add() {
     if (this.selected.orgType === 3) {
-      const initialState = {
-        title: '警告',
-        message: '不能为收费站添加子机构！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '不能为收费站添加子机构！');
     }else {
       const orgType = this.selected.orgType || 0;
       this.view = 1;
@@ -108,52 +101,36 @@ export class SuperComponent implements OnInit {
       };
     });
     if (param.filter(el => el.isAdmin).length > 0) {
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/Super/setManager`, JSON.stringify(param), {
-        headers: new Headers({'Content-Type': 'application/json'})
-      }).map(res => res.json())
-      .subscribe(res => {
-        const initialState = {
-          title: '通知',
-          message: '请选择一条记录！'
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
-        if (res.code) {
-          this.getStaff(this.selected.data);
+      this.sharedService.post(
+        '/Super/setManager',
+        JSON.stringify(param),
+        {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
         }
-      });
+      ).subscribe(
+        () => this.getStaff(this.selected.data)
+      );
     }else {
-      const initialState = {
-        title: '警告',
-        message: '至少选择一个管理员！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '至少选择一个管理员！');
     }
   }
 
   delete() {
-    if (window.confirm('是否确认删除？')) {
-      this.http.get(`http://119.29.144.125:8080/cgfeesys/Super/deleteOrg?orgCode=${this.selected.data}&orgType=${this.selected.orgType}`)
-        .map(res => res.json())
-        .subscribe(res => {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-          if (res.code) {
-            this.view = 0;
-            this.getOrgInfo();
-          }
-        });
+    if (this.sharedService.addConfirm('确认通知', '是否确认删除？')) {
+      this.sharedService.get(
+        `/Super/deleteOrg?orgCode=${this.selected.data}&orgType=${this.selected.orgType}`,
+        {
+          successAlert: true,
+          animation: true
+        }
+      ).subscribe(
+        () => {
+          this.view = 0;
+          this.getOrgInfo();
+        }
+      )
     }
   }
 
@@ -201,82 +178,48 @@ export class SuperComponent implements OnInit {
 
   getOrgInfo() {
     this.treeNodes = [];
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Super/getAllOrgInfo`)
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  this.toTreeNode(res.data);
-                } else {
-                  const initialState = {
-                    title: '警告',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                }
-              });
+    this.sharedService.get(
+      '/Super/getAllOrgInfo',
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.toTreeNode(res.data)
+    );
   }
 
   submit() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      const initialState = {
-        title: '警告',
-        message: `${spaceArr.join(',')}为空`
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', `${spaceArr.join(',')}为空`);
     }else {
       this.form.value.orgType = +this.form.value.orgType;
-      this.http.post(`http://119.29.144.125:8080/cgfeesys/Super/addOrg`, JSON.stringify(this.form.value), {
-        headers: new Headers({'Content-Type': 'application/json'})
-      })
-      .map(res => res.json())
-      .subscribe(res => {
-        const initialState = {
-          title: '通知',
-          message: res.message
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
-        if (res.code) {
+      this.sharedService.post(
+        '/Super/addOrg',
+        JSON.stringify(this.form.value),
+        {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
+        }
+      ).subscribe(
+        () => {
           this.view = 0;
           this.getOrgInfo();
         }
-      });
+      )
     }
   }
 
   resetPwd(id) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/resetPassword?userId=${id}`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            const initialState = {
-              title: '通知',
-              message: '重置成功！'
-            };
-            this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-            this.bsModalRef.content.submitEmit.subscribe(res => {
-              this.bsModalRef.hide();
-            })
-          }else {
-            const initialState = {
-              title: '警告',
-              message: res.message
-            };
-            this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-            this.bsModalRef.content.submitEmit.subscribe(res => {
-              this.bsModalRef.hide();
-            })
-          }
-        });
+    this.sharedService.get(
+      `/resetPassword?userId=${id}`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe()
   }
 
   ngOnInit() {

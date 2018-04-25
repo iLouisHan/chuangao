@@ -1,12 +1,10 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmComponent } from '../../confirm/confirm.component';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-train-plan',
@@ -39,7 +37,6 @@ export class TrainPlanComponent implements OnInit {
   keys: Array<any>;
   orgList: Array<any>;
   selectionMode = 'single';
-  uploading = false;
   searchOrg: Array<any>;
   initForm: any;
   param: any = {
@@ -52,12 +49,10 @@ export class TrainPlanComponent implements OnInit {
     trainEndDate: ''
   };
   trainTimeLong = 0.5;
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       trainPlanName: new FormControl('', Validators.nullValidator),
@@ -119,27 +114,9 @@ export class TrainPlanComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedUser) {
-      const initialState = {
-        title: '警告',
-        message: '确认删除该记录？'
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
-        this.deletePlan(this.selectedUser);
-        this.bsModalRef.hide();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addConfirm('警告', '确认删除该记录？');
     }else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一条记录！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一条记录！');
     }
   }
 
@@ -150,28 +127,18 @@ export class TrainPlanComponent implements OnInit {
     this.searchOrg = ($event);
   }
   getStaffInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data.trainPlanData;
-                this.form.patchValue(this.data);
-                this.DoOrg = this.data.trainDoOrgList.join(',');
-                this.startDate = this.data.trainStartDate;
-                this.endDate = this.data.trainEndDate;
-                this.trainTimeLong = this.data.trainTimeLong;
-                this.filename = this.data.trainPlanFile;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.get(`/Train/planGetById?id=${staffId}`, {
+        animation: true
+      })
+      .subscribe(res => {
+          this.data = res.data.trainPlanData;
+          this.form.patchValue(this.data);
+          this.DoOrg = this.data.trainDoOrgList.join(',');
+          this.startDate = this.data.trainStartDate;
+          this.endDate = this.data.trainEndDate;
+          this.trainTimeLong = this.data.trainTimeLong;
+          this.filename = this.data.trainPlanFile;
+      });
   }
 
   timeFormat(num) {
@@ -183,14 +150,10 @@ export class TrainPlanComponent implements OnInit {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     }
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/planGet', JSON.stringify(this.param) , {
-              headers: myHeaders
+    this.sharedService.post('/Train/planGet', JSON.stringify(this.param) , {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
@@ -200,16 +163,6 @@ export class TrainPlanComponent implements OnInit {
                 this.staffList.forEach(el => {
                   el.trainDoOrgName = el.trainDoOrgList.join(',');
                 })
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
             });
   }
 
@@ -243,14 +196,7 @@ export class TrainPlanComponent implements OnInit {
       this.getInfo();
       this.toFirstPage();
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请输入要查询的组织！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请输入要查询的组织！');
     }
   }
 
@@ -260,14 +206,7 @@ export class TrainPlanComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个计划！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一个计划！');
     }
   }
 
@@ -284,26 +223,16 @@ export class TrainPlanComponent implements OnInit {
   }
 
   deletePlan(selectedUser) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planDelete?id=${selectedUser}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              const initialState = {
-                title: '通知',
-                message: res.message
-              };
-              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-              this.bsModalRef.content.submitEmit.subscribe(res => {
-                this.bsModalRef.hide();
-              })
-              if (res.code) {
-                this.toFirstPage();
-              }
-            });
+    this.sharedService.get(`/Train/planDelete?id=${selectedUser}`, {
+        animation: true
+      })
+      .subscribe(res => {
+        this.sharedService.addAlert('通知', res.message);
+        this.toFirstPage();
+      });
   }
 
   addStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.trainTimeLong = this.trainTimeLong;
     this.form.value.trainStartDate = this.dateFormat(this.startDate);
     this.form.value.trainEndDate = this.dateFormat(this.endDate);
@@ -311,14 +240,7 @@ export class TrainPlanComponent implements OnInit {
     if (this.exOrg.length !== 0) {
       this.form.value.trainDoOrg = this.exOrg.map(el => el.data);
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请选择落实单位！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择落实单位！');
       return false;
     }
     this.form.value.trainPlanOrg = this.orgList[0].data;
@@ -326,45 +248,21 @@ export class TrainPlanComponent implements OnInit {
     // this.form.value.politicalStatus = +this.form.value.politicalStatus;
     // this.form.value.positionalTitle = +this.form.value.positionalTitle;
     // this.form.value.userId = '' + Math.round(1000 * Math.random());
-    this.uploading = true;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planAdd`, JSON.stringify(this.form.value), {
-              headers: myHeaders
+    this.sharedService.post(`/Train/planAdd`, JSON.stringify(this.form.value), {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 if (this.file) {
                   this.upload(res.data.id);
                 } else {
                   this.toFirstPage();
-                  this.uploading = false;
-                  const initialState = {
-                    title: '通知',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
+                  this.sharedService.addAlert('通知', res.message);
                 }
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.uploading = false;
-              }
             });
   }
 
   updateStaff() {
     // this.uploading = true;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const data: any = {
       id: this.selectedUser,
       trainPlanOrg: this.orgList[0].data,
@@ -379,47 +277,18 @@ export class TrainPlanComponent implements OnInit {
       trainLoc: this.form.value.trainLoc,
       trainTimeLong: this.form.value.trainTimeLong
     };
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/planUpdate`, JSON.stringify(data), {
-              headers: myHeaders
+    this.sharedService.post(`/Train/planUpdate`, JSON.stringify(data), {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 if (this.file) {
                   this.upload(this.selectedUser);
                 } else {
                   this.toFirstPage();
-                  const initialState = {
-                    title: '警告',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
-                  this.uploading = false;
+                  this.sharedService.addAlert('警告', res.message);
                 }
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.uploading = false;
-              }
             }, error => {
-              const initialState = {
-                title: '警告',
-                message: '上传失败，请重试！'
-              };
-              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-              this.bsModalRef.content.submitEmit.subscribe(res => {
-                this.bsModalRef.hide();
-              })
-              this.uploading = false;
+              this.sharedService.addAlert('警告', '上传失败，请重试！');
             });
   }
 
@@ -440,32 +309,14 @@ export class TrainPlanComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('id', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/trainPlan`, formdata)
-      .map(res => res.json())
+    this.sharedService.post(`/upload/trainPlan`, formdata, {
+      httpOptions: false
+    })
       .subscribe(res => {
-        if (res.code) {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-          this.file = null;
-          this.filename = '';
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-        }
+        this.sharedService.addAlert('警告', res.message);
+        this.file = null;
+        this.filename = '';
         this.toFirstPage();
-        this.uploading = false;
       });
   }
 

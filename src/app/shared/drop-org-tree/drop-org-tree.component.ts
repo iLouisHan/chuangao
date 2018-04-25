@@ -1,8 +1,8 @@
 import { Component, OnInit, EventEmitter, Output, Input, DoCheck } from '@angular/core';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-drop-org-tree',
@@ -36,7 +36,7 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   initArr: Array<string> = [];
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -97,15 +97,12 @@ export class DropOrgTreeComponent implements OnInit, DoCheck {
   }
 
   getOrgInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getOrgRelation?orgCode=${orgCode}`)
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  this.toTreeNode(res.data);
-                } else {
-                  alert(res.message);
-                }
-              });
+    this.sharedService.get(`/BaseInfo/getOrgRelation?orgCode=${orgCode}`, {
+      animation: true
+    })
+    .subscribe(res => {
+      this.toTreeNode(res.data);
+    });
   }
 
   clear() {

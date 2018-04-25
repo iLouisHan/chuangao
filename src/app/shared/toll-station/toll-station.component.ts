@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post } from '../../store/translate';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-toll-station',
@@ -22,7 +22,7 @@ export class TollStationComponent implements OnInit, OnDestroy {
   imgArrLength2: number;
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>,
     private router: Router,
     private route: ActivatedRoute
@@ -31,16 +31,13 @@ export class TollStationComponent implements OnInit, OnDestroy {
   }
 
   getInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationInfo?stationCode=${orgCode}`)
-            .map(res => res.json())
+    this.sharedService.get(`/BaseInfo/getStationInfo?stationCode=${orgCode}`, {
+      animation: true
+    })
             .subscribe(res => {
-              if (res.code) {
                 this.data = res.data;
                 this.imgArrLength1 = res.data.stationImg1.length;
-                this.imgArrLength2 = res.data.stationImg2.length;
-              }else {
-                alert(res.message);
-              }
+                this.imgArrLength2 = res.data.stationImg2.length;(res.message);
             });
   }
 

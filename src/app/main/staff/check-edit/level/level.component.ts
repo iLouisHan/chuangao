@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { work_post } from '../../../../store/translate';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SharedService } from '../../../../service/shared-service.service';
 
 @Component({
   selector: 'app-level',
@@ -25,8 +25,8 @@ export class LevelComponent implements OnInit {
   en: any;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -45,37 +45,32 @@ export class LevelComponent implements OnInit {
   }
 
   add() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.form.value.mandarinLevelEvaluate = this.dateFormat(this.mandarinLevelEvaluate);
-    this.form.value.computerLevelEvaluate = this.dateFormat(this.computerLevelEvaluate);
-    this.form.value.stationCode = this.orgCode;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Check/setCheckSkill`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                alert(res.message);
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Check/setCheckSkill',
+      JSON.stringify(this.form.value),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe();
   }
 
   getInfo() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Check/getCheckSkill?userId=${this.form.value.userId}`)
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.data = res.data;
-          this.form.patchValue(res.data);
-          this.computerLevelEvaluate = res.data.computerLevelEvaluate || '';
-          this.mandarinLevelEvaluate = res.data.mandarinLevelEvaluate || '';
-        }else {
-          alert(res.message);
-        }
-      });
+    this.sharedService.get(
+      `/Check/getCheckSkill?userId=${this.form.value.userId}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.data = res.data;
+        this.form.patchValue(res.data);
+        this.computerLevelEvaluate = res.data.computerLevelEvaluate || '';
+        this.mandarinLevelEvaluate = res.data.mandarinLevelEvaluate || '';
+      }
+    )
   }
 
   dateFormat(date) {
@@ -90,15 +85,15 @@ export class LevelComponent implements OnInit {
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/BaseInfo/getStationUserId?stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.staffList = res.data
+    );
   }
 
   ngOnInit() {

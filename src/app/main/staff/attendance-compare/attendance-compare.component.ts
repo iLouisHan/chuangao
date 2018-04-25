@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-attendance-compare',
@@ -40,8 +40,8 @@ export class AttendanceCompareComponent implements OnInit {
   orgCode: string;
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.now = this.dateFormat(this.nowTime);
     this.calendarInit(this.now);
@@ -142,20 +142,20 @@ export class AttendanceCompareComponent implements OnInit {
       startTime: this.startTime,
       endTime: this.endTime
     };
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/getTeamSchedule', JSON.stringify(param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.secheduleList = res.data.teamScheduleDataList;
-                this.bindSechedule();
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post(
+      '/Schedule/getTeamSchedule',
+      JSON.stringify(param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.secheduleList = res.data.teamScheduleDataList;
+        this.bindSechedule();
+      }
+    )
   }
 
   changeMonth(val) {
@@ -187,23 +187,26 @@ export class AttendanceCompareComponent implements OnInit {
 
   getAttendance(day, shift) {
     this.isShow = true;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/getCompare`, JSON.stringify({
-      stationCode: this.orgCode,
-      date: this.dateFormat(day.day),
-      shiftId: shift.shiftId
-    }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.planUserList = res.data.planUserList;
-          this.shiftChangeList = res.data.shiftChangeList;
-          this.attendanceList = res.data.attendanceList;
-          this.leaveList = res.data.leaveList;
-        }
-      });
+    this.sharedService.post(
+      '/Attendance/getCompare',
+      JSON.stringify({
+        stationCode: this.orgCode,
+        date: this.dateFormat(day.day),
+        shiftId: shift.shiftId
+      }),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.planUserList = res.data.planUserList;
+        this.shiftChangeList = res.data.shiftChangeList;
+        this.attendanceList = res.data.attendanceList;
+        this.leaveList = res.data.leaveList;
+      }
+    )
   }
 
   ngOnInit() {

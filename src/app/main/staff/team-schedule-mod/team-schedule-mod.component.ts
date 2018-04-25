@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { list_group } from '../../../store/translate';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-team-schedule-mod',
@@ -41,8 +41,8 @@ export class TeamScheduleModComponent implements OnInit {
   };
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       scheduleTypeDesc	: new FormControl('', Validators.nullValidator),
@@ -67,17 +67,15 @@ export class TeamScheduleModComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/getScheduleMould?stationCode=${this.orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.modList = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/Schedule/getScheduleMould?stationCode=${this.orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.modList = res.data
+    );
   }
 
   modChange() {
@@ -100,30 +98,31 @@ export class TeamScheduleModComponent implements OnInit {
       });
       const valid = this.modDetail.filter(el => el.teamsGroup === -1).length === 0;
       if (valid) {
-        const myHeaders: Headers = new Headers();
-        myHeaders.append('Content-Type', 'application/json');
-        this.http.post(`http://119.29.144.125:8080/cgfeesys/Schedule/setScheduleMould`, JSON.stringify({
+        this.sharedService.post(
+          '/Schedule/setScheduleMould',
+          JSON.stringify({
             stationCode: this.orgCode,
             scheduleTypeDesc: this.form.value.scheduleTypeDesc,
             scheduleDays: this.form.value.scheduleDays,
             mouldLists: this.modDetail
-          }), {
-            headers: myHeaders
-          })
-          .map(res => res.json())
-          .subscribe(res => {
-            if (res.code) {
-              alert(res.message);
-              this.getInfo();
-              this.addMod = false;
-              this.modDetail = [];
-            }
-          });
+          }),
+          {
+            httpOptions: true,
+            successAlert: true,
+            animation: true
+          }
+        ).subscribe(
+          () => {
+            this.getInfo();
+            this.addMod = false,
+            this.modDetail = [];
+          }
+        );
       }else {
-        alert('请在所有班次选择班组！');
+        this.sharedService.addAlert('警告', '请在所有班次选择班组！');
       }
     }else {
-      alert('请填写正确周期');
+      this.sharedService.addAlert('警告', '请填写正确周期');
     }
   }
 
@@ -132,15 +131,15 @@ export class TeamScheduleModComponent implements OnInit {
   }
 
   searchModDetail(id) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/getScheduleMouldList?scheduleType=${id}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.modDetail = res.data;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(
+      `/Schedule/getScheduleMouldList?scheduleType=${id}`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      res => this.modDetail = res.data
+    )
   }
 
   add() {
@@ -150,17 +149,17 @@ export class TeamScheduleModComponent implements OnInit {
 
   deleteMod() {
     if (this.checkItem) {
-      this.http.get(`http://119.29.144.125:8080/cgfeesys/Schedule/deleteScheduleMould?scheduleType=${this.checkItem}`)
-              .map(res => res.json())
-              .subscribe(res => {
-                if (res.code) {
-                  this.getInfo();
-                }else {
-                  alert(res.message);
-                }
-              });
+      this.sharedService.get(
+        `/Schedule/deleteScheduleMould?scheduleType=${this.checkItem}`,
+        {
+          successAlert: false,
+          animation: true
+        }
+      ).subscribe(
+        () => this.getInfo() 
+      );
     }else {
-      alert('请选择一个模板！');
+      this.sharedService.addAlert('警告', '请选择一个模板！');
     }
   }
 

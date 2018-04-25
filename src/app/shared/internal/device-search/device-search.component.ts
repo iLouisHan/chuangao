@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-device-search',
@@ -39,12 +37,10 @@ export class DeviceSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
-  bsModalRef: BsModalRef;
-
+  
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       assetName: new FormControl('', Validators.nullValidator)
@@ -82,14 +78,7 @@ export class DeviceSearchComponent implements OnInit {
 
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
-      const initialState = {
-        title: '警告',
-        message: '未选择机构！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '未选择机构');
     } else {
       this.getInfo(this.page, this.size);
     }
@@ -113,30 +102,18 @@ export class DeviceSearchComponent implements OnInit {
         param[el] = this.form.value[el];
       }
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                }
-                this.deviceList = res.data.fixedAssetDataList;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService
+      .post('/FixedAsset/get', JSON.stringify(param), {
+        httpOptions: true,
+        animation: true
+      })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+        }
+        this.deviceList = res.data.fixedAssetDataList;
+      });
   }
 
   check($event) {

@@ -214,19 +214,16 @@ export class StaffEditComponent implements OnInit {
 
   staffLeave(selectedUser) {
     const leaveDate = this.sharedService.dateFormat(new Date());
-    this.sharedService
-      .get(`/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`, {
-        animation: true,
-        successAlert: true
-      })
-      .subscribe(res => {
-        this.toFirstPage();
-      })
+    this.sharedService.get(`/StaffMag/staffLeave?userId=${selectedUser}&leaveDate=${leaveDate}`, {
+      animation: true
+    })
+            .subscribe(res => {
+              this.sharedService.addAlert('警告', res.message);
+              this.toFirstPage();
+            });
   }
 
   addStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.hireDate = this.sharedService.dateFormat(this.hireDate);
     this.form.value.birthday = this.sharedService.dateFormat(this.birthday);
     this.form.value.changeTime = this.sharedService.dateFormat(this.changeTime);
@@ -240,25 +237,20 @@ export class StaffEditComponent implements OnInit {
     if (this.orgType !== 3) {
       delete this.form.value.listGroup;
     }
-    this.sharedService
-      .post(
-        `http://119.29.144.125:8080/cgfeesys/StaffMag/addStaff`,
-        JSON.stringify(this.form.value),{
-          animation: true,
-          httpOptions: true,
-          successAlert: true
-        }
-      )
-      .subscribe(res => {
-        if (this.file) {
-          this.upload(res.data.userId);
-        }
-      })
+    this.sharedService.post(`/StaffMag/addStaff`, JSON.stringify(this.form.value), {
+              httpOptions: true
+            })
+            .subscribe(res => {
+                if (this.file) {
+                  this.upload(res.data.userId);
+                }else {
+                  alert('人员录入成功！');
+                  this.toFirstPage();
+                }
+            });
   }
 
   updateStaff() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
@@ -271,22 +263,16 @@ export class StaffEditComponent implements OnInit {
     if (this.form.value.listGroup) {
       this.data.listGroup = +this.form.value.listGroup;
     };
-    this.sharedService
-      .post(
-        `/User/setUserDetail`,
-        JSON.stringify(this.data), {
-          httpOptions: true,
-          successAlert: true,
-          animation: true
-        }
-      )
-      .subscribe(res => {
-        if (this.file) {
-          this.upload(this.data.userId);
-        }else {
-          this.toFirstPage();
-        }
-      })
+    this.sharedService.post(`/User/setUserDetail`, JSON.stringify(this.data), {
+              httpOptions: true
+            })
+            .subscribe(res => {
+                if (this.file) {
+                  this.upload(this.data.userId);
+                }else {
+                  this.toFirstPage();
+                }
+            });
   }
 
   paginate($event) {
@@ -296,26 +282,21 @@ export class StaffEditComponent implements OnInit {
 
   submit() {
     if (this.isAdd) {
-      this.addStaff();
-    }else {
-      this.updateStaff();
-    }
+        this.addStaff();
+      }else {
+        this.updateStaff();
+      }
   }
 
   upload(userId) {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('userId', userId);
-    this.sharedService
-      .post(
-        '/upload/userInfo',
-        formdata, {
-          animation: true,
-          httpOptions: false,
-          successAlert: true
-        }
-      )
+    this.sharedService.post(`/upload/userInfo`, formdata, {
+      httpOptions: false
+    })
       .subscribe(res => {
+        alert(res.message);
         this.file = null;
         this.filename = '';
         this.toFirstPage();

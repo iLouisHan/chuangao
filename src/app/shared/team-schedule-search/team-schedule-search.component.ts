@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politics, educational, list_group } from '../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-team-schedule-search',
@@ -44,7 +44,7 @@ export class TeamScheduleSearchComponent implements OnInit {
   today: string;
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.today = this.dateFormat(this.nowTime);
@@ -190,19 +190,12 @@ export class TeamScheduleSearchComponent implements OnInit {
         param[el] = this.form.value[el];
       }
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Schedule/getTeamSchedule', JSON.stringify(param) , {
-              headers: myHeaders
+    this.sharedService.post('/Schedule/getTeamSchedule', JSON.stringify(param) , {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 this.secheduleList = res.data.teamScheduleDataList;
                 this.bindSechedule();
-              }else {
-                alert(res.message);
-              }
             });
   }
 
@@ -213,12 +206,11 @@ export class TeamScheduleSearchComponent implements OnInit {
   }
 
   getStaffs(teams, orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${teams}&stationCode=${orgCode}`)
-            .map(res => res.json())
+    this.sharedService.get(`/ShiftChange/getUserByTeams?teams=${teams}&stationCode=${orgCode}`, {
+      animation: true
+    })
             .subscribe(res => {
-              if (res.code) {
                 this.staffList = res.data;
-              }
             });
   }
 

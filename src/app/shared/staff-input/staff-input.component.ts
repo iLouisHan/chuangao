@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-staff-input',
@@ -23,7 +23,7 @@ export class StaffInputComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private http: Http
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       orgName: new FormControl('', Validators.nullValidator),
@@ -56,18 +56,15 @@ export class StaffInputComponent implements OnInit {
   }
 
   getInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-                this.form.patchValue(res.data);
-                this.hireDate = res.data.hireDate;
-                this.birthday = res.data.birthday;
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.get(`/User/getUserDetail?userId=${staffId}`, {
+      animation: true
+    })
+      .subscribe(res => {
+        this.data = res.data;
+        this.form.patchValue(res.data);
+        this.hireDate = res.data.hireDate;
+        this.birthday = res.data.birthday;
+      });
   }
 
   btn() {

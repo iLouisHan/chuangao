@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import * as Actions from '../../../store/cacheStore.actions';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-green-search',
@@ -37,8 +37,8 @@ export class GreenSearchComponent implements OnInit {
   dealResult = ['免费放行', '缴费放行'];
 
   constructor(
-    private http: Http,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.en = {
       firstDayOfWeek: 0,
@@ -90,7 +90,7 @@ export class GreenSearchComponent implements OnInit {
   search() {
     if (this.selected) {
       if (this.selected.orgType !== 3) {
-        alert('请选择收费站！');
+        this.sharedService.addAlert('警告', '请选择收费站！');
       }else {
         this.param.stationCode = this.selected.data;
         this.getInfo();
@@ -99,7 +99,7 @@ export class GreenSearchComponent implements OnInit {
       if (this.orgType === 3) {
         this.getInfo();
       }else {
-        alert('请选择收费站！');
+        this.sharedService.addAlert('警告', '请选择收费站！');
       }
     }
   }
@@ -120,28 +120,32 @@ export class GreenSearchComponent implements OnInit {
     if (this.dateTime) {
       this.param.dateTime = this.dateFormat(this.dateTime);
     }
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Green/getCarCheckHis`, JSON.stringify(this.param), {
-      headers: new Headers({'Content-Type': 'application/json'})
-    })
-      .map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.carCheckHisDataList = res.data.carCheckHisDataList;
-          this.carCheckHisDataList.forEach(el => {
-            el.boxTypeCN = this.boxType[el.boxType];
-            el.carTypeCN = this.carType[el.carType - 1];
-            el.shiftCN = this.shift[el.shift - 1];
-            el.firstCheckCN = this.firstCheck[el.firstCheck];
-            el.dealResultCN = this.dealResult[el.dealResult - 1];
-          });
-          if (res.data.count) {
-            this.hasData = true;
-            this.count = res.data.count;
-          }else {
-            this.hasData = false;
-          }
+    this.sharedService.post(
+      '/Green/getCarCheckHis',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.carCheckHisDataList = res.data.carCheckHisDataList;
+        this.carCheckHisDataList.forEach(el => {
+          el.boxTypeCN = this.boxType[el.boxType];
+          el.carTypeCN = this.carType[el.carType - 1];
+          el.shiftCN = this.shift[el.shift - 1];
+          el.firstCheckCN = this.firstCheck[el.firstCheck];
+          el.dealResultCN = this.dealResult[el.dealResult - 1];
+        });
+        if (res.data.count) {
+          this.hasData = true;
+          this.count = res.data.count;
+        }else {
+          this.hasData = false;
         }
-      });
+      }
+    )
   }
 
   paginate($event) {
