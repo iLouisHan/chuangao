@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-train-execute-search',
@@ -43,14 +41,12 @@ export class TrainExecuteSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       hasDo: new FormControl('-1', Validators.nullValidator),
@@ -98,23 +94,9 @@ export class TrainExecuteSearchComponent implements OnInit {
 
   submit() {
     if (!this.orgList || this.orgList.length === 0) {
-      const initialState = {
-        title: '警告',
-        message: '未选择发起单位！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告','未选择发起单位！');
     } else if (!this.trainDoOrgList || this.trainDoOrgList.length === 0) {
-      const initialState = {
-        title: '警告',
-        message: '未选择落实单位！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告','未选择落实单位！');
     } else {
       this.getInfo(this.page, this.size);
     }
@@ -144,70 +126,33 @@ export class TrainExecuteSearchComponent implements OnInit {
     keys.forEach(el => {
       param[el] = this.form.value[el];
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/doGet', JSON.stringify(param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                }
-                res.data.trainDoDataList.forEach(item => {
-                  item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
-                });
-                this.staffList = res.data.trainDoDataList;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post('/Train/doGet', JSON.stringify(param), {
+      httpOptions: true
+    })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+        }
+        res.data.trainDoDataList.forEach(item => {
+          item.hasDo = item.hasDo === 0 ? '未落实' : '已落实';
+        });
+        this.staffList = res.data.trainDoDataList;
+
+      });
   }
 
   detail(id) {
     this.isChosen = true;
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/doGetById?id=${id}`)
-            .map(res => res.json())
+    this.sharedService.get(`/Train/doGetById?id=${id}`)
             .subscribe(res => {
-              if (res.code) {
                 this.doData = res.data;
                 this.doFilePath = res.data.trainDoFile;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
             });
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${id}`)
-            .map(res => res.json())
+    this.sharedService.get(`/Train/planGetById?id=${id}`)
             .subscribe(res => {
-              if (res.code) {
                 this.planData = res.data;
                 this.planFilePath = res.data.trainPlanFile;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
             });
   }
 

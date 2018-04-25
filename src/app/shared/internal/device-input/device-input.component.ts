@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -46,7 +45,6 @@ export class DeviceInputComponent implements OnInit {
   };
 
   constructor(
-    private http: Http,
     private store: Store<any>,
     private sharedService: SharedService
   ) {
@@ -139,7 +137,7 @@ export class DeviceInputComponent implements OnInit {
       this.param.orgList = [this.orgList[0].data];
     }
     this.sharedService
-      .post('http://119.29.144.125:8080/cgfeesys/FixedAsset/get', JSON.stringify(this.param), {
+      .post('/FixedAsset/get', JSON.stringify(this.param), {
         animation: true,
         httpOptions: true
       })
@@ -203,7 +201,7 @@ export class DeviceInputComponent implements OnInit {
 
   staffLeave(selectedUser) {
     this.sharedService
-      .get(`http://119.29.144.125:8080/cgfeesys/FixedAsset/delete?id=${selectedUser}`, {
+      .get(`/FixedAsset/delete?id=${selectedUser}`, {
         successAlert: true,
         animation: true
       })
@@ -224,13 +222,11 @@ export class DeviceInputComponent implements OnInit {
     } else if (!this.startDate) {
       this.sharedService.addAlert('警告', '请选择购置日期！');
     } else {
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
       this.form.value.buyDate = this.dateFormat(this.startDate);
       this.form.value.scrapDate = this.dateFormat(this.endDate);
       this.form.value.useOrg = this.orgList[0].data;
       this.sharedService
-        .post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/add`, JSON.stringify(this.form.value), {
+        .post(`/FixedAsset/add`, JSON.stringify(this.form.value), {
           successAlert: true,
           animation: true,
           httpOptions: true
@@ -248,8 +244,6 @@ export class DeviceInputComponent implements OnInit {
     } else if (!this.startDate) {
       this.sharedService.addAlert('警告', '请选择购置日期！');
     } else {
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
       const keys = Object.keys(this.form.value);
       keys.forEach(el => {
         this.data[el] = this.form.value[el];
@@ -259,7 +253,7 @@ export class DeviceInputComponent implements OnInit {
       this.data.scrapDate = this.dateFormat(this.endDate);
       this.data.useOrg = this.orgList[0].data;
       this.sharedService
-        .post(`http://119.29.144.125:8080/cgfeesys/FixedAsset/update`, JSON.stringify(this.data), {
+        .post(`/FixedAsset/update`, JSON.stringify(this.data), {
           successAlert: true,
           animation: true,
           httpOptions: true
@@ -267,7 +261,7 @@ export class DeviceInputComponent implements OnInit {
         .subscribe(res => {
           this.toFirstPage();
         })
-            }
+    }
   }
 
   paginate($event) {

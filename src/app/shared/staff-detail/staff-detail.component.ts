@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politicalStatus, positionalTitle } from '../../store/translate';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-staff-detail',
@@ -20,7 +20,7 @@ export class StaffDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: Http,
+    private sharedService: SharedService,
     private router: Router
   ) {
     this.staffId = this.route.snapshot.queryParams['id'];
@@ -31,14 +31,9 @@ export class StaffDetailComponent implements OnInit {
   }
 
   getInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
+    this.sharedService.get(`/User/getUserDetail?userId=${staffId}`)
             .subscribe(res => {
-              if (res.code) {
                 this.data = res.data;
-              }else {
-                alert(res.message);
-              }
             });
   }
 

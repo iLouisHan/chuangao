@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-doc-search',
@@ -38,12 +36,10 @@ export class DocSearchComponent implements OnInit {
   };
   cols: any;
   checkItem: number;
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -95,14 +91,7 @@ export class DocSearchComponent implements OnInit {
     if (this.selectedDoc) {
       window.open(this.selectedDoc);
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个文档！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一个文档');
     }
   }
   getInfo(page: number, size: number) {
@@ -117,30 +106,18 @@ export class DocSearchComponent implements OnInit {
     keys.forEach(el => {
       param[el] = this.form.value[el];
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/FileManager/get', JSON.stringify(param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                }
-                this.planList = res.data.fileManagerDataList;
-              } else {
-                const initialState = {
-                  title: '通知',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService
+      .post('/FileManager/get', JSON.stringify(param), {
+        httpOptions: true,
+        animation: true
+      })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+        }
+        this.planList = res.data.fileManagerDataList;
+      });
   }
 
   check($event) {

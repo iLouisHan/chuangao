@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-talk-count',
@@ -32,12 +30,10 @@ export class TalkCountComponent implements OnInit {
   data1: Array<any>;
   data2: Array<any>;
   reasonList: Array<any>;
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.quarter = '1';
     this.data1 = [];
@@ -55,56 +51,29 @@ export class TalkCountComponent implements OnInit {
 
   search() {
     if (!this.orgList || this.orgList.length <= 0 || this.orgList.filter(el => el.orgType !== 3).length) {
-      const initialState = {
-        title: '警告',
-        message: '请选择收费站！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择收费站！');
     } else if (!this.year) {
-      const initialState = {
-        title: '警告',
-        message: '请选择年份！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择年份！');
     } else if (!this.quarter) {
-      const initialState = {
-        title: '警告',
-        message: '请选择季度！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择季度！');
     } else {
       this.getInfo();
     }
   }
 
   getInfo() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Chat/getStatistics?stationCode=${this.orgList[0].data}&year=${this.year}&quarter=${this.quarter}`)
-    .map(res => res.json())
+    this.sharedService.get(`/Chat/getStatistics?stationCode=${this.orgList[0].data}&year=${this.year}&quarter=${this.quarter}`)
       .subscribe(res => {
-        if (res.code) {
-          this.reasonList = res.data.reasonList;
-          this.updateChart(res.data.chatList);
-        }
+        this.reasonList = res.data.reasonList;
+        this.updateChart(res.data.chatList);
       });
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }
-            });
+    this.sharedService.get(`/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
+      .subscribe(res => {
+        this.staffList = res.data;
+      });
   }
   updateChart(arr) {
     this.data1 = [];
@@ -162,8 +131,6 @@ export class TalkCountComponent implements OnInit {
     this.staff = obj;
   }
   saveReason () {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const param = {
       stationCode: this.orgList[0].data,
       year: this.year,
@@ -171,30 +138,13 @@ export class TalkCountComponent implements OnInit {
       userId: this.staff.userId,
       reason: this.staff.reason
     };
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Chat/addNoChatReason', JSON.stringify(param) , {
-      headers: myHeaders
-    }).map(res => res.json())
+    this.sharedService.post('s/Chat/addNoChatReason', JSON.stringify(param) , {
+      httpOptions: true,
+      successAlert: true
+    })
     .subscribe(res => {
-      if (res.code) {
-        const initialState = {
-          title: '通知',
-          message: res.message
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+      this.sharedService.addAlert('通知', res.message);
         this.isChoose = false;
-      } else {
-        const initialState = {
-          title: '警告',
-          message: res.message
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
-      }
     });
   }
   ngOnInit() {

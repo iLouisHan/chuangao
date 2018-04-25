@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-attendance-check',
@@ -27,7 +27,7 @@ export class AttendanceCheckComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService, 
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -63,20 +63,15 @@ export class AttendanceCheckComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Attendance/getYear`, JSON.stringify({
+    this.sharedService.post(`/Attendance/getYear`, JSON.stringify({
       stationCode: this.orgList[0].data,
       date: `${this.year}-01-01`,
       userId: this.staff
     }), {
-      headers: myHeaders
-    }).map(res => res.json())
-      .subscribe(res => {
-        if (res.code) {
-          this.initList();
-          this.classify(res.data);
-        }
+      httpOptions: true
+    }).subscribe(res => {
+        this.initList();
+        this.classify(res.data);
       });
   }
 
@@ -188,12 +183,9 @@ export class AttendanceCheckComponent implements OnInit {
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
-            .map(res => res.json())
+    this.sharedService.get(`/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
             .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }
+              this.staffList = res.data;
             });
   }
 
