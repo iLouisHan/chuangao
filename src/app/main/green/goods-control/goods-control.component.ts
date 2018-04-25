@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-goods-control',
@@ -17,7 +17,7 @@ export class GoodsControlComponent implements OnInit {
   view = 0;
 
   constructor(
-    private http: Http
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       pCode: new FormControl('', Validators.nullValidator),
@@ -35,44 +35,52 @@ export class GoodsControlComponent implements OnInit {
   }
 
   getBaseGoods() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/getBaseGoods`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            this.dataArr = res.data;
-            this.getDetailGoods();
-          }
-        });
+    this.sharedService.get(
+      '/Green/getBaseGoods',
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.dataArr = res.data;
+        this.getDetailGoods();
+      }
+    )
   }
 
   getDetailGoods() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/getDetailGoods`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            this.dataArr.forEach(el => {
-              el.level = 1;
-              el.label = el.name;
-              el.data = el.id;
-              el.expanded = true;
-              el.children = res.data.filter(item => item.pCode === el.code);
-              el.children.forEach(child => {
-                child.label = child.name;
-                child.data = child.code;
-                child.level = 2;
-                child.expanded = true;
-                child.children = child.itemDetail.split(';').map(item => {
-                  return {
-                    label: item,
-                    expanded: true,
-                    selectable: false
-                  };
-                });
-              });
+    this.sharedService.get(
+      '/Green/getDetailGoods',
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.dataArr.forEach(el => {
+          el.level = 1;
+          el.label = el.name;
+          el.data = el.id;
+          el.expanded = true;
+          el.children = res.data.filter(item => item.pCode === el.code);
+          el.children.forEach(child => {
+            child.label = child.name;
+            child.data = child.code;
+            child.level = 2;
+            child.expanded = true;
+            child.children = child.itemDetail.split(';').map(item => {
+              return {
+                label: item,
+                expanded: true,
+                selectable: false
+              };
             });
-            this.treeNodes = this.dataArr;
-          }
+          });
         });
+        this.treeNodes = this.dataArr;
+      }
+    )
   }
 
   nodeSelect($event) {
@@ -94,23 +102,26 @@ export class GoodsControlComponent implements OnInit {
       });
       this.view = 1;
     }else {
-      alert('请选择一个大类！');
+      this.sharedService.addAlert('警告', '请选择一个大类！');
     }
   }
 
   delete() {
     if (this.selected.level === 2) {
-      this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/deleteDetailGoods?id=${this.selected.id}`)
-          .map(res => res.json())
-          .subscribe(res => {
-            alert(res.message);
-            if (res.code) {
-              this.getBaseGoods();
-              this.view = 0;
-            }
-          });
+      this.sharedService.get(
+        `/Green/deleteDetailGoods?id=${this.selected.id}`,
+        {
+          successAlert: true,
+          animation: true
+        }
+      ).subscribe(
+        () => {
+          this.getBaseGoods();
+          this.view = 0;
+        }
+      )
     }else {
-      alert('请选择一个小类！');
+      this.sharedService.addAlert('警告', '请选择一个小类！');
     }
   }
 
@@ -118,16 +129,20 @@ export class GoodsControlComponent implements OnInit {
     if (this.selected.level === 2) {
       this.form.value.id = this.selected.id;
     }
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Green/addDetailGoods`, JSON.stringify(this.form.value), {
-      headers: new Headers({'Content-Type': 'application/json'})
-    }).map(res => res.json())
-      .subscribe(res => {
-        alert(res.message);
-        if (res.code) {
-          this.getBaseGoods();
-          this.view = 0;
-        }
-      });
+    this.sharedService.post(
+      '/Green/addDetailGoods',
+      JSON.stringify(this.form.value),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.getBaseGoods();
+        this.view = 0;
+      }
+    )
   }
 
   ngOnInit() {

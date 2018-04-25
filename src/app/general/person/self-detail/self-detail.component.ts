@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { work_post, politicalStatus, positionalTitle } from '../../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../../shared/alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-self-detail',
@@ -21,12 +19,10 @@ export class SelfDetailComponent implements OnInit {
   politicalStatus = politicalStatus;
   positionalTitle = positionalTitle;
   login: Observable<any> = new Observable<any>();
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
   }
@@ -36,22 +32,15 @@ export class SelfDetailComponent implements OnInit {
   }
 
   getInfo(staffId) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/User/getUserDetail?userId=${staffId}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.data = res.data;
-              }else {
-                const initialState = {
-                  title: '通知',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.get(
+      `/User/getUserDetail?userId=${staffId}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => this.data = res.data
+    )
   }
 
   ngOnInit() {

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { Store } from '@ngrx/store';
+import { Store, _FEATURE_REDUCERS } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SharedService } from "../../../service/shared-service.service";
 
 @Component({
   selector: 'app-basic-info',
@@ -31,12 +31,11 @@ export class BasicInfoComponent implements OnInit {
     longitude: '经度',
     latitude: '纬度'
   };
-  uploading = false;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.form = new FormGroup({
@@ -58,40 +57,33 @@ export class BasicInfoComponent implements OnInit {
   }
 
   getInfo(orgCode) {
-    this.uploading = true;
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getCompanyInfo?companyCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.form.patchValue(res.data);
-                this.checkItem = res.data.status;
-              }else {
-                alert(res.message);
-              }
-              this.uploading = false;
-            }, error => {
-              alert('获取信息失败！');
-              this.uploading = false;
-            });
+    this.sharedService.get(
+      `/BaseInfo/getCompanyInfo?companyCode=${orgCode}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe()
   }
 
   submit() {
     const spaceArr = this.keys.filter(el => !this.form.value[el] && this.form.value[el] !== 0).map(el => this.requiredItems[el]);
     if (spaceArr.length > 0) {
-      alert(`${spaceArr.join(',')}为空`);
+      this.sharedService.addAlert('警告',`${spaceArr.join(',')}为空`);
     }else {
       this.form.value.status = this.checkItem;
       this.form.value.totalMileage = +this.form.value.totalMileage;
       this.form.value.longitude = +this.form.value.longitude;
       this.form.value.latitude = +this.form.value.latitude;
-      const myHeaders: Headers = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
-      this.http.post('http://119.29.144.125:8080/cgfeesys/BaseInfo/setDefaultCompany', JSON.stringify(this.form.value), {
-        headers: myHeaders
-      }).map(res => res.json())
-        .subscribe(res => {
-          alert(res.message);
-        });
+      this.sharedService.post(
+        '/BaseInfo/setDefaultCompany',
+        JSON.stringify(this.form.value),
+        {
+          httpOptions: true,
+          successAlert: true,
+          animation: true
+        }
+      ).subscribe();
     }
   }
 

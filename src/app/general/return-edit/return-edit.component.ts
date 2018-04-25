@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { applyType, shiftId, list_group } from '../../store/translate';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../shared/alert/alert.component';
+import { SharedService } from '../../service/shared-service.service';
+import { SuperComponent } from '../../super/super.component';
 
 @Component({
   selector: 'app-return-edit',
@@ -36,12 +35,10 @@ export class ReturnEditComponent implements OnInit {
   _select: any;
   returnStatus = ['未还班', '已还班', '已过期'];
   checkResult = ['未审核', '已通过', '未通过'];
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
     this.cols = [
@@ -75,38 +72,31 @@ export class ReturnEditComponent implements OnInit {
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  this.shiftChangeDataList = res.data.shiftChangeDataList;
-                  this.shiftChangeDataList.forEach(el => {
-                    el.applyTeamsCN = this.list_group[el.applyTeams];
-                    el.applyShiftCN = this.shiftId[el.applyShift];
-                    el.returnStatusCN = this.returnStatus[el.returnStatus];
-                    el.checkResultCN = this.checkResult[el.checkResult];
-                    el.returnCheckCN = this.checkResult[el.returnCheck];
-                    el.returnShiftCN = this.shiftId[el.returnShift];
-                  });
-                }
-              }else {
-                const initialState = {
-                  title: '通知',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/get',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          this.shiftChangeDataList = res.data.shiftChangeDataList;
+          this.shiftChangeDataList.forEach(el => {
+            el.applyTeamsCN = this.list_group[el.applyTeams];
+            el.applyShiftCN = this.shiftId[el.applyShift];
+            el.returnStatusCN = this.returnStatus[el.returnStatus];
+            el.checkResultCN = this.checkResult[el.checkResult];
+            el.returnCheckCN = this.checkResult[el.returnCheck];
+            el.returnShiftCN = this.shiftId[el.returnShift];
+          });
+        }
+      }
+    )
   }
 
   select(val) {
@@ -121,35 +111,14 @@ export class ReturnEditComponent implements OnInit {
     if (this.selectedSwitch) {
       this._select = this.shiftChangeDataList.filter(el => el.id === this.selectedSwitch)[0];
       if (this._select.returnStatus === 1) {
-        const initialState = {
-          title: '通知',
-          message: '此记录已还班'
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+      this.sharedService.addAlert('通知','此记录已还班');
       }else if (this._select.returnStatus === 2) {
-        const initialState = {
-          title: '通知',
-          message: '此记录已超过可修改期限！'
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
+        this.sharedService.addAlert('通知','此记录已超过可修改期限！');
       }else {
         this.view = 1;
       }
     }else {
-      const initialState = {
-        title: '通知',
-        message: '请选择换班记录！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('通知','请选择换班记录！');
     }
   }
 
@@ -161,36 +130,21 @@ export class ReturnEditComponent implements OnInit {
   returnSubmit() {
     this._select.returnDate = this.dateFormat(this._returnDate);
     this._select.returnShift = +this._returnShift;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/update`, JSON.stringify(this._select), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                const initialState = {
-                  title: '通知',
-                  message: '还班信息申请提交成功！'
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.toFirstPage();
-                this._select = '';
-                this.view = 0;
-              }else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/update',
+      JSON.stringify(this._select),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.toFirstPage();
+        this._select = '';
+        this.view = 0;
+      }
+    )
   }
 
   toFirstPage() {

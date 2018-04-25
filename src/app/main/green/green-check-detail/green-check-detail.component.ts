@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-green-check-detail',
@@ -26,55 +26,61 @@ export class GreenCheckDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: Http,
     private router: Router,
-    private store: Store<any>
+    private store: Store<any>,
+    private sharedService: SharedService
   ) {
     this.login = this.store.select('login');
   }
 
   getInfo() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/getCarHisById?id=${this.id}`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            this.data = res.data;
-            this.notCheck = !res.data.firstCheck;
-            console.log(this.notCheck);
-            this.data.boxTypeCN = this.boxType[this.data.boxType];
-            this.data.carTypeCN = this.carType[this.data.carType - 1];
-            this.data.shiftCN = this.shift[this.data.shift - 1];
-            this.data.firstCheckCN = this.firstCheck[this.data.firstCheck];
-            this.data.dealResultCN = this.dealResult[this.data.dealResult - 1];
-            this.data.runTypeCN = this.dealResult[this.data.dealResult - 1];
-          }
-        });
+    this.sharedService.get(
+      `/Green/getCarHisById?id=${this.id}`,
+      {
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.data = res.data;
+        this.notCheck = !res.data.firstCheck;
+        console.log(this.notCheck);
+        this.data.boxTypeCN = this.boxType[this.data.boxType];
+        this.data.carTypeCN = this.carType[this.data.carType - 1];
+        this.data.shiftCN = this.shift[this.data.shift - 1];
+        this.data.firstCheckCN = this.firstCheck[this.data.firstCheck];
+        this.data.dealResultCN = this.dealResult[this.data.dealResult - 1];
+        this.data.runTypeCN = this.dealResult[this.data.dealResult - 1];
+      }
+    )
   }
 
   passSubmit() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/carCheck?id=${this.id}&check=1`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            alert(res.message);
-            this.router.navigate(['/main/green/check']);
-          }else {
-            alert(res.message);
-          }
-        });
+    this.sharedService.get(
+      `/Green/carCheck?id=${this.id}&check=1`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.router.navigate(['/main/green/check']);
+      }
+    )
   }
 
   notpassSubmit() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Green/carCheck?id=${this.id}&check=2`)
-        .map(res => res.json())
-        .subscribe(res => {
-          if (res.code) {
-            alert(res.message);
-            this.router.navigate(['/main/green/check']);
-          }else {
-            alert(res.message);
-          }
-        });
+    this.sharedService.get(
+      `/Green/carCheck?id=${this.id}&check=2`,
+      {
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe(
+      () => {
+        this.router.navigate(['/main/green/check']);
+      }
+    )
   }
 
   ngOnInit() {

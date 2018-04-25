@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { list_group } from '../../store/translate';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../shared/alert/alert.component';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-hold-edit',
@@ -30,12 +28,10 @@ export class HoldEditComponent implements OnInit {
   count: number;
   hasData: boolean;
   checkResult = ['未审核', '通过', '未通过'];
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.login = this.store.select('login');
     this.param = {
@@ -80,69 +76,44 @@ export class HoldEditComponent implements OnInit {
   }
 
   addHold() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.applyDate = this.dateFormat(this.applyDate);
     this.form.value.stationCode = this.orgCode;
     this.form.value.applyUserId = this.userId;
     this.form.value.applyTeams = this.listGroup;
     this.form.value.applyChangeType = 2;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/ShiftChange/set`, JSON.stringify(this.form.value), {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                const initialState = {
-                  title: '通知',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/set',
+      JSON.stringify(this.form.value),
+      {
+        httpOptions: true,
+        successAlert: true,
+        animation: true
+      }
+    ).subscribe()
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                  res.data.shiftChangeDataList.forEach(el => {
-                    el.checkResultCN = this.checkResult[el.checkResult];
-                    el.applyTeamsCN = this.list_group[el.applyTeams];
-                  });
-                  this.holdList = res.data.shiftChangeDataList;
-                }
-              }else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post(
+      '/ShiftChange/get',
+      JSON.stringify(this.param),
+      {
+        httpOptions: true,
+        successAlert: false,
+        animation: true
+      }
+    ).subscribe(
+      res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+          res.data.shiftChangeDataList.forEach(el => {
+            el.checkResultCN = this.checkResult[el.checkResult];
+            el.applyTeamsCN = this.list_group[el.applyTeams];
+          });
+          this.holdList = res.data.shiftChangeDataList;
+        }
+      }
+    )
   }
 
   ngOnInit() {
