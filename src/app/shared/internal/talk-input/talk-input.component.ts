@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmComponent } from '../../confirm/confirm.component';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-talk-input',
@@ -26,7 +24,6 @@ export class TalkInputComponent implements OnInit {
   size = 15;
   orgList: Array<any>;
   org: string;
-  uploading = false;
   orgType: number;
   count: number;
   deviceList: Array<any>;
@@ -48,12 +45,10 @@ export class TalkInputComponent implements OnInit {
     page: this.page,
     size: this.size
   };
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       chatLeader: new FormControl('', Validators.nullValidator),
@@ -95,27 +90,9 @@ export class TalkInputComponent implements OnInit {
 
   showConfirm() {
     if (this.selectedDevice) {
-      const initialState = {
-        title: '警告',
-        message: '确认删除该记录？'
-      };
-      this.bsModalRef = this.modalService.show(ConfirmComponent, {initialState});
-      this.bsModalRef.content.confirmEmit.subscribe(res => {
-        this.staffLeave(this.selectedDevice);
-        this.bsModalRef.hide();
-      })
-      this.bsModalRef.content.cancelEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '确认删除该记录？');
     }else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一条记录！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一条记录！');
     }
   }
 
@@ -152,37 +129,23 @@ export class TalkInputComponent implements OnInit {
     if (this.searchOrg.length !== 0) {
       this.param.orgList = this.searchOrg.map(el => el.data);
     }
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Chat/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                }
-                res.data.chatDataList.forEach(item => {
-                  if (item.chatType === 0) {
-                    item.chatType = '一般谈心';
-                  } else {
-                    item.chatType = '重要谈心';
-                  }
-                });
-                this.deviceList = res.data.chatDataList;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
-            });
+    this.sharedService.post('/Chat/get', JSON.stringify(this.param), {
+      httpOptions: true
+    })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+        }
+        res.data.chatDataList.forEach(item => {
+          if (item.chatType === 0) {
+            item.chatType = '一般谈心';
+          } else {
+            item.chatType = '重要谈心';
+          }
+        });
+        this.deviceList = res.data.chatDataList;
+      });
   }
 
   dateFormat(date) {
@@ -215,14 +178,7 @@ export class TalkInputComponent implements OnInit {
       this.isChosen = true;
       this.isAdd = false;
     } else {
-      const initialState = {
-        title: '警告',
-        message: '请选择一个谈心记录！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择一个谈心记录');
     }
   }
 
@@ -239,60 +195,32 @@ export class TalkInputComponent implements OnInit {
   }
 
   staffLeave(selectedUser) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Chat/delete?id=${selectedUser}`)
-            .map(res => res.json())
+    this.sharedService.get(`/Chat/delete?id=${selectedUser}`, {
+      successAlert: false
+    })
             .subscribe(res => {
-              const initialState = {
-                title: '通知',
-                message: res.message
-              };
-              this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-              this.bsModalRef.content.submitEmit.subscribe(res => {
-                this.bsModalRef.hide();
-              })
-              if (res.code) {
-                this.toFirstPage();
-              }
+              this.sharedService.addAlert('警告', res.message);
+              this.toFirstPage();
             });
   }
 
   addDevice() {
-    this.uploading = true;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.form.value.chatDate = this.dateFormat(this.startDate);
     this.form.value.orgCode = this.orgList[0].data;
     this.form.value.chatPersonList = this.staffList.map(el => el.data);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Chat/add`, JSON.stringify(this.form.value), {
-              headers: myHeaders
+    this.sharedService.post(`http://119.29.144.125:8080/cgfeesys/Chat/add`, JSON.stringify(this.form.value), {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 if (this.file) {
                   this.upload(res.data.id);
                 } else {
                   this.toFirstPage();
-                  this.uploading = false;
                 }
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.uploading = false;
-              }
             });
   }
 
   updateDevice() {
-    this.uploading = true;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     const keys = Object.keys(this.form.value);
     keys.forEach(el => {
       this.data[el] = this.form.value[el];
@@ -301,37 +229,17 @@ export class TalkInputComponent implements OnInit {
     this.data.chatDate = this.dateFormat(this.startDate);
     this.data.orgCode = this.orgList[0].data;
     this.data.chatPersonList = this.staffList.map(el => el.data);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Chat/update`, JSON.stringify(this.data), {
-              headers: myHeaders
+    this.sharedService.post(`/Chat/update`, JSON.stringify(this.data), {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 if (this.file) {
                   this.upload(this.selectedDevice);
                 } else {
                   this.toFirstPage();
-                  this.uploading = false;
-                  const initialState = {
-                    title: '通知',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
+                  this.sharedService.addAlert('通知', res.message);
                 }
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.uploading = false;
-              }
+              
             });
   }
 
@@ -362,40 +270,14 @@ export class TalkInputComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('id', userId);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/chat`, formdata)
-      .map(res => res.json())
+    this.sharedService.post(`/upload/chat`, formdata, {
+      httpOptions: false
+    })
       .subscribe(res => {
-        if (res.code) {
-          const initialState = {
-            title: '通知',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
-        }
+          this.sharedService.addAlert('通知', res.message);
         this.toFirstPage();
-        this.uploading = false;
       }, error => {
-        const initialState = {
-          title: '警告',
-          message: '上传失败，请重试！'
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
-        this.uploading = false;
+        this.sharedService.addAlert('警告', '上传失败，请重试！');
       });
   }
   ngOnInit() {

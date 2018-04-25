@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { applyType, shiftId, list_group } from '../../store/translate';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-switch-search',
@@ -49,7 +49,7 @@ export class SwitchSearchComponent implements OnInit {
   login: Observable<any> = new Observable<any>();
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -114,31 +114,24 @@ export class SwitchSearchComponent implements OnInit {
         this.param[el] = this.form.value[el];
       }
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/ShiftChange/get', JSON.stringify(this.param) , {
-              headers: myHeaders
-            })
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.count = res.data.count;
-                if (res.data.count > 0) {
-                  this.hasData = true;
-                }
-                this.shiftChangeDataList = res.data.shiftChangeDataList;
-                this.shiftChangeDataList.forEach(el => {
-                  el.applyTeamsCN = this.list_group[el.applyTeams];
-                  el.backTeamsCN = this.list_group[el.backTeams];
-                  el.applyShiftCN = this.shiftId[el.applyShift];
-                  el.backShiftCN = this.shiftId[el.backShift];
-                  el.returnShiftCN = this.shiftId[el.returnShift];
-                  el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
-                });
-              }else {
-                alert(res.message);
-              }
-            });
+    this.sharedService.post('/ShiftChange/get', JSON.stringify(this.param) , {
+      httpOptions: true
+    })
+      .subscribe(res => {
+        this.count = res.data.count;
+        if (res.data.count > 0) {
+          this.hasData = true;
+        }
+        this.shiftChangeDataList = res.data.shiftChangeDataList;
+        this.shiftChangeDataList.forEach(el => {
+          el.applyTeamsCN = this.list_group[el.applyTeams];
+          el.backTeamsCN = this.list_group[el.backTeams];
+          el.applyShiftCN = this.shiftId[el.applyShift];
+          el.backShiftCN = this.shiftId[el.backShift];
+          el.returnShiftCN = this.shiftId[el.returnShift];
+          el.applyChangeTypeCN = this.applyChangeTypeCN[el.applyChangeType];
+        });
+      });
   }
 
   check($event) {

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-cloth-history',
@@ -47,7 +47,7 @@ export class ClothHistoryComponent implements OnInit {
   };
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService, 
     private store: Store<any>
   ) {
     this.login = store.select('login');
@@ -109,14 +109,10 @@ export class ClothHistoryComponent implements OnInit {
         param[el] = this.form.value[el];
       }
     });
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Clothes/get', JSON.stringify(param) , {
-              headers: myHeaders
+    this.sharedService.post('/Clothes/get', JSON.stringify(param) , {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 this.count = res.data.count;
                 res.data.clothesDataList.forEach(el => {
                   el.clothesClassificationCN = this.clothesClassification[el.clothesClassification];
@@ -126,9 +122,6 @@ export class ClothHistoryComponent implements OnInit {
                 if (res.data.count > 0) {
                   this.hasData = true;
                 }
-              }else {
-                alert(res.message);
-              }
             });
   }
 

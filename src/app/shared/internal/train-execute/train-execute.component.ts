@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { FormArray } from '@angular/forms/src/model';
 import { identifierName } from '@angular/compiler';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-train-execute',
@@ -24,7 +22,6 @@ export class TrainExecuteComponent implements OnInit {
   doEndDate: string;
   startDate: string;
   endDate: string;
-  uploading = false;
   en: any;
   file: any;
   filename: string;
@@ -59,12 +56,9 @@ export class TrainExecuteComponent implements OnInit {
   activedStaffList: Array<any> = [];
   joinStaffList: Array<any> = [];
   doId: string;
-  bsModalRef: BsModalRef;
-
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.form = new FormGroup({
       trainName: new FormControl('', Validators.nullValidator),
@@ -167,10 +161,8 @@ export class TrainExecuteComponent implements OnInit {
   }
   getStaffInfo(planId) {
     this.isChosen = true;
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${planId}`)
-            .map(res => res.json())
+    this.sharedService.get(`/Train/planGetById?id=${planId}`)
             .subscribe(res => {
-              if (res.code) {
                 this.data = res.data;
                 this.form.patchValue(res.data.trainPlanData);
                 this.planFilePath = res.data.trainPlanData.trainPlanFile;
@@ -178,21 +170,9 @@ export class TrainExecuteComponent implements OnInit {
                 this.startDate = res.data.trainPlanData.trainStartDate;
                 this.trainForm.patchValue({trainPlanName: res.data.trainPlanData.trainName});
                 this.doId = res.data.trainDoListDataList.filter(el => el.trainDoOrgCode === this.orgCode)[0].doId;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
             });
   }
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     if (+this.searchForm.value.hasDo === 1) {
       this.param.hasDo = false;
     }else if (+this.searchForm.value.hasDo === 2) {
@@ -200,12 +180,10 @@ export class TrainExecuteComponent implements OnInit {
     }else {
       delete this.param.hasDo;
     }
-    this.http.post('http://119.29.144.125:8080/cgfeesys/Train/doGet', JSON.stringify(this.param) , {
-              headers: myHeaders
+    this.sharedService.post('/Train/doGet', JSON.stringify(this.param) , {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 this.count = res.data.count;
                 if (res.data.count > 0) {
                   this.hasData = true;
@@ -214,16 +192,6 @@ export class TrainExecuteComponent implements OnInit {
                   item.hasDo = item.trainTimeLong === 0 ? '已落实' : '未落实';
                 });
                 this.staffList = res.data.trainDoDataList;
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-              }
             });
   }
 
@@ -294,9 +262,6 @@ export class TrainExecuteComponent implements OnInit {
   // }
 
   addStaff() {
-    this.uploading = true;
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
     this.trainForm.value.trainTimeLong = this.trainTimeLong;
     // this.trainForm.value.trainDoTimeLong = this.trainForm.value.trainDoTimeNumber * 0.5;
     this.trainForm.value.trainDoStartDate = this.dateFormat(this.doStartDate);
@@ -310,37 +275,16 @@ export class TrainExecuteComponent implements OnInit {
       }
     });
     tmpObj.id = this.doId;
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/doAdd`, JSON.stringify(tmpObj), {
-              headers: myHeaders
+    this.sharedService.post(`/Train/doAdd`, JSON.stringify(tmpObj), {
+              httpOptions: true
             })
-            .map(res => res.json())
             .subscribe(res => {
-              if (res.code) {
                 if (this.file) {
                   this.upload(res.data.id);
                 } else {
-                  const initialState = {
-                    title: '通知',
-                    message: res.message
-                  };
-                  this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                  this.bsModalRef.content.submitEmit.subscribe(res => {
-                    this.bsModalRef.hide();
-                  })
+                  this.sharedService.addAlert('通知', res.message);
                   this.toFirstPage();
-                  this.uploading = false;
                 }
-              } else {
-                const initialState = {
-                  title: '警告',
-                  message: res.message
-                };
-                this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-                this.bsModalRef.content.submitEmit.subscribe(res => {
-                  this.bsModalRef.hide();
-                })
-                this.uploading = false;
-              }
             });
   }
 
@@ -356,16 +300,13 @@ export class TrainExecuteComponent implements OnInit {
   addStaffs() {
     this.isShow = true;
     if (this.orgType !== 3) {
-      this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
-          .map(res => res.json())
+      this.sharedService.get(`/BaseInfo/getStationUserId?stationCode=${this.orgCode}`)
           .subscribe(res => {
-            if (res.code) {
               this.joinStaffList = res.data;
               const selected = this.activedStaffList;
               this.joinStaffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
                 el.choose = true;
               });
-            }
           });
     }
   }
@@ -389,16 +330,13 @@ export class TrainExecuteComponent implements OnInit {
   }
 
   getStaffs() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`)
-            .map(res => res.json())
+    this.sharedService.get(`/ShiftChange/getUserByTeams?teams=${this.teams}&stationCode=${this.orgCode}`)
             .subscribe(res => {
-              if (res.code) {
                 this.joinStaffList = res.data;
                 const selected = this.activedStaffList;
                 this.joinStaffList.filter(el => selected.findIndex(item => item.userId === el.userId) > -1).forEach(el => {
                   el.choose = true;
                 });
-              }
             });
   }
 
@@ -442,42 +380,17 @@ export class TrainExecuteComponent implements OnInit {
     const formdata = new FormData();
     formdata.append('file', this.file);
     formdata.append('id', id);
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/upload/trainDo`, formdata)
-      .map(res => res.json())
-      .subscribe(res => {
+    this.sharedService.post(`/upload/trainDo`, formdata, {
+      httpOptions: false
+    }).subscribe(res => {
         if (res.code) {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
+          this.sharedService.addAlert('警告', res.message);
           this.file = null;
           this.filename = '';
-        } else {
-          const initialState = {
-            title: '警告',
-            message: res.message
-          };
-          this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-          this.bsModalRef.content.submitEmit.subscribe(res => {
-            this.bsModalRef.hide();
-          })
         }
         this.toFirstPage();
-        this.uploading = false;
       }, error => {
-        const initialState = {
-          title: '警告',
-          message: '上传失败，请重试！'
-        };
-        this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-        this.bsModalRef.content.submitEmit.subscribe(res => {
-          this.bsModalRef.hide();
-        })
-        this.uploading = false;
+        this.sharedService.addAlert('警告', '上传失败，请重试！');
       });
   }
   downloadFile(type) {

@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { AlertComponent } from '../../alert/alert.component';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-talk-static',
@@ -28,12 +26,10 @@ export class TalkStaticComponent implements OnInit {
   orgCode: string;
   orgName: string;
   login: Observable<any> = new Observable<any>();
-  bsModalRef: BsModalRef;
 
   constructor(
-    private http: Http,
     private store: Store<any>,
-    private modalService: BsModalService
+    private sharedService: SharedService
   ) {
     this.login = store.select('login');
   }
@@ -45,52 +41,27 @@ export class TalkStaticComponent implements OnInit {
 
   search() {
     if (!this.orgList || this.orgList.length <= 0) {
-      const initialState = {
-        title: '警告',
-        message: '未选择机构！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '未选择机构！');
     } else if (this.orgList[0].orgType !== 3) {
-      const initialState = {
-        title: '警告',
-        message: '请选择收费站！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择收费站！');
     } else if (!this.year) {
-      const initialState = {
-        title: '警告',
-        message: '请选择年份！'
-      };
-      this.bsModalRef = this.modalService.show(AlertComponent, {initialState});
-      this.bsModalRef.content.submitEmit.subscribe(res => {
-        this.bsModalRef.hide();
-      })
+      this.sharedService.addAlert('警告', '请选择年份！');
     } else {
       this.getInfo();
     }
   }
 
   getInfo() {
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/Train/trainStatistics`, JSON.stringify({
+    this.sharedService.post(`/Train/trainStatistics`, JSON.stringify({
       orgCode: this.orgList[0].data,
       year: `${this.year}-01-01`,
       userId: this.staff
     }), {
-      headers: myHeaders
-    }).map(res => res.json())
+      httpOptions: true
+    })
       .subscribe(res => {
-        if (res.code) {
           this.talkList = res.data;
           this.updateChart(res.data);
-        }
       });
   }
 
@@ -152,12 +123,9 @@ export class TalkStaticComponent implements OnInit {
   }
 
   getStaff() {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
-            .map(res => res.json())
+    this.sharedService.get(`/BaseInfo/getStationUserId?stationCode=${this.orgList[0].data}`)
             .subscribe(res => {
-              if (res.code) {
-                this.staffList = res.data;
-              }
+              this.staffList = res.data;
             });
   }
 

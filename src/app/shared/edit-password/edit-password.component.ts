@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Headers } from '@angular/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import * as Actions from '../../store/cacheStore.actions';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'eidt-password',
@@ -19,7 +19,7 @@ export class EditPasswordComponent implements OnInit {
   view: number;
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>,
     private router: Router
   ) {
@@ -95,19 +95,12 @@ export class EditPasswordComponent implements OnInit {
     }
     console.log('userData: ', this.userData);
     const params = this.getParams();
-    const myHeaders: Headers = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    this.http.post(`http://119.29.144.125:8080/cgfeesys/updatePassword`, JSON.stringify(params), {
-      headers: myHeaders
+    this.sharedService.post(`/updatePassword`, JSON.stringify(params), {
+      httpOptions: true
     })
-      .map(res => res.json())
       .subscribe(res => {
-        if (res.code) {
           alert(res.message);
           this.logout();
-        } else {
-          alert(res.message);
-        }
       });
   }
 

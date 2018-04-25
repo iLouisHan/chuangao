@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Http } from '@angular/http';
+import { SharedService } from '../../../service/shared-service.service';
 
 @Component({
   selector: 'app-execute-detail',
@@ -15,7 +16,7 @@ export class ExecuteDetailComponent implements OnInit {
 
   constructor(
     private router: ActivatedRoute,
-    private http: Http
+    private sharedService: SharedService
   ) {
     this.id = this.router.snapshot.queryParams['id'];
     this.cols = [
@@ -32,20 +33,18 @@ export class ExecuteDetailComponent implements OnInit {
   }
 
   getInfo(id) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/Train/planGetById?id=${id}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.trainPlanData = res.data.trainPlanData;
-                res.data.trainDoListDataList.forEach(el => {
-                  // el.trainDoDetailDataList.forEach(element => {
-                    el.trainHasDo = el.trainTimeLong === 0 ? '已落实' : '未落实';
-                  // })
-                });
-                this.countList = res.data.trainDoListDataList;
-                window.sessionStorage.setItem('execute', JSON.stringify(res.data));
-              }
-            });
+    this.sharedService.get(`/Train/planGetById?id=${id}`)
+      .subscribe(res => {
+        this.trainPlanData = res.data.trainPlanData;
+        res.data.trainDoListDataList.forEach(el => {
+          // el.trainDoDetailDataList.forEach(element => {
+          el.trainHasDo = el.trainTimeLong === 0 ? '已落实' : '未落实';
+          // })
+        });
+        this.countList = res.data.trainDoListDataList;
+        window.sessionStorage.setItem('execute', JSON.stringify(res.data));
+
+      });
   }
 
   goBack() {

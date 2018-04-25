@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/map';
+import { SharedService } from '../../service/shared-service.service';
 
 @Component({
   selector: 'app-staff-count',
@@ -24,106 +24,103 @@ export class StaffCountComponent implements OnInit {
   cols: any;
 
   constructor(
-    private http: Http,
+    private sharedService: SharedService,
     private store: Store<any>
   ) {
     this.login = store.select('login');
   }
 
   getInfo(orgCode) {
-    this.http.get(`http://119.29.144.125:8080/cgfeesys/StaffMag/staffStatistics?orgCode=${orgCode}`)
-            .map(res => res.json())
-            .subscribe(res => {
-              if (res.code) {
-                this.updateOptions1 = {
-                  series: [{
-                    name: '男',
-                    type: 'bar',
-                    stack: 'one',
-                    data: res.data.mans
-                  }, {
-                    name: '女',
-                    type: 'bar',
-                    stack: 'one',
-                    data: res.data.womem
-                  }]
-                };
-                const series2 = {
-                  type: 'pie',
-                  radius: [20, 70],
-                  roseType: 'area',
-                  data: [
-                    { value: res.data.educational[0], name: '研究生'},
-                    { value: res.data.educational[1], name: '本科'},
-                    { value: res.data.educational[2], name: '专科'},
-                    { value: res.data.educational[3], name: '中专'},
-                    { value: res.data.educational[4], name: '高中'}
-                  ]
-                };
-                series2.data = series2.data.filter(el => el.value > 0);
-                this.updateOptions2 = {
-                  series: series2
-                };
-                const data3 = [];
-                const keys = Object.keys(res.data.workAge);
-                keys.forEach(el => {
-                  data3[+el] = res.data.workAge[+el];
-                });
-                for (let i = 0; i < data3.length; i++) {
-                  data3[i] =  data3[i] || 0;
-                }
-                this.updateOptions3 = {
-                  series: {
-                    type: 'bar',
-                    data: data3
-                  }
-                };
-                const series4: any = {
-                  type: 'pie',
-                  radius: [20, 70],
-                  roseType: 'area',
-                  data: [
-                    { value: res.data.educational[0], name: '研究生'},
-                    { value: res.data.educational[1], name: '本科'},
-                    { value: res.data.educational[2], name: '专科'},
-                    { value: res.data.educational[3], name: '中专'},
-                    { value: res.data.educational[4], name: '高中'}
-                  ]
-                };
-                switch (this.orgType) {
-                  case 1: {
-                    series4.data = [
-                      { value: res.data.workPostList[0], name: '营运公司高级管理人员'},
-                      { value: res.data.workPostList[1], name: '营运公司中级管理人员'},
-                      { value: res.data.workPostList[2], name: '营运公司一般管理人员'}
-                    ];
-                    break;
-                  }
-                  case 2: {
-                    series4.data = [
-                      { value: res.data.workPostList[0], name: '管理处高级管理人员'},
-                      { value: res.data.workPostList[1], name: '管理处中级管理人员'},
-                      { value: res.data.workPostList[2], name: '管理处一般管理人员'}
-                    ];
-                    break;
-                  }
-                  case 3: {
-                    series4.data = [
-                      { value: res.data.starList[0], name: '一星'},
-                      { value: res.data.starList[1], name: '两星'},
-                      { value: res.data.starList[2], name: '三星'},
-                      { value: res.data.starList[3], name: '四星'},
-                      { value: res.data.starList[4], name: '五星'}
-                    ];
-                    break;
-                  }
-                }
-                series4.data = series4.data.filter(el => el.value > 0);
-                this.updateOptions4 = {
-                  series: series4
-                };
-              }
-            });
+    this.sharedService.get(`/StaffMag/staffStatistics?orgCode=${orgCode}`)
+      .subscribe(res => {
+        this.updateOptions1 = {
+          series: [{
+            name: '男',
+            type: 'bar',
+            stack: 'one',
+            data: res.data.mans
+          }, {
+            name: '女',
+            type: 'bar',
+            stack: 'one',
+            data: res.data.womem
+          }]
+        };
+        const series2 = {
+          type: 'pie',
+          radius: [20, 70],
+          roseType: 'area',
+          data: [
+            { value: res.data.educational[0], name: '研究生' },
+            { value: res.data.educational[1], name: '本科' },
+            { value: res.data.educational[2], name: '专科' },
+            { value: res.data.educational[3], name: '中专' },
+            { value: res.data.educational[4], name: '高中' }
+          ]
+        };
+        series2.data = series2.data.filter(el => el.value > 0);
+        this.updateOptions2 = {
+          series: series2
+        };
+        const data3 = [];
+        const keys = Object.keys(res.data.workAge);
+        keys.forEach(el => {
+          data3[+el] = res.data.workAge[+el];
+        });
+        for (let i = 0; i < data3.length; i++) {
+          data3[i] = data3[i] || 0;
+        }
+        this.updateOptions3 = {
+          series: {
+            type: 'bar',
+            data: data3
+          }
+        };
+        const series4: any = {
+          type: 'pie',
+          radius: [20, 70],
+          roseType: 'area',
+          data: [
+            { value: res.data.educational[0], name: '研究生' },
+            { value: res.data.educational[1], name: '本科' },
+            { value: res.data.educational[2], name: '专科' },
+            { value: res.data.educational[3], name: '中专' },
+            { value: res.data.educational[4], name: '高中' }
+          ]
+        };
+        switch (this.orgType) {
+          case 1: {
+            series4.data = [
+              { value: res.data.workPostList[0], name: '营运公司高级管理人员' },
+              { value: res.data.workPostList[1], name: '营运公司中级管理人员' },
+              { value: res.data.workPostList[2], name: '营运公司一般管理人员' }
+            ];
+            break;
+          }
+          case 2: {
+            series4.data = [
+              { value: res.data.workPostList[0], name: '管理处高级管理人员' },
+              { value: res.data.workPostList[1], name: '管理处中级管理人员' },
+              { value: res.data.workPostList[2], name: '管理处一般管理人员' }
+            ];
+            break;
+          }
+          case 3: {
+            series4.data = [
+              { value: res.data.starList[0], name: '一星' },
+              { value: res.data.starList[1], name: '两星' },
+              { value: res.data.starList[2], name: '三星' },
+              { value: res.data.starList[3], name: '四星' },
+              { value: res.data.starList[4], name: '五星' }
+            ];
+            break;
+          }
+        }
+        series4.data = series4.data.filter(el => el.value > 0);
+        this.updateOptions4 = {
+          series: series4
+        };
+      });
   }
 
   ngOnInit() {
